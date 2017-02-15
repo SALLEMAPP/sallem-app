@@ -1,16 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_splash"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    tools:context="com.seniorproject.sallemapp.SplashActivity"
+    android:orientation="vertical">
 
-    tools:context="com.seniorproject.sallemapp.SplashActivity">
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:srcCompat="@drawable/splash_image"
-         />
-</RelativeLayout>
+        android:src="@mipmap/logo"
+        android:layout_height="wrap_content"
+        android:scaleX="5"
+        android:scaleY="2"
+/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginLeft="185dp">
+        <TextView
+            android:text="@string/app_vision"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/sallemBlue"
+            android:layout_marginTop="10dp"
+            android:textSize="@dimen/app_vision_text_size"
+
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginTop="120dp"
+        android:weightSum="1">
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginTop="100dp">
+
+        <TextView
+            android:text="@string/loadin_msg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textColor="@color/sallemBlue"
+            android:textSize="@dimen/loading_msg_text_size"
+            />
+    </LinearLayout>
+
+</LinearLayout>
