@@ -104,7 +104,7 @@
         android:layout_below="@+id/Btn_Sign_in"
         android:layout_alignLeft="@+id/Btn_Sign_in"
         android:layout_alignStart="@+id/Btn_Sign_in"
-        android:onClick="resetPassword" />
+        />
 
 
 </RelativeLayout>

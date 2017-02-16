@@ -8,4 +8,6 @@
     <string name="user_name_label">User Name </string>
     <string name="password_label">Password </string>
     <string name="forgot_password_label">Forgot your Password ? </string>
+    <string name="reset_label">Reset </string>
+    <string name="email_label">Email </string>
 </resources>

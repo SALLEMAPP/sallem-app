@@ -14,7 +14,5 @@ public class SignInActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sign_in);
     }
 
-    public void resetPassword(View view) {
 
-    }
 }
