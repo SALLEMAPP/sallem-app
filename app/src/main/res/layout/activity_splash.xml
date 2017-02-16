@@ -37,7 +37,7 @@
         android:text="@string/loading_msg"
         android:textColor="@color/sallemBlue"
         android:layout_marginTop="75dp"
-        android:gravity="center"
+        android:gravity="top|center"
         android:textSize="@dimen/loading_msg_text_size"
         android:layout_weight="4"
         />
