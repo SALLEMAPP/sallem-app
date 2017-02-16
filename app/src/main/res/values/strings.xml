@@ -7,7 +7,15 @@
     <string name="register_label">Register</string>
     <string name="user_name_label">User Name </string>
     <string name="password_label">Password </string>
+    <string name="confirm_password_label">Confirm Password </string>
+
     <string name="forgot_password_label">Forgot your Password ? </string>
     <string name="reset_label">Reset </string>
     <string name="email_label">Email </string>
+    <string name="first_name_label">First Name  </string>
+    <string name="last_name_label">Last Name  </string>
+    <string name="Agreement">I Agree  </string>
+    <string name="i_agree">I Agree</string>
+
+
 </resources>
