@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.seniorproject.sallemapp.Activities.WelcomeActivity">
+
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -20,7 +21,7 @@
         android:layout_height="wrap_content"
         android:background="@color/sallemBlue"
         android:layout_weight="0"
-        android:text="@string/signin_babel"
+        android:text="@string/signin_label"
         android:textColor="@color/sallemWhite"
         android:layout_marginBottom="10dp"
         android:layout_marginTop="30dp"
@@ -34,7 +35,7 @@
         android:layout_height="wrap_content"
         android:background="@color/sallemBlue"
         android:layout_weight="0"
-        android:text="@string/register_babel"
+        android:text="@string/register_label"
         android:textColor="@color/sallemWhite"
         android:layout_marginLeft="50dp"
         android:layout_marginRight="50dp" />
