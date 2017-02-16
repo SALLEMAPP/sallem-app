@@ -8,7 +8,7 @@ import com.seniorproject.sallemapp.R;
 public class SplashActivity extends AppCompatActivity {
 
     //Time period for splash window
-    private static int SPLASH_TIME = 2000;
+    private static int SPLASH_TIME = 1000;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
