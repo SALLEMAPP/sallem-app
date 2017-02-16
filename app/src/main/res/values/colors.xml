@@ -5,5 +5,6 @@
     <color name="colorAccent">#FF4081</color>
     <color name="sallemBlue">#55a4ff</color>
     <color name="sallemWhite">#ffffff</color>
+    <color name="sallemGray">#d1d0d0</color>
 
 </resources>

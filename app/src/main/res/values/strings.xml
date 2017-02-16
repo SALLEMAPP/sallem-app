@@ -3,6 +3,9 @@
     <string name="title_activity_welcome">WelcomeActivity</string>
     <string name="app_vision">Bring friends together</string>
     <string name="loading_msg">LOADING...</string>
-    <string name="signin_babel">Sign in</string>
-    <string name="register_babel">Register</string>
+    <string name="signin_label">Sign in</string>
+    <string name="register_label">Register</string>
+    <string name="user_name_label">User Name </string>
+    <string name="password_label">Password </string>
+    <string name="forgot_password_label">Forgot your Password ? </string>
 </resources>
