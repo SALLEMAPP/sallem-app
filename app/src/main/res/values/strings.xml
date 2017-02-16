@@ -3,4 +3,6 @@
     <string name="title_activity_welcome">WelcomeActivity</string>
     <string name="app_vision">Bring friends together</string>
     <string name="loading_msg">LOADING...</string>
+    <string name="signin_babel">Sign in</string>
+    <string name="register_babel">Register</string>
 </resources>
