@@ -18,7 +18,7 @@
         <activity android:name=".Activities.WelcomeActivity" />
         <activity android:name=".Activities.SignInActivity" />
         <activity android:name=".Activities.ResetPasswordActivity" />
-        <activity android:name=".Activities.RegisterationActivity"></activity>
+        <activity android:name=".Activities.RegistrationActivity"></activity>
     </application>
 
 </manifest>

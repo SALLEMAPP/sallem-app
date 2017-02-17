@@ -7,14 +7,14 @@ import android.widget.TextView;
 
 import com.seniorproject.sallemapp.R;
 
-public class RegisterationActivity extends AppCompatActivity {
-      TextView lbl_terms;
+public class RegistrationActivity extends AppCompatActivity {
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_registration);
         setContentView(R.layout.activity_registeration);
-        lbl_terms = (TextView)findViewById(R.id.lbl_term);
-        lbl_terms.setMovementMethod(new ScrollingMovementMethod());
-
+         TextView termsTextView = (TextView)findViewById(R.id.lbl_term);
+        termsTextView.setMovementMethod(new ScrollingMovementMethod());
     }
 }
