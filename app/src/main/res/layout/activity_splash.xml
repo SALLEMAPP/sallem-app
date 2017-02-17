@@ -5,60 +5,41 @@
     android:id="@+id/activity_splash"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.seniorproject.sallemapp.SplashActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context="com.seniorproject.sallemapp.Activities.SplashActivity">
 
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
 
     <ImageView
         android:layout_width="match_parent"
-        android:src="@mipmap/logo"
         android:layout_height="wrap_content"
-        android:scaleX="5"
-        android:scaleY="2"
-/>
+        app:srcCompat="@drawable/logo"
+        android:id="@+id/imageView"
+        android:layout_marginTop="100dp"
+        android:layout_weight="2" />
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_marginLeft="185dp">
-        <TextView
-            android:text="@string/app_vision"
-            android:layout_width="match_parent"
+    <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@string/app_vision"
             android:textColor="@color/sallemBlue"
-            android:layout_marginTop="10dp"
-            android:textSize="@dimen/app_vision_text_size"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="150dp"
+            android:layout_weight="4"
+            android:textSize="@dimen/app_vision_text_size" />
 
-            />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="vertical"
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_marginTop="120dp"
-        android:weightSum="1">
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_marginTop="100dp">
-
-        <TextView
-            android:text="@string/loadin_msg"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:textColor="@color/sallemBlue"
-            android:textSize="@dimen/loading_msg_text_size"
-            />
-    </LinearLayout>
+        android:text="@string/loading_msg"
+        android:textColor="@color/sallemBlue"
+        android:layout_marginTop="75dp"
+        android:gravity="top|center"
+        android:textSize="@dimen/loading_msg_text_size"
+        android:layout_weight="4"
+        />
 
 </LinearLayout>
