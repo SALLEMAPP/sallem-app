@@ -28,11 +28,6 @@
             android:label="@string/title_activity_home"
             android:theme="@style/AppTheme"></activity>
 
-        <activity android:name=".Activities.SettingsActivity"
-                  android:parentActivityName=".Activities.HomeActivity">
-        </activity>
-        <activity android:name=".Activities.MapActivity"
-                android:parentActivityName=".Activities.HomeActivity" ></activity>
     </application>
 
 </manifest>
