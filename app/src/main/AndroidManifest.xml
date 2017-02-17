@@ -21,6 +21,10 @@
             android:name=".Activities.HomeActivity"
             android:label="@string/title_activity_home"
             android:theme="@style/AppTheme"></activity>
+        <activity android:name=".Activities.SignInActivity" />
+        <activity android:name=".Activities.SettingsActivity"
+                  android:parentActivityName=".Activities.HomeActivity">
+        </activity>
     </application>
 
 </manifest>
