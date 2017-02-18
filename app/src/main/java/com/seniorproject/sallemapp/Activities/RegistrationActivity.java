@@ -13,8 +13,7 @@ public class RegistrationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
-        setContentView(R.layout.activity_registeration);
-         TextView termsTextView = (TextView)findViewById(R.id.lbl_term);
+        TextView termsTextView = (TextView)findViewById(R.id.lbl_term);
         termsTextView.setMovementMethod(new ScrollingMovementMethod());
     }
 }

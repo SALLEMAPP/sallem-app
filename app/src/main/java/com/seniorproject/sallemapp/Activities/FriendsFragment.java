@@ -60,12 +60,12 @@ public class FriendsFragment extends Fragment {
             _title = getArguments().getString(ARG_PARAM2);
         }
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_friends, container, false);
+        return   inflater.inflate(R.layout.fragment_friends, container, false);
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -90,6 +90,8 @@ public class FriendsFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+
+
     }
 
     /**

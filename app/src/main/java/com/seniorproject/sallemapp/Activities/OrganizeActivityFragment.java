@@ -13,23 +13,22 @@ import com.seniorproject.sallemapp.R;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link PastActivitiesFragment.OnFragmentInteractionListener} interface
+ * {@link OrganizeActivityFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link PastActivitiesFragment#newInstance} factory method to
+ * Use the {@link OrganizeActivityFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PastActivitiesFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+public class OrganizeActivityFragment extends Fragment {
+
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    private int _page;
     private String _title;
+    private int _page;
 
     private OnFragmentInteractionListener mListener;
 
-    public PastActivitiesFragment() {
+    public OrganizeActivityFragment() {
         // Required empty public constructor
     }
 
@@ -39,11 +38,11 @@ public class PastActivitiesFragment extends Fragment {
      *
      * @param page Parameter 1.
      * @param title Parameter 2.
-     * @return A new instance of fragment PastActivitiesFragment.
+     * @return A new instance of fragment OrganizeActivityFragment.
      */
-
-    public static PastActivitiesFragment newInstance(int page, String title) {
-        PastActivitiesFragment fragment = new PastActivitiesFragment();
+    // TODO: Rename and change types and number of parameters
+    public static OrganizeActivityFragment newInstance(int page, String title) {
+        OrganizeActivityFragment fragment = new OrganizeActivityFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_PARAM1, page);
         args.putString(ARG_PARAM2, title);
@@ -64,7 +63,7 @@ public class PastActivitiesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_past_activities, container, false);
+        return inflater.inflate(R.layout.fragment_organize_activity, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

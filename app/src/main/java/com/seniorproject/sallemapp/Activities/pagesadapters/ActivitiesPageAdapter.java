@@ -13,18 +13,19 @@ import com.seniorproject.sallemapp.Activities.SearchFriendsFragment;
 import com.seniorproject.sallemapp.Activities.UpcomingActivitiesFragment;
 
 /**
- * Created by abdul on 17-Feb-2017.
+ * Created by abdul on 18-Feb-2017.
  */
 
-public  class FriendsPageAdapter extends FragmentStatePagerAdapter {
+public class ActivitiesPageAdapter extends FragmentStatePagerAdapter {
     //FragmentManager _fm;
-    public FriendsPageAdapter(FragmentManager fm) {
+    public ActivitiesPageAdapter(FragmentManager fm) {
         super(fm);
-      //  this._fm = fm;
+        //  this._fm = fm;
     }
 
+
     private Fragment _currentFragment = null;
-    private static int NUM_ITEMS =4;
+    private static int NUM_ITEMS =3;
     @Override
     public int getCount(){
         return NUM_ITEMS;
@@ -32,20 +33,16 @@ public  class FriendsPageAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position){
 
-
         switch (position){
             case 0:
 
-                _currentFragment = FriendsFragment.newInstance(0, "Friends");
+                _currentFragment = UpcomingActivitiesFragment.newInstance(0,"Upcoming");
                 break;
             case 1:
-                _currentFragment= SearchFriendsFragment.newInstance(1, "Search");
+                _currentFragment = OrganizeActivityFragment.newInstance(1,"Organize");
                 break;
             case 2:
-                _currentFragment=  FriendRequestFragment.newInstance(2, "Requests");
-                break;
-            case 3:
-                _currentFragment = NearByFragment.newInstance(3, "NearBy");
+                _currentFragment = PastActivitiesFragment.newInstance(2,"Past");
                 break;
             default:
                 _currentFragment = null ;
@@ -57,26 +54,21 @@ public  class FriendsPageAdapter extends FragmentStatePagerAdapter {
     public CharSequence getPageTitle(int position) {
         CharSequence title = null;
         switch (position){
-
             case   0:
-                title = "Friends";
+                title = "Upcoming";
                 break;
             case 1:
-                title = "Search";
+                title = "Organize";
                 break;
             case 2:
-                title = "Requests";
+                title = "Past";
                 break;
-            case 3:
-                title = "NearBy";
-                break;
+
             default:
                 title = "Page " + position;
                 break;
         }
-
         return title;
 
     }
-
 }
