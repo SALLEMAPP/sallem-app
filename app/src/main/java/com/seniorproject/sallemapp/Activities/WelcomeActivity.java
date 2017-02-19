@@ -12,16 +12,29 @@ public class WelcomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
-        wireSigninButton();
+        attachSigninButton();
+        attachRegisterButton();
+
     }
 
-    private void wireSigninButton() {
+    private void attachRegisterButton() {
+        Button registerButton = (Button)findViewById(R.id.btn_register);
+        registerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent registerIntent = new Intent(WelcomeActivity.this, RegistrationActivity.class);
+                startActivity(registerIntent);
+            }
+        });
+    }
+
+    private void attachSigninButton() {
         Button signinButton = (Button)findViewById(R.id.btn_signin);
         signinButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent homeIntent = new Intent(WelcomeActivity.this, HomeActivity.class);
-                startActivity(homeIntent);
+                Intent signinIntent = new Intent(WelcomeActivity.this, SignInActivity.class);
+                startActivity(signinIntent);
             }
         });
     }

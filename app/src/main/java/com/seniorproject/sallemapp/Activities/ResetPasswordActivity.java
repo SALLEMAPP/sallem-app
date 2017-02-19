@@ -14,6 +14,18 @@ public class ResetPasswordActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reset_password);
+        attachResetButton();
 
+    }
+
+    private void attachResetButton() {
+        Button v = (Button)findViewById(R.id.Btn_Reset);
+        v.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent signinIntent = new Intent(ResetPasswordActivity.this, SignInActivity.class);
+                startActivity(signinIntent);
+            }
+        });
     }
 }

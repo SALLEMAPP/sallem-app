@@ -1,17 +1,40 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.seniorproject.sallemapp.Activities.FriendsFragment">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_marginTop="100dp"
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Friends fragment"
-        android:textSize="30sp"
+        tools:context="com.seniorproject.sallemapp.Activities.FriendsFragment">
 
-        />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/friends_search_bar"
+            android:weightSum="1">
 
-</FrameLayout>
+            <EditText
+                android:id="@+id/txt_search_friends"
+                android:layout_width="246dp"
+                android:layout_height="36dp"
+                android:background="@color/sallemGray"
+
+                android:layout_weight="1.00" />
+
+            <Button
+                android:id="@+id/btn_search_friends"
+                android:layout_width="137dp"
+                android:layout_height="wrap_content"
+
+                android:text="Search" />
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/android:list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_below="@+id/friends_search_bar"
+
+            android:layout_marginTop="50dp" />
+
+
+    </FrameLayout>

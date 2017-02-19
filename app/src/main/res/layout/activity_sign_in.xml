@@ -76,21 +76,6 @@
         android:layout_alignLeft="@+id/txt_user_name"
         android:layout_alignStart="@+id/txt_user_name" />
 
-    <TextView
-        android:text="@string/forgot_password_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="31dp"
-        android:id="@+id/lbl_forgot_password"
-        android:textStyle="normal|italic"
-        android:fontFamily="serif"
-        android:typeface="serif"
-        tools:targetApi="jelly_bean"
-        android:layout_below="@+id/Btn_Sign_in"
-        android:layout_alignLeft="@+id/Btn_Sign_in"
-        android:layout_alignStart="@+id/Btn_Sign_in"
-        />
-
     <Button
         android:text="@string/signin_label"
         android:layout_marginTop="53dp"
@@ -103,6 +88,32 @@
         android:layout_below="@+id/lbl_password"
         android:layout_alignLeft="@+id/txt_password"
         android:layout_alignStart="@+id/txt_password" />
+
+    <TextView
+        android:text="@string/forgot_password_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="33dp"
+        android:id="@+id/lbl_forgot_password"
+        android:textStyle="normal|italic"
+        android:fontFamily="serif"
+        android:typeface="serif"
+        tools:targetApi="jelly_bean"
+        android:layout_below="@+id/Btn_Sign_in"
+        android:layout_toRightOf="@+id/lbl_password"
+        android:layout_toEndOf="@+id/lbl_password" />
+
+    <Button
+        android:text="Reset"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_reset_link"
+        android:layout_alignBaseline="@+id/lbl_forgot_password"
+        android:layout_alignBottom="@+id/lbl_forgot_password"
+        android:layout_toRightOf="@+id/lbl_forgot_password"
+        android:layout_toEndOf="@+id/lbl_forgot_password"
+        android:layout_marginLeft="13dp"
+        android:layout_marginStart="13dp" />
 
 
 </RelativeLayout>

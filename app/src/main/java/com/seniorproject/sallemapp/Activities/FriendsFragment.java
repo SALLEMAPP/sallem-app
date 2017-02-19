@@ -1,14 +1,25 @@
 package com.seniorproject.sallemapp.Activities;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 
+import com.google.android.gms.common.api.Api;
+import com.seniorproject.sallemapp.Activities.entities.User;
+import com.seniorproject.sallemapp.Activities.listsadpaters.FriendsListAdapter;
 import com.seniorproject.sallemapp.R;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -18,7 +29,7 @@ import com.seniorproject.sallemapp.R;
  * Use the {@link FriendsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FriendsFragment extends Fragment {
+public class FriendsFragment extends ListFragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -27,6 +38,9 @@ public class FriendsFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String _title;
     private int _page;
+    private FriendsListAdapter _adpater= null;
+    private View _currentView;
+    ArrayList<User> _friendsList = new ArrayList<User>();
 
     private OnFragmentInteractionListener mListener;
 
@@ -64,9 +78,80 @@ public class FriendsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return   inflater.inflate(R.layout.fragment_friends, container, false);
+        _currentView =    inflater.inflate(R.layout.fragment_friends, container, false);
+        attachList();
+        attachSearchButton();
+        return _currentView;
 
     }
+
+    private void attachSearchButton() {
+        Button b = (Button) _currentView.findViewById(R.id.btn_search_friends);
+        b.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText searchText = (EditText)_currentView.findViewById(R.id.txt_search_friends);
+                String searchTerm = searchText.getText().toString();
+                searchFriends(searchTerm);
+            }
+        });
+
+    }
+    private void searchFriends(final String term){
+    ArrayList<User> s = new ArrayList<>();
+        for(int i = 0; i < _friendsList.size(); i++){
+        boolean b = _friendsList.get(i).getLastName().toLowerCase().contains(term);
+        boolean n = _friendsList.get(i).getFirstName().toLowerCase().contains(term);
+            if(b || n){
+                s.add(_friendsList.get(i));
+            }
+    }
+        _adpater = new FriendsListAdapter(this.getContext(), s);
+        setListAdapter(_adpater);
+    }
+
+    private void attachList() {
+        _friendsList = dummyData();
+        _adpater = new FriendsListAdapter(this.getContext(), _friendsList);
+        setListAdapter(_adpater);
+
+
+    }
+    private ArrayList<User> dummyData(){
+        ArrayList r = new ArrayList<User>();
+        User s = new User();
+        s.setId(1);
+        s.setFirstName("Amr");
+        s.setLastName("Zaid");
+        r.add(s);s = new User();
+        s.setId(2);
+        s.setFirstName("Ali");
+        s.setLastName("Ahmed");
+        r.add(s);
+        s = new User();
+        s.setId(3);
+        s.setFirstName("Khalid");
+        s.setLastName("Omar");
+        r.add(s);
+        s = new User();
+        s.setId(4);
+        s.setFirstName("Saeed");
+        s.setLastName("Saleh");
+        r.add(s);
+        s = new User();
+
+        s.setId(5);
+        s.setFirstName("Muhammad");
+        s.setLastName("Yousf");
+        r.add(s);
+        //Bitmap b = BitmapFactory.decodeResource(getResources(), R.drawable.ic_me_24px);
+        //s.setAvatar(b);
+
+
+        return r;
+
+    }
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -84,6 +169,7 @@ public class FriendsFragment extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+
     }
 
     @Override
