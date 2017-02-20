@@ -2,11 +2,10 @@ package com.seniorproject.sallemapp.Activities;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -20,8 +19,14 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 
+import com.seniorproject.sallemapp.Activities.pagesadapters.ActivitiesPageAdapter;
 import com.seniorproject.sallemapp.Activities.pagesadapters.FriendsPageAdapter;
+import com.seniorproject.sallemapp.Activities.pagesadapters.HomePageAdater;
+import com.seniorproject.sallemapp.Activities.pagesadapters.NearbyPageAdapter;
+import com.seniorproject.sallemapp.Activities.pagesadapters.NotificationPageAdapter;
+import com.seniorproject.sallemapp.Activities.pagesadapters.SettingsPageAdapter;
 import com.seniorproject.sallemapp.R;
+
 
 public class HomeActivity extends AppCompatActivity
         implements
@@ -29,17 +34,22 @@ public class HomeActivity extends AppCompatActivity
         FriendsFragment.OnFragmentInteractionListener,
         SearchFriendsFragment.OnFragmentInteractionListener,
         FriendRequestFragment.OnFragmentInteractionListener,
-        NearByFragment.OnFragmentInteractionListener
+        NearByFragment.OnFragmentInteractionListener,
+        PostsFragment.OnFragmentInteractionListener,
+        SettingsFragment.OnFragmentInteractionListener,
+        NotificationFragment.OnFragmentInteractionListener,
+        UpcomingActivitiesFragment.OnFragmentInteractionListener,
+        OrganizeActivityFragment.OnFragmentInteractionListener,
+        PastActivitiesFragment.OnFragmentInteractionListener
 
 {
-    FragmentPagerAdapter adapterViewPager;
+    FragmentStatePagerAdapter adapterViewPager;
+    ViewPager myViewPager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-//        ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
-//        adapterViewPager = new FriendsPageAdpater(getSupportFragmentManager());
-//        viewPager.setAdapter(adapterViewPager);
+        myViewPager = (ViewPager)findViewById(R.id.viewPager);
 
 
 
@@ -64,6 +74,10 @@ public class HomeActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        //Simulate click on home menu item to make the one that loaded when the activity first loaded.
+        MenuItem m =  navigationView.getMenu().getItem(0);
+        onNavigationItemSelected(m);
+
         //Update navigation header to contains user information
         View v = navigationView.getHeaderView(0);
         TextView t =(TextView) v.findViewById(R.id.textView);
@@ -101,7 +115,7 @@ public class HomeActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
-
+    ViewPager viewPager = null;
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -109,23 +123,35 @@ public class HomeActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_home) {
-            // Handle the camera action
+
+            adapterViewPager = new HomePageAdater(getSupportFragmentManager());
+            myViewPager.setAdapter(adapterViewPager);
+
         } else if (id == R.id.nav_friends) {
 
-            ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
-            adapterViewPager = new FriendsPageAdapter(getSupportFragmentManager()){};
-            viewPager.setAdapter(adapterViewPager);
+            adapterViewPager = new FriendsPageAdapter(getSupportFragmentManager());
+            myViewPager.setAdapter(adapterViewPager);
 
         } else if (id == R.id.nav_near_friends) {
+            adapterViewPager = new NearbyPageAdapter(getSupportFragmentManager());
+            myViewPager.setAdapter(adapterViewPager);
 
         } else if (id == R.id.nav_activities) {
 
+            adapterViewPager = new ActivitiesPageAdapter(getSupportFragmentManager());
+            myViewPager.setAdapter(adapterViewPager);
+
+
         } else if (id == R.id.nav_notifications) {
+
+            adapterViewPager = new NotificationPageAdapter(getSupportFragmentManager());
+            myViewPager.setAdapter(adapterViewPager);
 
         } else if (id == R.id.nav_settings) {
 
+            adapterViewPager = new SettingsPageAdapter(getSupportFragmentManager());
+            myViewPager.setAdapter(adapterViewPager);
         }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
