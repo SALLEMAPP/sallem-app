@@ -29,7 +29,6 @@
     <string name="action_settings">Settings</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_settings">Settings</string>
     <string name="allow_location_setting_label">Allow Location Discovery</string>
     <string name="serach_distance_settings_label">Search distance</string>
