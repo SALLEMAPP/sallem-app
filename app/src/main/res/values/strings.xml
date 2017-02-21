@@ -8,10 +8,12 @@
     <string name="password_label">Password </string>
     <string name="confirm_password_label">Confirm Password </string>
 
+<!-- Adding link to "Forgot Password Label" -->
+
     <string name="forgot_password_label">
     <a href="r">Forgot your Password ?</a>
-
     </string>
+
     <string name="reset_label">Reset </string>
     <string name="email_label">Email </string>
     <string name="first_name_label">First Name  </string>
