@@ -1,6 +1,8 @@
 package com.seniorproject.sallemapp.Activities;
 
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
@@ -9,6 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.seniorproject.sallemapp.R;
+import com.seniorproject.sallemapp.entities.User;
 
 public class SignInActivity extends AppCompatActivity {
 
@@ -52,6 +55,17 @@ public class SignInActivity extends AppCompatActivity {
         signinButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                User current = new User();
+                current.setFirstName("Abdullah");
+                current.setLastName("BaMusa");
+                String uri = "drawable/icon";
+                int imageResource = getResources().getIdentifier(uri, null, getPackageName());
+                Drawable avatar = getResources().getDrawable(imageResource);
+
+                //current.setAvatar(avatar.);
+                //set current to be the global user.
+                User.CURRENT_USER = current;
+
                 Intent signinIntent = new Intent(SignInActivity.this, HomeActivity.class);
                 startActivity(signinIntent);
             }

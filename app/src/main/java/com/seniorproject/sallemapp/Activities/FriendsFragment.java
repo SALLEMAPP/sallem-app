@@ -1,9 +1,6 @@
 package com.seniorproject.sallemapp.Activities;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,8 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.google.android.gms.common.api.Api;
-import com.seniorproject.sallemapp.Activities.entities.User;
+import com.seniorproject.sallemapp.entities.User;
 import com.seniorproject.sallemapp.Activities.listsadpaters.FriendsListAdapter;
 import com.seniorproject.sallemapp.R;
 

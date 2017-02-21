@@ -1,4 +1,4 @@
-package com.seniorproject.sallemapp.Activities.entities;
+package com.seniorproject.sallemapp.entities;
 
 import android.graphics.Bitmap;
 
@@ -72,7 +72,7 @@ public class User {
     private Bitmap _avatar;
     private UserStatus _status;
 
-
+    public  static User CURRENT_USER = null;
 
     private String encryptPassword(String password){
        return null;
@@ -80,4 +80,5 @@ public class User {
     private String decryptPassword(String password){
         return null;
     }
+
 }

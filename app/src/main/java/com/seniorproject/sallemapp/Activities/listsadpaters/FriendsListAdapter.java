@@ -5,11 +5,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.seniorproject.sallemapp.Activities.entities.User;
+import com.seniorproject.sallemapp.entities.User;
 import com.seniorproject.sallemapp.R;
 
 import java.util.ArrayList;
