@@ -20,7 +20,22 @@ public class SignInActivity extends AppCompatActivity {
         attachResetButton();
     }
 
+
+
     private void attachResetButton() {
+
+        TextView forget = (TextView)findViewById(R.id.lbl_forgot_password);
+        forget.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //frgt is the name of intent that will be used to link between sign in activity and reset password activity
+
+                Intent frgt = new Intent(SignInActivity.this, ResetPasswordActivity.class);
+                startActivity(frgt);
+            }
+        });
+    }
+    /*private void attachResetButton() {
         Button resetButton = (Button)findViewById(R.id.btn_reset_link);
         resetButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -30,7 +45,7 @@ public class SignInActivity extends AppCompatActivity {
             }
         });
 
-    }
+    }*/
 
     private void attachSigninButton() {
         Button signinButton = (Button)findViewById(R.id.Btn_Sign_in);
