@@ -31,7 +31,7 @@
         android:id="@+id/lbl_poster_user_name"
         android:fontFamily="serif"
         android:typeface="serif"
-        android:textSize="17sp"
+        android:textSize="19sp"
         android:textColor="@android:color/background_dark"
         tools:targetApi="jelly_bean" />
 
@@ -85,8 +85,8 @@
         android:textStyle="normal|italic"
         android:fontFamily="serif"
         android:typeface="serif"
-        tools:targetApi="jelly_bean"
         android:textColorLink="@color/colorPrimaryDark"
+        tools:targetApi="jelly_bean"
         android:layout_below="@+id/Btn_Sign_in"
         android:layout_toRightOf="@+id/lbl_password"
         android:layout_toEndOf="@+id/lbl_password" />
