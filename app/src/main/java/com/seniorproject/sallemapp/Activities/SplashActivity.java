@@ -24,24 +24,7 @@ public class SplashActivity extends AppCompatActivity {
                 finish();
             }
         }, SPLASH_TIME);
-        mClient = new MobileServiceClient(
-                "https://sallem.azurewebsites.net",
-                this
-        );
-        TodoItem item = new TodoItem();
-        item.Text = "Awesome item";
-        mClient.getTable(TodoItem.class).insert(item, new TableOperationCallback<item>() {
-            public void onCompleted(TodoItem entity, Exception exception, ServiceFilterResponse response) {
-                if (exception == null) {
-                    // Insert succeeded
-                } else {
-                    // Insert failed
-                }
-            }
-        });
+
     }
-    public class TodoItem {
-        public String Id;
-        public String Text;
-    }
+
 }
