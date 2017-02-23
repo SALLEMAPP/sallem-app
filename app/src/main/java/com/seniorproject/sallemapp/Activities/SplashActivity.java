@@ -5,7 +5,10 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import com.seniorproject.sallemapp.R;
+import com.microsoft.windowsazure.mobileservices.*;
 public class SplashActivity extends AppCompatActivity {
+    private MobileServiceClient mClient;
+
 
     //Time period for splash window
     private static int SPLASH_TIME = 1000;
@@ -21,5 +24,7 @@ public class SplashActivity extends AppCompatActivity {
                 finish();
             }
         }, SPLASH_TIME);
+
     }
+
 }

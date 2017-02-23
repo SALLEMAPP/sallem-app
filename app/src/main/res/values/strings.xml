@@ -1,14 +1,19 @@
 <resources>
     <string name="app_name">SallemApp</string>
     <string name="app_vision">Bring friends together</string>
-    <string name="loading_msg">LOADING...</string>
+    <string name="loading_msg">LOADING…</string>
     <string name="signin_label">Sign in</string>
     <string name="register_label">Register</string>
     <string name="user_name_label">User Name </string>
     <string name="password_label">Password </string>
     <string name="confirm_password_label">Confirm Password </string>
 
-    <string name="forgot_password_label">Forgot your Password ? </string>
+   <!-- Adding link to "Forgot Password Label" -->
+
+    <string name="forgot_password_label">
+    <a href="r">Forgot your Password ?</a>
+    </string>
+
     <string name="reset_label">Reset </string>
     <string name="email_label">Email </string>
     <string name="first_name_label">First Name  </string>

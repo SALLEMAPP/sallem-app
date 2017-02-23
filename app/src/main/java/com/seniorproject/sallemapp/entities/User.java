@@ -1,6 +1,8 @@
-package com.seniorproject.sallemapp.Activities.entities;
+package com.seniorproject.sallemapp.entities;
 
 import android.graphics.Bitmap;
+
+import org.joda.time.DateTime;
 
 /**
  * Created by abdul on 19-Feb-2017.
@@ -63,16 +65,33 @@ public class User {
         this._status = _status;
     }
 
+    public DateTime getJoinedAt() {
+        return _joinedAt;
+    }
+
+    public void setJoinedAt(DateTime joinedAt) {
+        _joinedAt = joinedAt;
+    }
+
     public enum UserStatus{ONLINE, BUSY, OFFLINE}
+    @com.google.gson.annotations.SerializedName("id")
     private int _id;
+    @com.google.gson.annotations.SerializedName("firstname")
     private String _firstName;
+    @com.google.gson.annotations.SerializedName("lastname")
     private String _lastName;
+    @com.google.gson.annotations.SerializedName("password")
     private String _password;
+    @com.google.gson.annotations.SerializedName("email")
     private String _email;
+    @com.google.gson.annotations.SerializedName("avatar")
     private Bitmap _avatar;
+    @com.google.gson.annotations.SerializedName("joinedat")
+    private DateTime _joinedAt;
+    @com.google.gson.annotations.SerializedName("status")
     private UserStatus _status;
 
-
+    public  static User CURRENT_USER = null;
 
     private String encryptPassword(String password){
        return null;
@@ -80,4 +99,5 @@ public class User {
     private String decryptPassword(String password){
         return null;
     }
+
 }
