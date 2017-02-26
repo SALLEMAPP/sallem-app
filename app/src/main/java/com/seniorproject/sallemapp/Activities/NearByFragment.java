@@ -1,21 +1,25 @@
 package com.seniorproject.sallemapp.Activities;
 
 import android.content.Context;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-
-import android.support.v4.app.FragmentActivity;
-
 import com.seniorproject.sallemapp.R;
 
 /**
@@ -26,7 +30,11 @@ import com.seniorproject.sallemapp.R;
  * Use the {@link NearByFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class NearByFragment extends Fragment {
+public class NearByFragment extends FragmentActivity  implements OnMapReadyCallback,
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,
+        LocationListener
+    {
 
     // ---- START ---- added by Fisal from original Google latest source: https://developers.google.com/maps/documentation/android-api/start#next_steps  -------
 
@@ -87,10 +95,10 @@ public class NearByFragment extends Fragment {
         return fragment;
     }
 
-    @Override
+/*    @Override
 
     //comment by Fisal
-/*    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             _page = getArguments().getInt(ARG_PARAM1);
@@ -99,7 +107,7 @@ public class NearByFragment extends Fragment {
     }
 */
 
-    @Override
+ //   @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -113,7 +121,7 @@ public class NearByFragment extends Fragment {
         }
     }
 
-    @Override
+ //   @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
@@ -124,13 +132,33 @@ public class NearByFragment extends Fragment {
         }
     }
 
-    @Override
+ //   @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
     }
 
-    /**
+        @Override
+        public void onConnected(@Nullable Bundle bundle) {
+
+        }
+
+        @Override
+        public void onConnectionSuspended(int i) {
+
+        }
+
+        @Override
+        public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+        }
+
+        @Override
+        public void onLocationChanged(Location location) {
+            
+        }
+
+        /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
