@@ -155,7 +155,7 @@ public class NearByFragment extends FragmentActivity  implements OnMapReadyCallb
 
         @Override
         public void onLocationChanged(Location location) {
-            
+
         }
 
         /**
