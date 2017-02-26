@@ -42,5 +42,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'joda-time:joda-time:2.9.7'
     compile 'com.microsoft.azure:azure-mobile-android:3.1.0'
+    compile 'com.google.maps:google-maps-services:0.1.17'
+    compile 'com.google.android.gms:play-services:10.2.0'
     compile 'com.microsoft.azure.android:azure-storage-android:1.0.0@aar'
 }
