@@ -8,6 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import android.support.v4.app.FragmentActivity;
+
 import com.seniorproject.sallemapp.R;
 
 /**
@@ -19,6 +27,33 @@ import com.seniorproject.sallemapp.R;
  * create an instance of this fragment.
  */
 public class NearByFragment extends Fragment {
+
+    // ---- START ---- added by Fisal from original Google latest source: https://developers.google.com/maps/documentation/android-api/start#next_steps  -------
+
+    private GoogleMap mMap;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.fragment_near_by);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+
+        // Add a marker in Sydney, Australia, and move the camera.
+        LatLng sydney = new LatLng(-34, 151);
+        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+    }
+
+    // ---- END ---- added by Fisal
+
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -53,13 +88,16 @@ public class NearByFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+
+    //comment by Fisal
+/*    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             _page = getArguments().getInt(ARG_PARAM1);
             _title = getArguments().getString(ARG_PARAM2);
         }
     }
+*/
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
