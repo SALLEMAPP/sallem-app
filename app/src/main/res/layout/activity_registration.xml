@@ -24,6 +24,26 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/txt_first_name"
+        android:background="@color/sallemGray"
+        tools:targetApi="cupcake"
+        android:layout_alignBaseline="@+id/lbl_first_name"
+        android:layout_alignBottom="@+id/lbl_first_name"
+        android:layout_toRightOf="@+id/lbl_confirm_password"
+        android:layout_toEndOf="@+id/lbl_confirm_password">
+        <requestFocus
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/txt_first_name"
+            android:layout_centerHorizontal="true" />
+    </EditText>
+
     <TextView
         android:text="@string/last_name_label"
         android:layout_width="wrap_content"
@@ -35,6 +55,20 @@
         android:layout_alignRight="@+id/lbl_first_name"
         android:layout_alignEnd="@+id/lbl_first_name"
         android:textSize="18sp" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/txt_last_name"
+        android:background="@color/sallemGray"
+        android:layout_alignBaseline="@+id/lbl_last_name"
+        android:layout_alignBottom="@+id/lbl_last_name"
+        android:layout_alignLeft="@+id/txt_first_name"
+        android:layout_alignStart="@+id/txt_first_name"
+        tools:targetApi="cupcake" />
+
     <TextView
         android:text="@string/email_label"
         android:layout_width="wrap_content"
@@ -47,6 +81,18 @@
         tools:ignore="HardcodedText"
         android:textSize="18sp"
         android:textColor="@android:color/background_dark" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:ems="10"
+        android:layout_above="@+id/lbl_password"
+        android:layout_alignRight="@+id/txt_last_name"
+        android:layout_alignEnd="@+id/txt_last_name"
+        android:id="@+id/txt_email"
+        android:background="@color/sallemGray"
+        tools:targetApi="cupcake" />
 
     <TextView
         android:text="@string/password_label"
@@ -64,31 +110,6 @@
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:id="@+id/txt_last_name"
-        android:background="@color/sallemGray"
-        android:layout_alignBaseline="@+id/lbl_last_name"
-        android:layout_alignBottom="@+id/lbl_last_name"
-        android:layout_alignLeft="@+id/txt_first_name"
-        android:layout_alignStart="@+id/txt_first_name"
-        tools:targetApi="cupcake" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textEmailAddress"
-        android:ems="10"
-        android:layout_above="@+id/lbl_password"
-        android:layout_alignRight="@+id/txt_last_name"
-        android:layout_alignEnd="@+id/txt_last_name"
-        android:id="@+id/txt_email"
-        android:background="@color/sallemGray"
-        tools:targetApi="cupcake" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:inputType="textPassword"
         android:ems="10"
         android:id="@+id/editText4"
@@ -97,17 +118,6 @@
         android:layout_alignLeft="@+id/txt_email"
         android:layout_alignStart="@+id/txt_email"
         android:background="@color/sallemGray" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPassword"
-        android:ems="10"
-        android:id="@+id/editText5"
-        android:background="@color/sallemGray"
-        android:layout_alignBottom="@+id/lbl_confirm_password"
-        android:layout_alignLeft="@+id/editText4"
-        android:layout_alignStart="@+id/editText4" />
 
     <TextView
         android:text="@string/confirm_password_label"
@@ -143,7 +153,9 @@
         android:layout_alignLeft="@+id/lbl_email"
         android:layout_alignStart="@+id/lbl_email"
         android:textSize="12sp"
-        tools:ignore="HardcodedText" />
+        tools:ignore="HardcodedText"
+        android:visibility="gone"
+        />
 
     <Button
         android:text="@string/register_label"
@@ -171,15 +183,22 @@
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="textPersonName"
+        android:inputType="textPassword"
         android:ems="10"
-        android:id="@+id/txt_first_name"
+        android:id="@+id/editText5"
         android:background="@color/sallemGray"
-        tools:targetApi="cupcake"
-        android:layout_alignBaseline="@+id/lbl_first_name"
-        android:layout_alignBottom="@+id/lbl_first_name"
+        android:layout_alignBottom="@+id/lbl_confirm_password"
         android:layout_toRightOf="@+id/lbl_confirm_password"
         android:layout_toEndOf="@+id/lbl_confirm_password" />
+
+    <ProgressBar
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/regist_saving_progress"
+        android:layout_alignBottom="@+id/Btn_resgisteration"
+        android:layout_alignRight="@+id/editText5"
+        android:layout_alignEnd="@+id/editText5" />
 
 
 </RelativeLayout>

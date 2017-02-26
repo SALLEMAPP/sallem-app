@@ -18,6 +18,15 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    defaultConfig{
+        jackOptions{
+            enabled=true
+        }
+    }
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
+    }
 }
 
 dependencies {
@@ -33,4 +42,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'joda-time:joda-time:2.9.7'
     compile 'com.microsoft.azure:azure-mobile-android:3.1.0'
+    compile 'com.microsoft.azure.android:azure-storage-android:1.0.0@aar'
 }

@@ -16,6 +16,7 @@ import com.seniorproject.sallemapp.Activities.listsadpaters.FriendsListAdapter;
 import com.seniorproject.sallemapp.R;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -116,27 +117,27 @@ public class FriendsFragment extends ListFragment {
     private ArrayList<User> dummyData(){
         ArrayList r = new ArrayList<User>();
         User s = new User();
-        s.setId(1);
+        s.setId(UUID.randomUUID());
         s.setFirstName("Amr");
         s.setLastName("Zaid");
         r.add(s);s = new User();
-        s.setId(2);
+        s.setId(UUID.randomUUID());
         s.setFirstName("Ali");
         s.setLastName("Ahmed");
         r.add(s);
         s = new User();
-        s.setId(3);
+        s.setId(UUID.randomUUID());
         s.setFirstName("Khalid");
         s.setLastName("Omar");
         r.add(s);
         s = new User();
-        s.setId(4);
+        s.setId(UUID.randomUUID());
         s.setFirstName("Saeed");
         s.setLastName("Saleh");
         r.add(s);
         s = new User();
 
-        s.setId(5);
+        s.setId(UUID.randomUUID());
         s.setFirstName("Muhammad");
         s.setLastName("Yousf");
         r.add(s);
