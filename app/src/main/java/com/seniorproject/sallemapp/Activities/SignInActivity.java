@@ -101,7 +101,7 @@ public class SignInActivity extends AppCompatActivity {
         });
 
     }
-    private void  findUser(String email) throws IllegalStateException {
+    private void  findUser(final String email) throws IllegalStateException {
 //        java.util.List<android.util.Pair<java.lang.String,java.lang.String>> parameters = new ArrayList<>();
 //        parameters.add(new android.util.Pair<String, String>("email", email));
 //
