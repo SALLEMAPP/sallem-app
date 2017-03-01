@@ -1,6 +1,7 @@
 package com.seniorproject.sallemapp.Activities.listsadpaters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.seniorproject.sallemapp.Activities.AddEventActivity;
 import com.seniorproject.sallemapp.Activities.dbhelpers.DbContext;
 import com.seniorproject.sallemapp.entities.Post;
 import com.seniorproject.sallemapp.R;
@@ -75,8 +77,25 @@ public class PostsListAdapter  extends ArrayAdapter<Post> {
 
         posDate.setText(now.toDateTime().toString());
         postSubject.setText(post.getContent());
+        commentsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                attachButtonEvent(v);
+            }
+        });
 
 
 
+    }
+    private void attachButtonEvent(View v) {
+
+        Button b = (Button)v.findViewById(R.id.post_layout_btn_comments);
+        b.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(v.getContext(), AddEventActivity.class);
+                v.getContext().startActivity(i);
+            }
+        });
     }
 }

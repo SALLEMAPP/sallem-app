@@ -71,6 +71,7 @@ public class PostsFragment extends ListFragment {
             _page = getArguments().getInt(ARG_PARAM1);
             _title = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override
@@ -79,21 +80,11 @@ public class PostsFragment extends ListFragment {
         // Inflate the layout for this fragment
         _currentView  = inflater.inflate(R.layout.fragment_posts, container, false);
         attachList();
-        attachButtonEvent();
+
         return _currentView;
     }
 
-    private void attachButtonEvent() {
 
-        Button b = (Button)_currentView.findViewById(R.id.post_layout_btn_comments);
-        b.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(_currentView.getContext(), AddEventActivity.class);
-                startActivity(i);
-            }
-        });
-    }
 
     private void attachList() {
         _friendsList = dummyData();
