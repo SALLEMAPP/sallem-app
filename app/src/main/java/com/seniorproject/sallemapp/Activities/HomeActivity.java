@@ -16,8 +16,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
 
+import android.widget.TextView;
+import android.support.design.widget.TabLayout;
 
 import com.seniorproject.sallemapp.Activities.pagesadapters.ActivitiesPageAdapter;
 import com.seniorproject.sallemapp.Activities.pagesadapters.FriendsPageAdapter;
@@ -50,7 +51,8 @@ public class HomeActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         myViewPager = (ViewPager)findViewById(R.id.viewPager);
-
+        TabLayout  tableLayout = (TabLayout) findViewById(R.id.sliding_tabs);
+        tableLayout.setupWithViewPager(myViewPager);
 
 
 
@@ -139,6 +141,9 @@ public class HomeActivity extends AppCompatActivity
         } else if (id == R.id.nav_activities) {
 
             adapterViewPager = new ActivitiesPageAdapter(getSupportFragmentManager());
+            //myViewPager.setOffscreenPageLimit(3);
+
+
             myViewPager.setAdapter(adapterViewPager);
 
 

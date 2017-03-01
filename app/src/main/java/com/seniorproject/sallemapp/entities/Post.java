@@ -7,25 +7,27 @@ import org.joda.time.DateTime;
  */
 
 public class Post {
-    private int _postId;
-    private DateTime _postedAt;
+    private String _postId;
+    private String _postedAt;
     private String _content;
     private int _userId;
     private int _activityId;
+    private User _user;
+    private Activity _activity;
 
-    public int getPostId() {
+    public String getPostId() {
         return _postId;
     }
 
-    public void setPostId(int postId) {
+    public void setPostId(String postId) {
         _postId = postId;
     }
 
-    public DateTime getPostedAt() {
+    public String getPostedAt() {
         return _postedAt;
     }
 
-    public void setPostedAt(DateTime postedAt) {
+    public void setPostedAt(String postedAt) {
         _postedAt = postedAt;
     }
 
@@ -51,5 +53,22 @@ public class Post {
 
     public void setActivityId(int activityId) {
         _activityId = activityId;
+    }
+
+
+    public User getUser() {
+        return _user;
+    }
+
+    public void setUser(User _user) {
+        this._user = _user;
+    }
+
+    public Activity get_activity() {
+        return _activity;
+    }
+
+    public void set_activity(Activity _activity) {
+        this._activity = _activity;
     }
 }

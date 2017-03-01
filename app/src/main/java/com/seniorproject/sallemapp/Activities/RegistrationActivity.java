@@ -110,7 +110,7 @@ public class RegistrationActivity extends AppCompatActivity {
         String joinedAt = new LocalDateTime().toString();
         //Byte[] photo = null;
         User user = new User();
-        user.setId(UUID.randomUUID());
+        user.setId(UUID.randomUUID().toString());
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setPassword(password);
@@ -206,7 +206,7 @@ public class RegistrationActivity extends AppCompatActivity {
         return s;
     }
 
-    private AsyncTask<Void,Void,Void> addUserToDb(User user) {
+    private AsyncTask<Void,Void,Void> addUserToDb(final User user) {
 
 
         AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {

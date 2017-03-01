@@ -11,6 +11,12 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+        multiDexEnabled = true
+        dexOptions{
+            maxProcessCount = 2
+            javaMaxHeapSize = "4g"
+        }
+
     }
     buildTypes {
         release {
@@ -22,6 +28,8 @@ android {
         jackOptions{
             enabled=true
         }
+
+
     }
     compileOptions {
         targetCompatibility 1.8
@@ -34,15 +42,14 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.1.1'
-    compile 'com.android.support:design:25.1.1'
-    compile 'com.android.support:support-v4:25.1.1'
-    compile 'com.android.support:support-vector-drawable:25.1.1'
-    compile 'com.google.android.gms:play-services-maps:10.2.0'
-    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:25.2.0'
+    compile 'com.android.support:design:25.2.0'
+    //compile 'com.android.support:support-v4:25.2.0'
+    //compile 'com.android.support:support-vector-drawable:25.2.0'
     compile 'joda-time:joda-time:2.9.7'
     compile 'com.microsoft.azure:azure-mobile-android:3.1.0'
     compile 'com.google.maps:google-maps-services:0.1.17'
-    compile 'com.google.android.gms:play-services:10.2.0'
     compile 'com.microsoft.azure.android:azure-storage-android:1.0.0@aar'
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:multidex:1.0.1'
 }
