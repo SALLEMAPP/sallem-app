@@ -8,7 +8,7 @@
     <string name="password_label">Password </string>
     <string name="confirm_password_label">Confirm Password </string>
 
-   <!-- Adding link to "Forgot Password Label" -->
+    <!-- Adding link to "Forgot Password Label" -->
 
     <string name="forgot_password_label">
     <a href="r">Forgot your Password ?</a>
@@ -55,6 +55,7 @@
         <item>Busy</item>
         <item>Offline</item>
     </string-array>
+    <string name="title_activity_maps">Map</string>
 
     <!-- Example settings for Data & Sync -->
 

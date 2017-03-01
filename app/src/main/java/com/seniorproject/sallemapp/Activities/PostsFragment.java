@@ -1,6 +1,7 @@
 package com.seniorproject.sallemapp.Activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,6 +9,7 @@ import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.seniorproject.sallemapp.Activities.listsadpaters.FriendsListAdapter;
 import com.seniorproject.sallemapp.Activities.listsadpaters.PostsListAdapter;
@@ -77,7 +79,20 @@ public class PostsFragment extends ListFragment {
         // Inflate the layout for this fragment
         _currentView  = inflater.inflate(R.layout.fragment_posts, container, false);
         attachList();
+        attachButtonEvent();
         return _currentView;
+    }
+
+    private void attachButtonEvent() {
+
+        Button b = (Button)_currentView.findViewById(R.id.post_layout_btn_comments);
+        b.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(_currentView.getContext(), AddEventActivity.class);
+                startActivity(i);
+            }
+        });
     }
 
     private void attachList() {
