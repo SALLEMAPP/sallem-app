@@ -4,15 +4,20 @@
     android:layout_height="match_parent"
     tools:context="com.seniorproject.sallemapp.Activities.NotificationFragment">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:text="Click"
-        android:layout_marginTop="100dp" />
-    <ListView
+
+
+
+    <!-- TODO: Update blank fragment layout -->
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/list_notifications"
-        android:dividerHeight="2dp"
-        android:layout_marginTop="100dp" />
+        android:layout_marginTop="100dp">
+
+        <ListView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/list_notification"
+                android:dividerHeight="2dp"/>
+    </RelativeLayout>
+
 </FrameLayout>

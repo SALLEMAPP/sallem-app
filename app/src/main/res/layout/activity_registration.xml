@@ -11,11 +11,17 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.seniorproject.sallemapp.Activities.RegistrationActivity">
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/logo"
+        android:id="@+id/imageView4"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="31dp"
         android:id="@+id/lbl_first_name"
         android:text="@string/first_name_label"
         android:textColor="@android:color/background_dark"
@@ -23,44 +29,29 @@
         android:layout_below="@+id/imageView4"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+    <EditText
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:inputType="textPersonName"
+    android:ems="10"
+    android:id="@+id/txt_first_name"
+    android:background="@color/sallemGray"
+    android:layout_alignBaseline="@+id/lbl_first_name"
+    android:layout_alignBottom="@+id/lbl_first_name"
+    android:layout_alignParentRight="true"
+    android:layout_alignParentEnd="true" />
 
     <TextView
-        android:text="@string/last_name_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="20dp"
         android:id="@+id/lbl_last_name"
+        android:text="@string/last_name_label"
         android:textColor="@android:color/background_dark"
+        android:textSize="18sp"
         android:layout_below="@+id/lbl_first_name"
-        android:layout_alignRight="@+id/lbl_first_name"
-        android:layout_alignEnd="@+id/lbl_first_name"
-        android:textSize="18sp" />
-    <TextView
-        android:text="@string/email_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/lbl_last_name"
-        android:layout_alignLeft="@+id/lbl_last_name"
-        android:layout_alignStart="@+id/lbl_last_name"
-        android:layout_marginTop="24dp"
-        android:id="@+id/lbl_email"
-        tools:ignore="HardcodedText"
-        android:textSize="18sp"
-        android:textColor="@android:color/background_dark" />
-
-    <TextView
-        android:text="@string/password_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:id="@+id/lbl_password"
-        tools:ignore="HardcodedText"
-        android:textSize="18sp"
-        android:textColor="@android:color/background_dark"
-        android:layout_below="@+id/lbl_email"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
-
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -72,8 +63,20 @@
         android:layout_alignBottom="@+id/lbl_last_name"
         android:layout_alignLeft="@+id/txt_first_name"
         android:layout_alignStart="@+id/txt_first_name"
-        tools:targetApi="cupcake" />
+        android:layout_marginTop="10dp" />
 
+    <TextView
+        android:text="@string/email_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/lbl_last_name"
+        android:layout_alignLeft="@+id/lbl_last_name"
+        android:layout_alignStart="@+id/lbl_last_name"
+        android:layout_marginTop="20dp"
+        android:id="@+id/lbl_email"
+        tools:ignore="HardcodedText"
+        android:textSize="18sp"
+        android:textColor="@android:color/background_dark" />
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -86,6 +89,18 @@
         android:background="@color/sallemGray"
         tools:targetApi="cupcake" />
 
+    <TextView
+        android:text="@string/password_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:id="@+id/lbl_password"
+        tools:ignore="HardcodedText"
+        android:textSize="18sp"
+        android:textColor="@android:color/background_dark"
+        android:layout_below="@+id/lbl_email"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -98,65 +113,49 @@
         android:layout_alignStart="@+id/txt_email"
         android:background="@color/sallemGray" />
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPassword"
-        android:ems="10"
-        android:id="@+id/editText5"
-        android:background="@color/sallemGray"
-        android:layout_alignBottom="@+id/lbl_confirm_password"
-        android:layout_alignLeft="@+id/editText4"
-        android:layout_alignStart="@+id/editText4" />
+
+
 
     <TextView
         android:text="@string/confirm_password_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:id="@+id/lbl_confirm_password"
-        android:textSize="14sp"
+        android:textSize="16sp"
         android:textColor="@android:color/background_dark"
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/logo"
-        android:id="@+id/imageView4"
-        tools:ignore="ContentDescription"
-        android:layout_alignParentTop="true"
-        android:layout_alignLeft="@+id/lbl_last_name"
-        android:layout_alignStart="@+id/lbl_last_name" />
 
     <TextView
-        android:text="Your access to or use SALLEM APP (including the licenses, public domain tools, and choosers) signifies that you have read, understood, and agreed to be bound by the terms. By accessing or using any services you also represent that you have the legal authority to accept the terms on behalf of yourself and any party you represent in connection with your use of any services. If you do not agree to the terms, you are not authorized to use any services."        android:layout_width="wrap_content"
+        android:text="@string/your_access_to_or_use_sallem_app_including_the_licenses_public_domain_tools_and_choosers_signifies_that_you_have_read_understood_and_agreed_to_be_bound_by_the_terms_by_accessing_or_using_any_services_you_also_represent_that_you_have_the_legal_authority_to_accept_the_terms_on_behalf_of_yourself_and_any_party_you_represent_in_connection_with_your_use_of_any_services_if_you_do_not_agree_to_the_terms_you_are_not_authorized_to_use_any_services"        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/lbl_term"
         android:maxLines="4"
         android:scrollbars="vertical"
         android:scrollbarAlwaysDrawVerticalTrack="true"
         android:textColor="@android:color/background_dark"
-        android:layout_marginTop="25dp"
-        android:layout_below="@+id/editText5"
-        android:layout_alignLeft="@+id/lbl_email"
-        android:layout_alignStart="@+id/lbl_email"
         android:textSize="12sp"
-        tools:ignore="HardcodedText" />
+        android:layout_below="@+id/editText5"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="49dp" />
 
     <Button
         android:text="@string/register_label"
         android:layout_width="200dp"
-        android:layout_marginTop="33dp"
         android:id="@+id/Btn_resgisteration"
         tools:ignore="HardcodedText"
         android:textAppearance="@style/TextAppearance.AppCompat"
         android:textColor="@color/sallemWhite"
         android:background="@color/sallemBlue"
-        android:layout_below="@+id/cb_Agree"
-        android:layout_centerHorizontal="true"
-        android:layout_height="30dp" />
+        android:layout_height="30dp"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/lbl_password"
+        android:layout_toEndOf="@+id/lbl_password"
+        android:layout_marginBottom="25dp" />
 
     <CheckBox
         android:text="@string/i_agree"
@@ -165,21 +164,21 @@
         android:id="@+id/cb_Agree"
         android:textSize="12sp"
         android:layout_below="@+id/lbl_term"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="13dp" />
+        android:layout_alignLeft="@+id/editText4"
+        android:layout_alignStart="@+id/editText4"
+        android:layout_marginTop="41dp" />
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="textPersonName"
+        android:inputType="textPassword"
         android:ems="10"
-        android:id="@+id/txt_first_name"
+        android:id="@+id/editText5"
         android:background="@color/sallemGray"
-        tools:targetApi="cupcake"
-        android:layout_alignBaseline="@+id/lbl_first_name"
-        android:layout_alignBottom="@+id/lbl_first_name"
-        android:layout_toRightOf="@+id/lbl_confirm_password"
-        android:layout_toEndOf="@+id/lbl_confirm_password" />
+        android:layout_alignTop="@+id/lbl_confirm_password"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        tools:ignore="RelativeOverlap" />
 
 
 </RelativeLayout>
