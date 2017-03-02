@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "1091231496982",
+    "firebase_url": "https://sallem-13182.firebaseio.com",
+    "project_id": "sallem-13182",
+    "storage_bucket": "sallem-13182.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1091231496982:android:d02b74258841297a",
+        "android_client_info": {
+          "package_name": "com.seniorproject.sallemapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1091231496982-hg0nq2elp1ndtt7rhqh01qpav7kf40cm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAx6jcULt_1QRPqO6J51IbEMVxrfkQLZws"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
