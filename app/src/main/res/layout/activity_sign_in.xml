@@ -47,28 +47,14 @@
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:layout_marginLeft="22dp"
-        android:layout_marginStart="22dp"
-        android:id="@+id/txt_user_name"
-        android:background="@color/sallemGray"
-        android:layout_alignBaseline="@+id/lbl_poster_user_name"
-        android:layout_alignBottom="@+id/lbl_poster_user_name"
-        android:layout_toRightOf="@+id/lbl_poster_user_name"
-        android:layout_toEndOf="@+id/lbl_poster_user_name" />
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:inputType="textPassword"
         android:ems="10"
         android:id="@+id/txt_password"
         android:background="@color/sallemGray"
         android:layout_alignBaseline="@+id/lbl_password"
         android:layout_alignBottom="@+id/lbl_password"
-        android:layout_alignLeft="@+id/txt_user_name"
-        android:layout_alignStart="@+id/txt_user_name" />
+        android:layout_alignLeft="@+id/sign_in_txt_user_name"
+        android:layout_alignStart="@+id/sign_in_txt_user_name" />
 
     <TextView
         android:text="@string/forgot_password_label"
@@ -93,6 +79,29 @@
         android:layout_below="@+id/lbl_password"
         android:layout_alignLeft="@+id/txt_password"
         android:layout_alignStart="@+id/txt_password" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/sign_in_txt_user_name"
+        android:background="@color/sallemGray"
+        android:layout_alignBaseline="@+id/lbl_poster_user_name"
+        android:layout_alignBottom="@+id/lbl_poster_user_name"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="22dp"
+        android:layout_marginEnd="22dp" />
+
+    <ProgressBar
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/Btn_Sign_in"
+        android:layout_alignRight="@+id/lbl_poster_user_name"
+        android:layout_alignEnd="@+id/lbl_poster_user_name"
+        android:id="@+id/singin_progress_bar" />
 
     <!-- <Button
          android:text="Reset"

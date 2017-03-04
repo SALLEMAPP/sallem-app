@@ -7,35 +7,35 @@
     android:fitsSystemWindows="true"
     tools:context="com.seniorproject.sallemapp.Activities.HomeActivity">
 
+
+
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:theme="@style/AppTheme.AppBarOverlay"
+        android:id="@+id/barLayout">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
+            android:background="@color/sallemBlue"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
-
+        <android.support.design.widget.TabLayout
+            android:id="@+id/sliding_tabs"
+            android:layout_width="match_parent"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/sallemBlue"
+            android:layout_below="@+id/toolbar"
+            app:tabMode="fixed" />
     </android.support.design.widget.AppBarLayout>
-
-
-       <android.support.v4.view.ViewPager android:id="@+id/viewPager"
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:layout_marginTop="50dp"
-           xmlns:android="http://schemas.android.com/apk/res/android">
-
-           <android.support.v4.view.PagerTabStrip
-               android:id="@+id/pager_header"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:layout_gravity="top"
-               android:paddingBottom="4dp"
-               android:paddingTop="4dp" />
-       </android.support.v4.view.ViewPager>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
