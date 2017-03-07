@@ -1,7 +1,12 @@
 package com.seniorproject.sallemapp.Activities;
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -19,6 +24,7 @@ import android.view.MenuItem;
 
 import android.widget.TextView;
 import android.support.design.widget.TabLayout;
+import android.widget.Toast;
 
 import com.seniorproject.sallemapp.Activities.pagesadapters.ActivitiesPageAdapter;
 import com.seniorproject.sallemapp.Activities.pagesadapters.FriendsPageAdapter;
@@ -46,6 +52,15 @@ public class HomeActivity extends AppCompatActivity
 {
     FragmentStatePagerAdapter adapterViewPager;
     ViewPager myViewPager;
+    private enum CurrentMenu{
+        HOME,
+        ACTIVITIES,
+        FIRENDS,
+    }
+    private CurrentMenu _currnetMenu;
+    FloatingActionButton fab;
+    UserLocationService mService;
+    boolean mBound = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,12 +74,25 @@ public class HomeActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                switch (_currnetMenu){
+                    case HOME:
+                        Intent addPost = new Intent(HomeActivity.this, AddPostActivity.class);
+                        startActivity(addPost);
+                        break;
+                    case FIRENDS:
+                        break;
+                    case ACTIVITIES:
+                        Intent addActivity = new Intent(HomeActivity.this, AddEventActivity.class);
+                        startActivity(addActivity);
+                        break;
+                    default:
+                        break;
+                }
+
             }
         });
 
@@ -84,6 +112,7 @@ public class HomeActivity extends AppCompatActivity
         View v = navigationView.getHeaderView(0);
         TextView t =(TextView) v.findViewById(R.id.textView);
         t.setText("Abdullah");
+        _currnetMenu = CurrentMenu.HOME;
     }
 
     @Override
@@ -118,6 +147,26 @@ public class HomeActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
     ViewPager viewPager = null;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+            super.onStart();
+        Intent intent = new Intent(this, UserLocationService.class);
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(mBound){
+            unbindService(mConnection);
+            mBound =false;
+        }
+    }
+
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -128,15 +177,19 @@ public class HomeActivity extends AppCompatActivity
 
             adapterViewPager = new HomePageAdater(getSupportFragmentManager());
             myViewPager.setAdapter(adapterViewPager);
+            _currnetMenu = CurrentMenu.HOME;
 
         } else if (id == R.id.nav_friends) {
 
             adapterViewPager = new FriendsPageAdapter(getSupportFragmentManager());
             myViewPager.setAdapter(adapterViewPager);
+            _currnetMenu = CurrentMenu.FIRENDS;
+
 
         } else if (id == R.id.nav_near_friends) {
             adapterViewPager = new NearbyPageAdapter(getSupportFragmentManager());
             myViewPager.setAdapter(adapterViewPager);
+
 
         } else if (id == R.id.nav_activities) {
 
@@ -145,6 +198,8 @@ public class HomeActivity extends AppCompatActivity
 
 
             myViewPager.setAdapter(adapterViewPager);
+            _currnetMenu = CurrentMenu.ACTIVITIES;
+            updateFloatingActionBar(_currnetMenu);
 
 
         } else if (id == R.id.nav_notifications) {
@@ -156,6 +211,10 @@ public class HomeActivity extends AppCompatActivity
 
             adapterViewPager = new SettingsPageAdapter(getSupportFragmentManager());
             myViewPager.setAdapter(adapterViewPager);
+            int num = mService.getRandomNumber();
+            Toast.makeText(this, "number: " + num,
+            Toast.LENGTH_LONG).show();
+
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -166,6 +225,28 @@ public class HomeActivity extends AppCompatActivity
     public void onFragmentInteraction(Uri uri) {
 
     }
+    private void updateFloatingActionBar(CurrentMenu selecteMenu){
+        switch (selecteMenu){
+            case HOME:
+                break;
+            case ACTIVITIES:
+                fab.setImageResource(R.drawable.ic_me_24px);
+                break;
+        }
+    }
+    private ServiceConnection mConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            UserLocationService.LocalBinder binder = (UserLocationService.LocalBinder) service;
+            mService = binder.getService();
+            mBound = true;
 
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mBound = false;
+        }
+    };
 
 }

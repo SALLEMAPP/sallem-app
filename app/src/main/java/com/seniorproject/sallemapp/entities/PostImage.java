@@ -2,36 +2,42 @@ package com.seniorproject.sallemapp.entities;
 
 import android.graphics.Bitmap;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by Centeral on 2/21/2017.
  */
 
 public class PostImage {
-    private int _id;
-    private int _postId;
-    private Bitmap _image;
+    @SerializedName("id")
+    private String _id;
+    @SerializedName("postId")
+    private String _postId;
+    @SerializedName("path")
+    private String _path;
 
-    public int getId() {
+    public String getId() {
         return _id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         _id = id;
     }
 
-    public int getPostId() {
+    public String getPostId() {
         return _postId;
     }
 
-    public void setPostId(int postId) {
+    public void setPostId(String postId) {
         _postId = postId;
     }
 
-    public Bitmap getImage() {
-        return _image;
+
+    public String get_path() {
+        return _path;
     }
 
-    public void setImage(Bitmap image) {
-        _image = image;
+    public void set_path(String _path) {
+        this._path = _path;
     }
 }

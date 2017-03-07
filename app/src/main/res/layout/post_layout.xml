@@ -1,112 +1,140 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:layout_editor_absoluteY="25dp"
+    tools:layout_editor_absoluteX="0dp">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
+    <ImageView
+        android:id="@+id/post_layout_user_avatar"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/post_layout_post_header"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:minHeight="55dp"
+        android:minWidth="55dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.016"
+        app:srcCompat="@drawable/ic_me_24px"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp" />
+
+    <TextView
+        android:id="@+id/post_layout_lbl_user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/post_layout_lbl_post_date"
+        android:layout_alignStart="@+id/post_layout_lbl_post_date"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:text="TextView"
+        android:textColor="@color/sallemBlack"
+        android:textSize="16sp"
+        app:layout_constraintLeft_toRightOf="@+id/post_layout_user_avatar"
+        app:layout_constraintTop_toTopOf="@+id/post_layout_user_avatar"
+        android:layout_marginStart="8dp" />
+
+    <TextView
+        android:id="@+id/post_layout_lbl_post_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
+        android:layout_marginLeft="8dp"
+        android:layout_toEndOf="@+id/post_layout_user_avatar"
+        android:layout_toRightOf="@+id/post_layout_user_avatar"
+        android:text="TextView"
+        android:textColor="@color/sallemBlack"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="@+id/post_layout_user_avatar"
+        app:layout_constraintLeft_toRightOf="@+id/post_layout_user_avatar"
+        android:layout_marginStart="8dp" />
+
+    <TextView
+        android:id="@+id/postlayout_txtPostSubject"
+        android:layout_width="354dp"
+        android:layout_height="26dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginBottom="5dp">
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/sallemBlack"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/post_layout_btn_comments"
+        app:layout_constraintVertical_bias="0.0" />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_me_24px"
-            android:id="@+id/post_layout_user_avatar"
-            android:minHeight="55dp"
-            android:minWidth="55dp"
-            android:layout_marginLeft="5dp" />
+    <TextView
+        android:id="@+id/postlayout_txtPostCom"
+        android:layout_width="362dp"
+        android:layout_height="41dp"
+        android:layout_below="@+id/post_layout_btn_comments"
 
-        <TextView
-            android:text="TextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/post_layout_lbl_user_name"
-            android:layout_alignLeft="@+id/post_layout_lbl_post_date"
-            android:layout_alignStart="@+id/post_layout_lbl_post_date"
-            android:textSize="16sp"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="0dp" />
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/sallemBlack"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/post_layout_user_avatar"
+        app:layout_constraintVertical_bias="0.037" />
 
-        <TextView
-            android:text="TextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/post_layout_lbl_post_date"
-            android:layout_marginLeft="18dp"
-            android:layout_marginStart="18dp"
-            android:layout_toRightOf="@+id/post_layout_user_avatar"
-            android:layout_toEndOf="@+id/post_layout_user_avatar"
-            android:layout_below="@+id/post_layout_lbl_user_name"
-            android:textSize="10sp"
-            android:layout_marginTop="5dp" />
+    <Button
+        android:id="@+id/post_layout_btn_comments"
+        android:layout_width="82dp"
+        android:layout_height="38dp"
+        android:background="@color/sallemBlue"
+        android:text="Comments"
+        android:textColor="@color/sallemWhite"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintVertical_bias="0.025"
+        app:layout_constraintTop_toBottomOf="@+id/post_layout_img_post_image"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp" />
 
-    </RelativeLayout>
+    <ImageView
+        android:id="@+id/post_layout_img_post_image"
+        android:layout_width="348dp"
+        android:layout_height="162dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/postlayout_txtPostCom"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/test_post" />
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/post_layout_post_content"
-        android:layout_below="@+id/post_layout_post_header"
-        android:layout_marginBottom="5dp">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/post_layout_txt_post_subject"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp" />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/logo"
-            android:id="@+id/post_layout_img_post_image"
-            android:layout_below="@+id/post_layout_txt_post_subject"
-            android:layout_alignLeft="@+id/post_layout_txt_post_subject"
-            android:layout_alignStart="@+id/post_layout_txt_post_subject"
-            android:layout_marginLeft="5dp" />
-
-    </RelativeLayout>
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/post_layout_post_comment"
-        android:layout_below="@+id/post_layout_post_content"
-        android:layout_marginBottom="5dp">
-
-        <Button
-            android:text="Comments"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/post_layout_btn_comments"
-            android:background="@color/sallemBlue"
-            android:textColor="@color/sallemWhite"
-            android:layout_marginLeft="5dp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/post_layout_btn_comments"
-            android:id="@+id/post_layout_txt_quich_comment"
-            />
-
-
-    </RelativeLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/darker_gray"
-        android:id="@+id/post_layout_post_separator"
-        android:layout_below="@+id/post_layout_post_comment" />
-
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>

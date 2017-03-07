@@ -1,5 +1,6 @@
 package com.seniorproject.sallemapp.helpers;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -76,9 +77,9 @@ public class LocationService implements LocationListener {
         }
 
         //try   {
-            this.longitude = 0.0;
-            this.latitude = 0.0;
-            this.locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        this.longitude = 0.0;
+        this.latitude = 0.0;
+        this.locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME, MIN_DISTANCE, this); //You can also use LocationManager.GPS_PROVIDER and LocationManager.PASSIVE_PROVIDER
 
 
@@ -127,7 +128,7 @@ public class LocationService implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location)     {
-       LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         _locationChanged.onLocationChanged(latLng);
 
     }
@@ -150,4 +151,5 @@ public class LocationService implements LocationListener {
     public interface LocationChanged{
         void onLocationChanged(LatLng newLocation);
     }
+
 }

@@ -1,6 +1,8 @@
 package com.seniorproject.sallemapp.Activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -33,6 +35,7 @@ import com.microsoft.windowsazure.mobileservices.table.sync.localstore.ColumnDat
 import com.microsoft.windowsazure.mobileservices.table.sync.localstore.MobileServiceLocalStoreException;
 import com.microsoft.windowsazure.mobileservices.table.sync.localstore.SQLiteLocalStore;
 import com.microsoft.windowsazure.mobileservices.table.sync.synchandler.SimpleSyncHandler;
+import com.seniorproject.sallemapp.entities.UserLocation;
 import com.squareup.okhttp.OkHttpClient;
 
 import static com.microsoft.windowsazure.mobileservices.table.query.QueryOperations.*;
@@ -41,6 +44,8 @@ import static com.microsoft.windowsazure.mobileservices.table.query.QueryOperati
 import com.seniorproject.sallemapp.R;
 import com.seniorproject.sallemapp.entities.User;
 import com.squareup.okhttp.internal.Util;
+
+import org.joda.time.LocalDate;
 
 import java.net.MalformedURLException;
 import java.util.ArrayList;
@@ -53,6 +58,8 @@ public class SignInActivity extends AppCompatActivity {
     MobileServiceClient _client;
     MobileServiceTable<User> _userTable;
     ProgressBar _savingProgressBar;
+    UserLocationService mService;
+    boolean mBound = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,6 +93,9 @@ public class SignInActivity extends AppCompatActivity {
 
 
     }
+
+
+
 
     private void attachSigninButton() {
         Button signinButton = (Button) findViewById(R.id.Btn_Sign_in);

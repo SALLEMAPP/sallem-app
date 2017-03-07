@@ -1,5 +1,7 @@
 package com.seniorproject.sallemapp.entities;
 
+import com.google.gson.annotations.SerializedName;
+
 import org.joda.time.DateTime;
 
 /**
@@ -7,20 +9,26 @@ import org.joda.time.DateTime;
  */
 
 public class Post {
-    private String _postId;
+    @SerializedName("id")
+    private String _id;
+    @SerializedName("postedAt")
     private String _postedAt;
-    private String _content;
-    private int _userId;
-    private int _activityId;
-    private User _user;
-    private Activity _activity;
+    @SerializedName("subject")
+    private String _subject;
+    @SerializedName("userId")
+    private String _userId;
+    @SerializedName("activityId")
+    private String _activityId;
 
-    public String getPostId() {
-        return _postId;
+
+
+
+    public String getId() {
+        return _id;
     }
 
-    public void setPostId(String postId) {
-        _postId = postId;
+    public void setId(String postId) {
+        _id = postId;
     }
 
     public String getPostedAt() {
@@ -31,44 +39,30 @@ public class Post {
         _postedAt = postedAt;
     }
 
-    public String getContent() {
-        return _content;
+    public String getSubject() {
+        return _subject;
     }
 
-    public void setContent(String content) {
-        _content = content;
+    public void setSubject(String content) {
+        _subject = content;
     }
 
-    public int getUserId() {
+    public String getUserId() {
         return _userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(String userId) {
         _userId = userId;
     }
 
-    public int getActivityId() {
+    public String getActivityId() {
         return _activityId;
     }
 
-    public void setActivityId(int activityId) {
+    public void setActivityId(String activityId) {
         _activityId = activityId;
     }
 
 
-    public User getUser() {
-        return _user;
-    }
 
-    public void setUser(User _user) {
-        this._user = _user;
-    }
-
-    public Activity get_activity() {
-        return _activity;
-    }
-
-    public void set_activity(Activity _activity) {
-        this._activity = _activity;
-    }
 }

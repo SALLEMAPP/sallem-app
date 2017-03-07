@@ -95,15 +95,19 @@ public class PostsFragment extends ListFragment {
     private ArrayList<Post> dummyData() {
         ArrayList r = new ArrayList<Post>();
         Post s = new Post();
-        s.setPostId(UUID.randomUUID().toString());
+        s.setId(UUID.randomUUID().toString());
         s.setPostedAt(DateTime.now().toString());
-        s.setContent("This is the first Post");
+        s.setSubject("This is the first Post");
         User u = new User();
         u.setLastName("Abdullah");
-        s.setUser(u);
+
         r.add(s);
+
+
         return r;
     }
+
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {

@@ -63,20 +63,21 @@ public class PostsListAdapter  extends ArrayAdapter<Post> {
         TextView poster = (TextView)
                 v.findViewById(R.id.post_layout_lbl_user_name);
         TextView postSubject = (TextView)
-                v.findViewById(R.id.post_layout_txt_post_subject);
+                v.findViewById(R.id.postlayout_txtPostSubject);
         ImageView postImage = (ImageView)
                 v.findViewById(R.id.post_layout_img_post_image);
         Button commentsButton = (Button)
                 v.findViewById(R.id.post_layout_btn_comments);
         TextView quickComment = (TextView)
-                v.findViewById(R.id.post_layout_txt_quich_comment);
+                v.findViewById(R.id.postlayout_txtPostCom);
 
-        poster.setText(post.getUser().getLastName());
+        poster.setText("Abdullah BaMusa");
 
         LocalDateTime now = new LocalDateTime();
 
         posDate.setText(now.toDateTime().toString());
-        postSubject.setText(post.getContent());
+        quickComment.setText(post.getSubject());
+        postSubject.setText("This is test comment");
         commentsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
