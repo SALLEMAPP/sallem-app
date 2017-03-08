@@ -117,27 +117,27 @@ public class FriendsFragment extends ListFragment {
     private ArrayList<User> dummyData(){
         ArrayList r = new ArrayList<User>();
         User s = new User();
-        s.setId(UUID.randomUUID());
+        s.setId(UUID.randomUUID().toString());
         s.setFirstName("Amr");
         s.setLastName("Zaid");
         r.add(s);s = new User();
-        s.setId(UUID.randomUUID());
+        s.setId(UUID.randomUUID().toString());
         s.setFirstName("Ali");
         s.setLastName("Ahmed");
         r.add(s);
         s = new User();
-        s.setId(UUID.randomUUID());
+        s.setId(UUID.randomUUID().toString());
         s.setFirstName("Khalid");
         s.setLastName("Omar");
         r.add(s);
         s = new User();
-        s.setId(UUID.randomUUID());
+        s.setId(UUID.randomUUID().toString());
         s.setFirstName("Saeed");
         s.setLastName("Saleh");
         r.add(s);
         s = new User();
 
-        s.setId(UUID.randomUUID());
+        s.setId(UUID.randomUUID().toString());
         s.setFirstName("Muhammad");
         s.setLastName("Yousf");
         r.add(s);

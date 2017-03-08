@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.BaseBundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.Fragment;
@@ -15,15 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.app.ListFragment;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
+
 import com.seniorproject.sallemapp.R;
 
 /**
@@ -34,34 +27,21 @@ import com.seniorproject.sallemapp.R;
  * Use the {@link NearByFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class NearByFragment extends FragmentActivity  implements OnMapReadyCallback,
-        GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener,
-        LocationListener
+public class NearByFragment extends Fragment
     {
 
     // ---- START ---- added by Fisal from original Google latest source: https://developers.google.com/maps/documentation/android-api/start#next_steps  -------
 
-    private GoogleMap mMap;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_near_by);
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-    }
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState){
+            View  v =  inflater.inflate( R.layout.fragment_near_by, container, false);
 
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
 
-        // Add a marker in Sydney, Australia, and move the camera.
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-    }
+            return  v;
+
+        }
+
 
     // ---- END ---- added by Fisal
 
@@ -111,12 +91,6 @@ public class NearByFragment extends FragmentActivity  implements OnMapReadyCallb
     }
 */
 
- //   @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_near_by, container, false);
-    }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -142,25 +116,7 @@ public class NearByFragment extends FragmentActivity  implements OnMapReadyCallb
         mListener = null;
     }
 
-        @Override
-        public void onConnected(@Nullable Bundle bundle) {
 
-        }
-
-        @Override
-        public void onConnectionSuspended(int i) {
-
-        }
-
-        @Override
-        public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-        }
-
-        @Override
-        public void onLocationChanged(Location location) {
-
-        }
 
         /**
      * This interface must be implemented by activities that contain this

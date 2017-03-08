@@ -29,11 +29,8 @@
         android:layout_marginStart="25dp"
         android:layout_marginTop="53dp"
         android:id="@+id/lbl_poster_user_name"
-        android:fontFamily="serif"
-        android:typeface="serif"
-        android:textSize="19sp"
-        android:textColor="@android:color/background_dark"
-        tools:targetApi="jelly_bean" />
+        android:textSize="18sp"
+        android:textColor="@android:color/background_dark" />
 
     <TextView
         android:text="@string/password_label"
@@ -44,11 +41,8 @@
         android:layout_alignStart="@+id/lbl_poster_user_name"
         android:layout_marginTop="53dp"
         android:id="@+id/lbl_password"
-        android:fontFamily="serif"
-        android:typeface="serif"
-        android:textSize="19sp"
-        android:textColor="@android:color/background_dark"
-        tools:targetApi="jelly_bean" />
+        android:textSize="18sp"
+        android:textColor="@android:color/background_dark" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -68,11 +62,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="33dp"
         android:id="@+id/lbl_forgot_password"
-        android:textStyle="normal|italic"
-        android:fontFamily="serif"
-        android:typeface="serif"
         android:textColorLink="@color/colorPrimaryDark"
-        tools:targetApi="jelly_bean"
         android:layout_below="@+id/Btn_Sign_in"
         android:layout_toRightOf="@+id/lbl_password"
         android:layout_toEndOf="@+id/lbl_password" />

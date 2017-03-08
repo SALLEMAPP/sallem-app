@@ -2,6 +2,8 @@ package com.seniorproject.sallemapp.entities;
 
 import android.graphics.Bitmap;
 
+import com.google.gson.annotations.SerializedName;
+
 import org.joda.time.DateTime;
 
 import java.util.UUID;
@@ -12,32 +14,30 @@ import java.util.UUID;
 
 public class User {
     //********** This is backened database table columns decorated with the sepcial Azure annotation to serialize them***********
-    @com.google.gson.annotations.SerializedName("id")
-    private UUID _id;
-    @com.google.gson.annotations.SerializedName("firstname")
+    @SerializedName("id")
+    private String _id;
+    @SerializedName("firstName")
     private String _firstName;
-    @com.google.gson.annotations.SerializedName("lastname")
+    @SerializedName("lastName")
     private String _lastName;
-    @com.google.gson.annotations.SerializedName("password")
+    @SerializedName("password")
     private String _password;
-    @com.google.gson.annotations.SerializedName("email")
+    @SerializedName("email")
     private String _email;
-    @com.google.gson.annotations.SerializedName("imagetitle")
+    @SerializedName("imageTitle")
     private String _imageTitle;
-    @com.google.gson.annotations.SerializedName("joinedAt")
+    @SerializedName("joinedAt")
     private String _joinedAt;
-    @com.google.gson.annotations.SerializedName("statusid")
+    @SerializedName("statusId")
     private int _status;
 
 
 
-    public UUID getId() {
+    public String getId() {
         return _id;
     }
 
-    public void setId(UUID _id) {
-        this._id = _id;
-    }
+    public void setId(String _id) {  this._id = _id;    }
 
 
     public String getFirstName() {
@@ -67,13 +67,12 @@ public class User {
     }
 
 
-    public String getEmail() {
-        return _email;
-    }
+    public String getEmail() {      return _email;    }
 
     public void setEmail(String _email) {
         this._email = _email;
     }
+
     public int getStatus() {
         return _status;
     }
@@ -105,7 +104,7 @@ public class User {
     }
 
     public void setImageTitle(String imageTitle) {
-        this._imageTitle = imageTitle;
+        _imageTitle = imageTitle;
     }
 
     public enum UserStatus{ONLINE, BUSY, OFFLINE}
@@ -123,6 +122,10 @@ public class User {
     }
     public User(){
 
+    }
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof User && ((User) o)._id == _id;
     }
 
 }

@@ -1,5 +1,7 @@
 package com.seniorproject.sallemapp.entities;
 
+import com.google.gson.annotations.SerializedName;
+
 import org.joda.time.DateTime;
 
 /**
@@ -7,49 +9,60 @@ import org.joda.time.DateTime;
  */
 
 public class Post {
-    private int _postId;
-    private DateTime _postedAt;
-    private String _content;
-    private int _userId;
-    private int _activityId;
+    @SerializedName("id")
+    private String _id;
+    @SerializedName("postedAt")
+    private String _postedAt;
+    @SerializedName("subject")
+    private String _subject;
+    @SerializedName("userId")
+    private String _userId;
+    @SerializedName("activityId")
+    private String _activityId;
 
-    public int getPostId() {
-        return _postId;
+
+
+
+    public String getId() {
+        return _id;
     }
 
-    public void setPostId(int postId) {
-        _postId = postId;
+    public void setId(String postId) {
+        _id = postId;
     }
 
-    public DateTime getPostedAt() {
+    public String getPostedAt() {
         return _postedAt;
     }
 
-    public void setPostedAt(DateTime postedAt) {
+    public void setPostedAt(String postedAt) {
         _postedAt = postedAt;
     }
 
-    public String getContent() {
-        return _content;
+    public String getSubject() {
+        return _subject;
     }
 
-    public void setContent(String content) {
-        _content = content;
+    public void setSubject(String content) {
+        _subject = content;
     }
 
-    public int getUserId() {
+    public String getUserId() {
         return _userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(String userId) {
         _userId = userId;
     }
 
-    public int getActivityId() {
+    public String getActivityId() {
         return _activityId;
     }
 
-    public void setActivityId(int activityId) {
+    public void setActivityId(String activityId) {
         _activityId = activityId;
     }
+
+
+
 }

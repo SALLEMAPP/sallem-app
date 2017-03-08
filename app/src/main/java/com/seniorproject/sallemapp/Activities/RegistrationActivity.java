@@ -1,6 +1,8 @@
 package com.seniorproject.sallemapp.Activities;
 
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -35,6 +37,7 @@ import com.microsoft.windowsazure.mobileservices.http.ServiceFilterResponse;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 import com.seniorproject.sallemapp.R;
 import com.seniorproject.sallemapp.entities.User;
+import com.seniorproject.sallemapp.helpers.MyHandler;
 import com.squareup.okhttp.OkHttpClient;
 
 import org.joda.time.DateTime;
@@ -49,10 +52,11 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import com.microsoft.windowsazure.notifications.NotificationsManager;
 
 public class RegistrationActivity extends AppCompatActivity {
 
-    MobileServiceClient _client;
+   public static MobileServiceClient _client;
     MobileServiceTable<User> _userTable;
     ProgressBar _savingProgressBar;
     public static final String storageConnectionString =
@@ -60,6 +64,8 @@ public class RegistrationActivity extends AppCompatActivity {
                     "AccountName=sallemappphotos;" +
                     "AccountKey=0ROm5ARwztUrPMEWcVuZYb4EgOS7/rB5v0y0kuaNPgRkoTnjBhHFXqaT82ydmgIIV+GeUqpCR5Mq/gI7WVcYyA==";
     Bitmap bm;
+    public static final  String SENDER_ID ="1091231496982";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +79,7 @@ public class RegistrationActivity extends AppCompatActivity {
                     "https://sallem.azurewebsites.net",
                     this).withFilter(new ProgressFilter());
 
+
             _client.setAndroidHttpClientFactory(new OkHttpClientFactory() {
                 @Override
                 public OkHttpClient createOkHttpClient() {
@@ -82,11 +89,14 @@ public class RegistrationActivity extends AppCompatActivity {
                     return okHttpClient;
                 }
             });
+            NotificationsManager.handleNotifications(this, SENDER_ID, MyHandler.class);
+
         }
         catch (MalformedURLException e){
 
 
         }
+
     }
 
 
@@ -110,7 +120,7 @@ public class RegistrationActivity extends AppCompatActivity {
         String joinedAt = new LocalDateTime().toString();
         //Byte[] photo = null;
         User user = new User();
-        user.setId(UUID.randomUUID());
+        user.setId(UUID.randomUUID().toString());
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setPassword(password);
@@ -206,7 +216,7 @@ public class RegistrationActivity extends AppCompatActivity {
         return s;
     }
 
-    private AsyncTask<Void,Void,Void> addUserToDb(User user) {
+    private AsyncTask<Void,Void,Void> addUserToDb(final User user) {
 
 
         AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {

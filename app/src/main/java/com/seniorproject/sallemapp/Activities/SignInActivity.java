@@ -1,12 +1,16 @@
 package com.seniorproject.sallemapp.Activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,6 +35,7 @@ import com.microsoft.windowsazure.mobileservices.table.sync.localstore.ColumnDat
 import com.microsoft.windowsazure.mobileservices.table.sync.localstore.MobileServiceLocalStoreException;
 import com.microsoft.windowsazure.mobileservices.table.sync.localstore.SQLiteLocalStore;
 import com.microsoft.windowsazure.mobileservices.table.sync.synchandler.SimpleSyncHandler;
+import com.seniorproject.sallemapp.entities.UserLocation;
 import com.squareup.okhttp.OkHttpClient;
 
 import static com.microsoft.windowsazure.mobileservices.table.query.QueryOperations.*;
@@ -40,9 +45,12 @@ import com.seniorproject.sallemapp.R;
 import com.seniorproject.sallemapp.entities.User;
 import com.squareup.okhttp.internal.Util;
 
+import org.joda.time.LocalDate;
+
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 public class SignInActivity extends AppCompatActivity {
@@ -50,6 +58,8 @@ public class SignInActivity extends AppCompatActivity {
     MobileServiceClient _client;
     MobileServiceTable<User> _userTable;
     ProgressBar _savingProgressBar;
+    UserLocationService mService;
+    boolean mBound = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +81,7 @@ public class SignInActivity extends AppCompatActivity {
                     return okHttpClient;
                 }
             });
+            _userTable = _client.getTable(User.class);
 
         }
         catch (MalformedURLException e){
@@ -83,6 +94,9 @@ public class SignInActivity extends AppCompatActivity {
 
     }
 
+
+
+
     private void attachSigninButton() {
         Button signinButton = (Button) findViewById(R.id.Btn_Sign_in);
         signinButton.setOnClickListener(new View.OnClickListener() {
@@ -90,36 +104,86 @@ public class SignInActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String email = ((EditText)findViewById(R.id.sign_in_txt_user_name)).getText().toString();
                 String password = ((EditText)findViewById(R.id.txt_password)).getText().toString();
-                findUser(email);
+                //findUser(email);
+                openHomeActivity();
 
             }
         });
 
     }
-    private void  findUser(String email) {
+    private void  findUser(final String email) throws IllegalStateException {
+//        java.util.List<android.util.Pair<java.lang.String,java.lang.String>> parameters = new ArrayList<>();
+//        parameters.add(new android.util.Pair<String, String>("email", email));
+//
+//        AsyncTask<Void, Void,Void> task = new AsyncTask<Void, Void, Void>() {
+//            @Override
+//            protected Void doInBackground(Void... voids) {
+//                //com.google.common.util.concurrent.ListenableFuture<User> future =
+//                _client.invokeApi("getUserByEmail", "Get", parameters, User.class, new ApiOperationCallback<User>() {
+//                    @Override
+//                    public void onCompleted(User result, Exception exception, ServiceFilterResponse response) {
+//                        String s = result.getEmail();
+//                    }
+//                });
+//
+//
+//                return null;
+//            }
+//        };
+        if (email != null || email != "") {
+            AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
+                @Override
+                protected Void doInBackground(Void... voids) {
+                   try {
+                       final List<User> users = getUserByEmail(email);
+                       if (users.size() > 1) {
+                           throw new IllegalStateException("There should not be more that user with the same eamil");
+                       }
+                       for(User user:users){
+                           if(user.getEmail().equals(email)){
+                               SharedPreferences sallemPref = getSharedPreferences("SALLEMAPP", MODE_PRIVATE);
+                               sallemPref.edit().putString("email", email).commit();
+                               runOnUiThread(new Runnable() {
+                                   @Override
+                                   public void run() {
+                                       openHomeActivity();
+                                   }
+                               });
+                               break;
+                           }
 
+                       }
 
+                   }
+                   catch( ExecutionException ex){
+                       Log.d("ex", ex.getCause().getMessage());
+                   }
+                   catch (InterruptedException ex){
+                       Log.d("ex", ex.getCause().getMessage());
+                   }
+                   catch (Exception e){
+                       Log.d("ex", e.getCause().getMessage());
+                   }
 
-        java.util.List<android.util.Pair<java.lang.String,java.lang.String>> parameters = new ArrayList<>();
-        parameters.add(new android.util.Pair<String, String>("email", email));
-
-        AsyncTask<Void, Void,Void> task = new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... voids) {
-                //com.google.common.util.concurrent.ListenableFuture<User> future =
-                _client.invokeApi("getUserByEmail", "Get", parameters, User.class, new ApiOperationCallback<User>() {
-                    @Override
-                    public void onCompleted(User result, Exception exception, ServiceFilterResponse response) {
-                        String s = result.getEmail();
-                    }
-                });
-
-
-                return null;
-            }
-        };
-        task.execute();
+                    return null;
+                }
+            };
+            task.execute();
+        }
     }
+    private void openHomeActivity(){
+        Intent homeIntent = new Intent(SignInActivity.this, HomeActivity.class);
+        startActivity(homeIntent);
+    }
+
+        private List<User> getUserByEmail(String email) throws ExecutionException, InterruptedException{
+
+            return _userTable.where().field("email").
+                    eq(val(email)).execute().get();
+
+
+        }
+
 
 
 

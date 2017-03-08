@@ -1,26 +1,23 @@
 package com.seniorproject.sallemapp.Activities.listsadpaters;
 
 import android.content.Context;
-import android.util.Log;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.seniorproject.sallemapp.Activities.AddEventActivity;
 import com.seniorproject.sallemapp.Activities.dbhelpers.DbContext;
 import com.seniorproject.sallemapp.entities.Post;
-import com.seniorproject.sallemapp.entities.User;
 import com.seniorproject.sallemapp.R;
 
-import org.joda.time.DateTime;
 import org.joda.time.LocalDateTime;
 
 import java.util.ArrayList;
-import java.util.logging.Logger;
 
 /**
  * Created by Centeral on 2/21/2017.
@@ -53,33 +50,53 @@ public class PostsListAdapter  extends ArrayAdapter<Post> {
         }
         catch (Exception e){
             //Log the exception so it can be reviewed.
-            Log.d("SALLEM APP", e.getStackTrace().toString());
+            //Log.d("SALLEM APP", e.getStackTrace().toString());
+            throw e;
         }
         return v;
     }
 
     private void bindPost(Post post, View v) {
         DbContext db = new DbContext();
-        TextView userName = (TextView)
-                v.findViewById(R.id.post_layout_lbl_user_name);
-        TextView postDate = (TextView)
+        TextView posDate = (TextView)
                 v.findViewById(R.id.post_layout_lbl_post_date);
-        EditText postSubject = (EditText)
-                v.findViewById(R.id.post_layout_txt_post_subject);
+        TextView poster = (TextView)
+                v.findViewById(R.id.post_layout_lbl_user_name);
+        TextView postSubject = (TextView)
+                v.findViewById(R.id.postlayout_txtPostSubject);
         ImageView postImage = (ImageView)
                 v.findViewById(R.id.post_layout_img_post_image);
         Button commentsButton = (Button)
                 v.findViewById(R.id.post_layout_btn_comments);
-        Button quickCommentButton = (Button)
-                v.findViewById(R.id.post_layout_btn_add_comment);
-        EditText quickComment = (EditText)
-                v.findViewById(R.id.post_layout_txt_quich_comment);
-        userName.setText((db.getUser(post.getPostId()).getLastName()));
+        TextView quickComment = (TextView)
+                v.findViewById(R.id.postlayout_txtPostCom);
+
+        poster.setText("Abdullah BaMusa");
+
         LocalDateTime now = new LocalDateTime();
 
-        postDate.setText(now.toDateTime().toString());
+        posDate.setText(now.toDateTime().toString());
+        quickComment.setText(post.getSubject());
+        postSubject.setText("This is test comment");
+        commentsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                attachButtonEvent(v);
+            }
+        });
 
 
 
+    }
+    private void attachButtonEvent(View v) {
+
+        Button b = (Button)v.findViewById(R.id.post_layout_btn_comments);
+        b.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(v.getContext(), AddEventActivity.class);
+                v.getContext().startActivity(i);
+            }
+        });
     }
 }

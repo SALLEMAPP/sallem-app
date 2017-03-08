@@ -1,14 +1,26 @@
 package com.seniorproject.sallemapp.Activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
+import com.seniorproject.sallemapp.Activities.listsadpaters.FriendsListAdapter;
+import com.seniorproject.sallemapp.Activities.listsadpaters.PostsListAdapter;
 import com.seniorproject.sallemapp.R;
+import com.seniorproject.sallemapp.entities.Post;
+import com.seniorproject.sallemapp.entities.User;
+
+import org.joda.time.DateTime;
+
+import java.util.ArrayList;
+import java.util.UUID;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -18,12 +30,13 @@ import com.seniorproject.sallemapp.R;
  * Use the {@link PostsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PostsFragment extends Fragment {
+public class PostsFragment extends ListFragment {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
-
+    ArrayList<Post> _friendsList = new ArrayList<Post>();
+    private PostsListAdapter _adpater= null;
+    private View _currentView;
     private int _page;
     private String _title;
 
@@ -58,14 +71,43 @@ public class PostsFragment extends Fragment {
             _page = getArguments().getInt(ARG_PARAM1);
             _title = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_posts, container, false);
+        _currentView  = inflater.inflate(R.layout.fragment_posts, container, false);
+        attachList();
+
+        return _currentView;
     }
+
+
+
+    private void attachList() {
+        _friendsList = dummyData();
+        _adpater = new PostsListAdapter(this.getContext(), _friendsList);
+        setListAdapter(_adpater);
+    }
+
+    private ArrayList<Post> dummyData() {
+        ArrayList r = new ArrayList<Post>();
+        Post s = new Post();
+        s.setId(UUID.randomUUID().toString());
+        s.setPostedAt(DateTime.now().toString());
+        s.setSubject("This is the first Post");
+        User u = new User();
+        u.setLastName("Abdullah");
+
+        r.add(s);
+
+
+        return r;
+    }
+
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {

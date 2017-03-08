@@ -1,16 +1,18 @@
 apply plugin: 'com.android.application'
-
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "com.seniorproject.sallemapp"
-        minSdkVersion 15
+        minSdkVersion 21
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+        multiDexEnabled true
+
+
     }
     buildTypes {
         release {
@@ -18,14 +20,16 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    defaultConfig{
-        jackOptions{
-            enabled=true
-        }
+    defaultConfig {
+//        jackOptions{
+//            enabled=true
+//        }
+
+
     }
     compileOptions {
-        targetCompatibility 1.8
-        sourceCompatibility 1.8
+//        targetCompatibility 1.8
+//        sourceCompatibility 1.8
     }
 }
 
@@ -34,15 +38,20 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.1.1'
-    compile 'com.android.support:design:25.1.1'
-    compile 'com.android.support:support-v4:25.1.1'
-    compile 'com.android.support:support-vector-drawable:25.1.1'
-    compile 'com.google.android.gms:play-services-maps:10.2.0'
-    testCompile 'junit:junit:4.12'
+    //compile 'com.android.support:support-v4:25.2.0'
+    //compile 'com.android.support:support-vector-drawable:25.2.0'
+
+
+    compile(group: 'com.microsoft.azure', name: 'azure-notifications-handler', version: '1.0.1', ext: 'jar')
+    compile 'com.android.support:appcompat-v7:25.2.0'
+    compile 'com.android.support:design:25.2.0'
     compile 'joda-time:joda-time:2.9.7'
     compile 'com.microsoft.azure:azure-mobile-android:3.1.0'
-    compile 'com.google.maps:google-maps-services:0.1.17'
-    compile 'com.google.android.gms:play-services:10.2.0'
     compile 'com.microsoft.azure.android:azure-storage-android:1.0.0@aar'
+    compile 'com.google.android.gms:play-services-location:10.2.0'
+    compile 'com.google.android.gms:play-services-maps:10.2.0'
+    compile 'com.android.support.constraint:constraint-layout:1.0.1'
+    testCompile 'junit:junit:4.12'
 }
+apply plugin: 'com.google.gms.google-services'
+
