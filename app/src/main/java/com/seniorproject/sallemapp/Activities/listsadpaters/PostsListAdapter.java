@@ -12,6 +12,8 @@ import android.widget.TextView;
 
 import com.seniorproject.sallemapp.Activities.AddEventActivity;
 import com.seniorproject.sallemapp.Activities.dbhelpers.DbContext;
+import com.seniorproject.sallemapp.entities.DomainComment;
+import com.seniorproject.sallemapp.entities.DomainPost;
 import com.seniorproject.sallemapp.entities.Post;
 import com.seniorproject.sallemapp.R;
 
@@ -23,10 +25,10 @@ import java.util.ArrayList;
  * Created by Centeral on 2/21/2017.
  */
 
-public class PostsListAdapter  extends ArrayAdapter<Post> {
-    private ArrayList<Post> _items;
+public class PostsListAdapter  extends ArrayAdapter<DomainPost> {
+    private ArrayList<DomainPost> _items;
     private Context _adpaterContext;
-    public PostsListAdapter(Context context, ArrayList<Post> items) {
+    public PostsListAdapter(Context context, ArrayList<DomainPost> items) {
         super(context, R.layout.post_layout, items);
         _adpaterContext = context;
         _items = items;

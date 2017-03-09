@@ -1,7 +1,5 @@
 package com.seniorproject.sallemapp.entities;
 
-import android.graphics.Bitmap;
-
 import com.google.gson.annotations.SerializedName;
 
 /**

@@ -38,7 +38,6 @@ import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 import com.seniorproject.sallemapp.R;
 import com.seniorproject.sallemapp.entities.Post;
 import com.seniorproject.sallemapp.entities.PostImage;
-import com.seniorproject.sallemapp.entities.UserLocation;
 import com.squareup.okhttp.OkHttpClient;
 
 import org.joda.time.LocalDateTime;
@@ -54,8 +53,6 @@ import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-
-import static java.security.AccessController.getContext;
 
 public class AddPostActivity extends AppCompatActivity {
     public static final String storageConnectionString =
@@ -107,13 +104,16 @@ public class AddPostActivity extends AppCompatActivity {
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent gallaryIntent = new Intent();
-                gallaryIntent.setType("image/*");
-                gallaryIntent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(gallaryIntent, REQUEST_CODE);
+                openImageFromGalary();
             }
         });
 
+    }
+    private void openImageFromGalary(){
+        Intent gallaryIntent = new Intent();
+        gallaryIntent.setType("image/*");
+        gallaryIntent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(gallaryIntent, REQUEST_CODE);
     }
 
     @Override
@@ -126,8 +126,9 @@ public class AddPostActivity extends AppCompatActivity {
                     Bitmap photo = MediaStore.Images.Media.getBitmap(
                             getApplicationContext().getContentResolver(), data.getData()
                     );
-                    imageView.setImageBitmap(photo);
-                    bm = photo;
+                    Bitmap scaledPhoto = Bitmap.createScaledBitmap(photo, 740, 412, false);
+                    imageView.setImageBitmap(scaledPhoto);
+                    bm = scaledPhoto;
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

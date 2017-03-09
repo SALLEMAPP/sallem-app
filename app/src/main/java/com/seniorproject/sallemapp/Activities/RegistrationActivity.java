@@ -1,23 +1,23 @@
 package com.seniorproject.sallemapp.Activities;
 
+import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
-import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.method.NumberKeyListener;
-import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
@@ -37,22 +37,24 @@ import com.microsoft.windowsazure.mobileservices.http.ServiceFilterResponse;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 import com.seniorproject.sallemapp.R;
 import com.seniorproject.sallemapp.entities.User;
-import com.seniorproject.sallemapp.helpers.MyHandler;
+import com.seniorproject.sallemapp.helpers.CommonMethods;
 import com.squareup.okhttp.OkHttpClient;
 
-import org.joda.time.DateTime;
 import org.joda.time.LocalDateTime;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
+import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import com.microsoft.windowsazure.notifications.NotificationsManager;
+
+import static com.microsoft.windowsazure.mobileservices.table.query.QueryOperations.val;
 
 public class RegistrationActivity extends AppCompatActivity {
 
@@ -65,14 +67,32 @@ public class RegistrationActivity extends AppCompatActivity {
                     "AccountKey=0ROm5ARwztUrPMEWcVuZYb4EgOS7/rB5v0y0kuaNPgRkoTnjBhHFXqaT82ydmgIIV+GeUqpCR5Mq/gI7WVcYyA==";
     Bitmap bm;
     public static final  String SENDER_ID ="1091231496982";
+    private static final int REQUEST_CODE = 1000;
+    private EditText mTextFirstName =null;
+    private EditText mTextLastName = null;
+    private EditText mTextEmail = null;
+    private EditText mTextPassword = null;
+    private EditText mTextRePassword = null;
+
+    private ImageButton mButtoneAvatar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
-        _savingProgressBar = (ProgressBar)findViewById(R.id.regist_saving_progress);
+        _savingProgressBar = (ProgressBar)findViewById(R.id.registeration_prgSaving);
         _savingProgressBar.setVisibility(ProgressBar.GONE);
+        mTextFirstName = ((EditText) findViewById(R.id.registeration_txtfirstName));
+        mTextLastName = ((EditText) findViewById(R.id.registeration_txtLastName));
+        mTextEmail = ((EditText) findViewById(R.id.registeration_txtemail));
+        mTextPassword = ((EditText) findViewById(R.id.registeration_txtPassword));
+        mButtoneAvatar = ((ImageButton) findViewById(R.id.registration_btnAvatar));
+        mTextRePassword = (EditText) findViewById(R.id.registeration_txtConfirmPassword);
+
         attachRegisterButton();
+        attachOpenAvatar();
+
 
         try {
             _client = new MobileServiceClient(
@@ -89,11 +109,11 @@ public class RegistrationActivity extends AppCompatActivity {
                     return okHttpClient;
                 }
             });
-            NotificationsManager.handleNotifications(this, SENDER_ID, MyHandler.class);
+
 
         }
         catch (MalformedURLException e){
-
+            Log.d("SALLEMAPP", e.getCause().getMessage());
 
         }
 
@@ -112,26 +132,41 @@ public class RegistrationActivity extends AppCompatActivity {
         });
 
     }
-    private void registerUser(){
-        String firstName = ((EditText)findViewById(R.id.txt_first_name)).getText().toString();
-        String lastName = ((EditText)findViewById(R.id.txt_last_name)).getText().toString();
-        String email = ((EditText)findViewById(R.id.txt_email)).getText().toString();
-        String password = ((EditText)findViewById(R.id.editText4)).getText().toString();
-        String joinedAt = new LocalDateTime().toString();
-        //Byte[] photo = null;
-        User user = new User();
-        user.setId(UUID.randomUUID().toString());
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        user.setPassword(password);
-        user.setEmail(email);
-        user.setJoinedAt(joinedAt);
-        Drawable drawable = this.getResources().getDrawable(R.drawable.testimage);
-        bm = ((BitmapDrawable)drawable).getBitmap();
+    private void attachOpenAvatar() {
+        ImageButton openAvatarButton = (ImageButton) findViewById(R.id.registration_btnAvatar);
+        openAvatarButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-        user.setStatus(0);
+                openImageFromGalary();
 
-        AsyncTask task =  addUserToDb(user);
+            }
+        });
+
+    }
+
+    private void registerUser() {
+        if (isValidUser()) {
+            String firstName = ((EditText) findViewById(R.id.registeration_txtfirstName)).getText().toString();
+            String lastName = ((EditText) findViewById(R.id.registeration_txtLastName)).getText().toString();
+            String email = ((EditText) findViewById(R.id.registeration_txtemail)).getText().toString();
+            String password = ((EditText) findViewById(R.id.registeration_txtPassword)).getText().toString();
+            String joinedAt = new LocalDateTime().toString();
+            //Byte[] photo = null;
+            User user = new User();
+            user.setId(UUID.randomUUID().toString());
+            user.setFirstName(firstName);
+            user.setLastName(lastName);
+            user.setPassword(password);
+            user.setEmail(email);
+            user.setJoinedAt(joinedAt);
+            Drawable drawable = this.getResources().getDrawable(R.drawable.testimage);
+            bm = ((BitmapDrawable) drawable).getBitmap();
+
+            user.setStatus(0);
+
+            AsyncTask task = addUserToDb(user);
+        }
 
 
     }
@@ -247,6 +282,108 @@ public class RegistrationActivity extends AppCompatActivity {
 
     }
 
+    public boolean isValidUser() {
+        clearErrors();
+        mTextFirstName.setError(null);
+        boolean valid = true;
+        String firstName = mTextFirstName.getText().toString();
+        String lastName = mTextLastName.getText().toString();
+        String email = mTextEmail.getText().toString();
+        String password = mTextPassword.getText().toString();
+        String rePassword = mTextRePassword.getText().toString();
+        if(firstName.isEmpty()){
+            mTextFirstName.setError("You must enter your first name");
+            valid = false;
+        }
+        if(lastName.isEmpty()){
+            mTextLastName.setError("You must enter your last name");
+            valid = false;
+        }
+        if(email.isEmpty()){
+            mTextEmail.setError("You must enter your Email");
+            valid = false;
+        }
+        if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+            mTextEmail.setError("You must enter a valid Email");
+        }
+        if(password.length() < 4){
+            mTextPassword.setError("Password must be at least 4 characters");
+            valid = false;
+        }
+        if(rePassword.isEmpty()){
+            mTextRePassword.setError("Password is not matched");
+            valid = false;
+        }
+        if(!rePassword.equals(password)){
+            mTextRePassword.setError("Password is not matched");
+            valid = false;
+        }
+        try {
+            if (registeredEmail(email)) {
+                mTextEmail.setError("This email has already registered");
+                valid = false;
+            }
+        }
+        catch (Exception e){
+            Log.e(CommonMethods.APP_TAG, e.getCause().getMessage());
+            valid = false;
+            createAndShowDialog("Cannot verify your email right, try again later", "Error");
+
+        }
+        return valid;
+    }
+
+    private boolean registeredEmail(final String email)throws InterruptedException, ExecutionException {
+        List<User> user = _userTable.where()
+                            .field("email").eq(val(email)).select("email").execute().get();
+        if(user.size() > 0){
+            return false;
+        }
+        return true;
+
+    }
+
+    private void openImageFromGalary(){
+
+        Intent gallaryIntent = new Intent();
+        gallaryIntent.setType("image/*");
+        gallaryIntent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(gallaryIntent, REQUEST_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
+            ImageButton avatarButton = (ImageButton) findViewById(R.id.registration_btnAvatar);
+
+            if (data != null) {
+                try {
+                    Bitmap photo = MediaStore.Images.Media.getBitmap(
+                            getApplicationContext().getContentResolver(), data.getData()
+                    );
+                   int i1 = photo.getByteCount();
+                    Bitmap scaledPhoto = Bitmap.createScaledBitmap(photo, 90, 90, false);
+                   int i2 = scaledPhoto.getByteCount();
+                    avatarButton.setImageBitmap(scaledPhoto);
+                    bm = scaledPhoto;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                Toast.makeText(getApplicationContext(), "Cancelled", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void clearErrors() {
+        mTextFirstName.setError(null);
+        mTextLastName.setError(null);
+        mTextPassword.setError(null);
+        mTextEmail.setError(null);
+        mTextRePassword.setError(null);
+
+    }
+
     private class ProgressFilter implements ServiceFilter {
 
         @Override
@@ -268,7 +405,14 @@ public class RegistrationActivity extends AppCompatActivity {
             Futures.addCallback(future, new FutureCallback<ServiceFilterResponse>() {
                 @Override
                 public void onFailure(Throwable e) {
+
                     resultFuture.setException(e);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (_savingProgressBar != null) _savingProgressBar.setVisibility(ProgressBar.GONE);
+                        }
+                    });
                 }
 
                 @Override

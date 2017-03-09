@@ -7,8 +7,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.seniorproject.sallemapp.entities.User;
 import com.seniorproject.sallemapp.R;
+import com.seniorproject.sallemapp.entities.User;
 
 import java.util.ArrayList;
 

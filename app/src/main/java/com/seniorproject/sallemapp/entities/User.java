@@ -1,12 +1,8 @@
 package com.seniorproject.sallemapp.entities;
 
-import android.graphics.Bitmap;
-
 import com.google.gson.annotations.SerializedName;
 
 import org.joda.time.DateTime;
-
-import java.util.UUID;
 
 /**
  * Created by abdul on 19-Feb-2017.
@@ -112,7 +108,7 @@ public class User {
     public DateTime getJoinedAtDate(){
         return new DateTime();
     }
-    public  static User CURRENT_USER = null;
+
 
     private String encryptPassword(String password){
        return null;

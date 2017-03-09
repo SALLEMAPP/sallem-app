@@ -11,9 +11,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.seniorproject.sallemapp.entities.User;
 import com.seniorproject.sallemapp.Activities.listsadpaters.FriendsListAdapter;
 import com.seniorproject.sallemapp.R;
+import com.seniorproject.sallemapp.entities.User;
 
 import java.util.ArrayList;
 import java.util.UUID;

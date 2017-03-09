@@ -2,8 +2,6 @@ package com.seniorproject.sallemapp.entities;
 
 import com.google.gson.annotations.SerializedName;
 
-import org.joda.time.DateTime;
-
 /**
  * Created by Centeral on 2/21/2017.
  */
