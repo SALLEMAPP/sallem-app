@@ -1,7 +1,5 @@
 package com.seniorproject.sallemapp.entities;
 
-import java.lang.ref.PhantomReference;
-
 /**
  * Created by Centeral on 2/21/2017.
  */

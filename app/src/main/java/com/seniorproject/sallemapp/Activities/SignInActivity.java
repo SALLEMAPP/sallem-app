@@ -1,13 +1,8 @@
 package com.seniorproject.sallemapp.Activities;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,13 +11,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.app.AlertDialog;
+
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
-import com.google.gson.annotations.SerializedName;
-import com.microsoft.windowsazure.mobileservices.ApiOperationCallback;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.http.NextServiceFilterCallback;
 import com.microsoft.windowsazure.mobileservices.http.OkHttpClientFactory;
@@ -30,25 +23,15 @@ import com.microsoft.windowsazure.mobileservices.http.ServiceFilter;
 import com.microsoft.windowsazure.mobileservices.http.ServiceFilterRequest;
 import com.microsoft.windowsazure.mobileservices.http.ServiceFilterResponse;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
-import com.microsoft.windowsazure.mobileservices.table.sync.MobileServiceSyncContext;
-import com.microsoft.windowsazure.mobileservices.table.sync.localstore.ColumnDataType;
-import com.microsoft.windowsazure.mobileservices.table.sync.localstore.MobileServiceLocalStoreException;
-import com.microsoft.windowsazure.mobileservices.table.sync.localstore.SQLiteLocalStore;
-import com.microsoft.windowsazure.mobileservices.table.sync.synchandler.SimpleSyncHandler;
-import com.seniorproject.sallemapp.entities.UserLocation;
+import com.seniorproject.sallemapp.entities.User;
 import com.squareup.okhttp.OkHttpClient;
 
 import static com.microsoft.windowsazure.mobileservices.table.query.QueryOperations.*;
 
 
 import com.seniorproject.sallemapp.R;
-import com.seniorproject.sallemapp.entities.User;
-import com.squareup.okhttp.internal.Util;
-
-import org.joda.time.LocalDate;
 
 import java.net.MalformedURLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -139,7 +122,7 @@ public class SignInActivity extends AppCompatActivity {
                        if (users.size() > 1) {
                            throw new IllegalStateException("There should not be more that user with the same eamil");
                        }
-                       for(User user:users){
+                       for(User user: users){
                            if(user.getEmail().equals(email)){
                                SharedPreferences sallemPref = getSharedPreferences("SALLEMAPP", MODE_PRIVATE);
                                sallemPref.edit().putString("email", email).commit();

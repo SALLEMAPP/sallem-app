@@ -1,22 +1,15 @@
 package com.seniorproject.sallemapp.Activities;
 
-import android.app.IntentService;
 import android.app.Service;
 import android.content.Intent;
-import android.location.Location;
-import android.location.LocationListener;
 import android.os.Binder;
-import android.os.Bundle;
 import android.os.IBinder;
-import android.support.annotation.IntDef;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.http.OkHttpClientFactory;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
-import com.seniorproject.sallemapp.entities.User;
 import com.seniorproject.sallemapp.entities.UserLocation;
 import com.seniorproject.sallemapp.helpers.LocationService;
 import com.squareup.okhttp.OkHttpClient;

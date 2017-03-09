@@ -4,7 +4,7 @@ package com.seniorproject.sallemapp.entities;
  * Created by Centeral on 2/21/2017.
  */
 
-public class ActivityDetails {
+public class ActivityDetailsDto {
     private int _detailId;
     private int _activityId;
     private int _participantId;
