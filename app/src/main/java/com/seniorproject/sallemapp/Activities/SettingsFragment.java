@@ -7,7 +7,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+import android.widget.Spinner;
+import android.widget.Switch;
 import com.seniorproject.sallemapp.R;
 
 /**
@@ -65,7 +66,102 @@ public class SettingsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_settings, container, false);
+
+        //below line added by Fisal to start loading Sallem Settings from SharedPreferences and view it to layout
+        initSettings();
+
+        //below line added by Fisal to start saving Sallem Settings to SharedPreferences
+        initSaveSettings();
+
     }
+
+    //below initSettings() added by Fisal to start loading Sallem Settings from SharedPreferences and view it to layout
+    private void initSettings() {
+        String allow_user_location = getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).getString("allow_location", "true");
+        String search_distance = getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).getString("search_distance", "1");
+        String status = getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).getString("status", "Online");
+
+        Switch allowLocationSW = (Switch) findViewById(R.id.btn_allow_user_location);
+
+        if (allow_user_location.equalsIgnoreCase("true")) {
+            allowLocationSW.setChecked(true);
+        }
+        else if (allow_user_location.equalsIgnoreCase("false")) {
+            allowLocationSW.setChecked(false);
+        }
+
+
+        Spinner distanceSpinner = (Spinner) findViewById(R.id.spinner2);
+
+        if (search_distance.equalsIgnoreCase("1 KM")) {
+            distanceSpinner.equals("1 KM");
+        }
+        else if (search_distance.equalsIgnoreCase("2 KM")) {
+            distanceSpinner.equals("2 KM");
+        }
+        else if (search_distance.equalsIgnoreCase("3 KM")) {
+            distanceSpinner.equals("3 KM");
+        }
+        else if (search_distance.equalsIgnoreCase("4 KM")) {
+            distanceSpinner.equals("4 KM");
+        }
+        else if (search_distance.equalsIgnoreCase("5 KM")) {
+            distanceSpinner.equals("5 KM");
+        }
+        else if (search_distance.equalsIgnoreCase("6 KM")) {
+            distanceSpinner.equals("6 KM");
+        }
+        else if (search_distance.equalsIgnoreCase("7 KM")) {
+            distanceSpinner.equals("7 KM");
+        }
+        else if (search_distance.equalsIgnoreCase("8 KM")) {
+            distanceSpinner.equals("8 KM");
+        }
+        else if (search_distance.equalsIgnoreCase("9 KM")) {
+            distanceSpinner.equals("9 KM");
+        }
+        else {
+            distanceSpinner.equals("10 KM");
+        }
+
+
+        Spinner statusSpinner = (Spinner) findViewById(R.id.spinner3);
+
+        if (search_distance.equalsIgnoreCase("Online")) {
+            statusSpinner.equals("Online");
+        }
+        else if (search_distance.equalsIgnoreCase("Busy")) {
+            statusSpinner.equals("Busy");
+        }
+        else {
+            statusSpinner.equals("Offline");
+        }
+    }
+
+    //below initSettings() added by Fisal to start saving Sallem Settings to SharedPreferences (THIS IS TEMPORARY ... I WILL MODIFY IT ASAP)
+    private void initSaveSettings() {
+        RadioGroup rgSortBy = (RadioGroup) findViewById(R.id.radioGroup1);
+        rgSortBy.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(RadioGroup arg0, int arg1) {
+                Switch allowLocationSW = (Switch) findViewById(R.id.btn_allow_user_location);
+                Switch allowLocationSW = (Switch) findViewById(R.id.radioCity);
+//				Switch rbBirthDay = (Switch) findViewById(R.id.radioBirthdate);
+                if (allowLocationSW.isChecked()) {
+                    getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putString("allow_location", "true").commit();
+                }
+                else if (allowLocationSW.isChecked()) {
+                    getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putString("allow_location", "city").commit();
+                }
+                else {
+                    getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putString("allow_location", "birthday").commit();
+                }
+            }
+        });
+    }
+
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
