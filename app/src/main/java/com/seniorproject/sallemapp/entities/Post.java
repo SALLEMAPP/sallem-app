@@ -15,6 +15,8 @@ public class Post {
     private String _subject;
     @SerializedName("userId")
     private String _userId;
+    @SerializedName("imagePath")
+    private String _imagePath;
     @SerializedName("activityId")
     private String _activityId;
 
@@ -62,5 +64,11 @@ public class Post {
     }
 
 
+    public String get_imagePath() {
+        return _imagePath;
+    }
 
+    public void set_imagePath(String _imagePath) {
+        this._imagePath = _imagePath;
+    }
 }

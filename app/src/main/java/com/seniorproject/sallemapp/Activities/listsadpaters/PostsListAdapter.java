@@ -2,6 +2,7 @@ package com.seniorproject.sallemapp.Activities.listsadpaters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import com.seniorproject.sallemapp.entities.DomainPost;
 import com.seniorproject.sallemapp.entities.Post;
 import com.seniorproject.sallemapp.R;
 
+import org.joda.time.DateTime;
 import org.joda.time.LocalDateTime;
 
 import java.util.ArrayList;
@@ -38,7 +40,7 @@ public class PostsListAdapter  extends ArrayAdapter<DomainPost> {
     public View getView(int position, View convertView, ViewGroup parent){
         View v = convertView;
         try {
-            Post post = _items.get(position);
+            DomainPost post = _items.get(position);
             if(v == null){
                 LayoutInflater vi =
                         (LayoutInflater) _adpaterContext.getSystemService(
@@ -58,8 +60,9 @@ public class PostsListAdapter  extends ArrayAdapter<DomainPost> {
         return v;
     }
 
-    private void bindPost(Post post, View v) {
+    private void bindPost(DomainPost post, View v) {
         DbContext db = new DbContext();
+        ImageView userAvatart = (ImageView) v.findViewById(R.id.post_layout_user_avatar);
         TextView posDate = (TextView)
                 v.findViewById(R.id.post_layout_lbl_post_date);
         TextView poster = (TextView)
@@ -73,12 +76,15 @@ public class PostsListAdapter  extends ArrayAdapter<DomainPost> {
         TextView quickComment = (TextView)
                 v.findViewById(R.id.postlayout_txtPostCom);
 
-        poster.setText("Abdullah BaMusa");
-
-        LocalDateTime now = new LocalDateTime();
-
-        posDate.setText(now.toDateTime().toString());
-        quickComment.setText(post.getSubject());
+        poster.setText(post.get_user().getFirstName() + " " + post.get_user().getLasttName());
+        userAvatart.setImageBitmap(post.get_user().getAvatar());
+        DateTime postedAt = new DateTime(post.get_postedAt());
+        posDate.setText(postedAt.toString("MMMM dd, yyyy HH:mm"));
+        quickComment.setText(post.get_subject());
+        if(post.get_image() == null){
+            postImage.setVisibility(View.GONE);
+        }
+        postImage.setImageBitmap(post.get_image());
         postSubject.setText("This is test comment");
         commentsButton.setOnClickListener(new View.OnClickListener() {
             @Override
