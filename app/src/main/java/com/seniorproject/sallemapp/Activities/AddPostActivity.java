@@ -36,8 +36,11 @@ import com.microsoft.windowsazure.mobileservices.http.ServiceFilterRequest;
 import com.microsoft.windowsazure.mobileservices.http.ServiceFilterResponse;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 import com.seniorproject.sallemapp.R;
+import com.seniorproject.sallemapp.entities.DomainPost;
+import com.seniorproject.sallemapp.entities.DomainUser;
 import com.seniorproject.sallemapp.entities.Post;
 import com.seniorproject.sallemapp.entities.PostImage;
+import com.seniorproject.sallemapp.helpers.EntityAsyncResult;
 import com.squareup.okhttp.OkHttpClient;
 
 import org.joda.time.LocalDateTime;
@@ -54,7 +57,7 @@ import java.security.InvalidKeyException;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-public class AddPostActivity extends AppCompatActivity {
+public class AddPostActivity extends AppCompatActivity implements EntityAsyncResult<Post> {
     public static final String storageConnectionString =
             "DefaultEndpointsProtocol=http;" +
                     "AccountName=sallemappphotos;" +
@@ -77,7 +80,7 @@ public class AddPostActivity extends AppCompatActivity {
         try {
             mClient = new MobileServiceClient(
                     "https://sallem.azurewebsites.net",
-                    AddPostActivity.this).withFilter(new ProgressFilter());
+                    this).withFilter(new ProgressFilter());
             ;
 
 
@@ -90,14 +93,12 @@ public class AddPostActivity extends AppCompatActivity {
                     return okHttpClient;
                 }
             });
+        } catch (MalformedURLException e) {
+            Log.d("SALLEM APP", e.getCause().getMessage());
+
         }
 
-        catch (MalformedURLException e){
-        Log.d("SALLEM APP", e.getCause().getMessage());
-
     }
-
-}
 
     private void attachOpenGalaryButton() {
         ImageButton b = (ImageButton) findViewById(R.id.addPost_imgbtnChoosePhoto);
@@ -109,7 +110,8 @@ public class AddPostActivity extends AppCompatActivity {
         });
 
     }
-    private void openImageFromGalary(){
+
+    private void openImageFromGalary() {
         Intent gallaryIntent = new Intent();
         gallaryIntent.setType("image/*");
         gallaryIntent.setAction(Intent.ACTION_GET_CONTENT);
@@ -162,88 +164,36 @@ public class AddPostActivity extends AppCompatActivity {
         String subject = ((EditText) findViewById(R.id.addPost_txtPostSubject)).getText().toString();
         ImageView image = (ImageView) findViewById(R.id.addPost_imgPostImage);
         String postedAt = new LocalDateTime().toString();
-        String userId = "095bd4e3-8331-4626-a1ef-0a622eed1b59";
+        String userId = DomainUser.CURRENT_USER.getId();
         Post post = new Post();
 
         post.setId(UUID.randomUUID().toString());
         post.setPostedAt(postedAt);
         post.setUserId(userId);
         post.setSubject(subject);
+        if (bm != null) {
+            post.set_imagePath(UUID.randomUUID().toString() + ".jpg");
+        }
         //
-        PostImage postImage = new PostImage();
-        postImage.setId(UUID.randomUUID().toString());
-        postImage.setPostId(post.getId());
-        String imagePath = UUID.randomUUID().toString();
-        postImage.set_path(imagePath);
-        insert(post, postImage);
+        SavePostAsync savePostAsync = new SavePostAsync(post);
+        savePostAsync.delegate = this;
+        savePostAsync.execute();
 
 
     }
 
-    private void insert(final Post post, final PostImage postImage) {
-        AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... params) {
-                try
-                {
-
-                    CloudStorageAccount account = CloudStorageAccount.parse(storageConnectionString);
-                    CloudBlobClient serviceClient = account.createCloudBlobClient();
-
-                    // Container name must be lower case.
-                    CloudBlobContainer container = serviceClient.getContainerReference("sallemphotos");
-                    //container.createIfNotExists();
-
-                    // Upload an image file.
-
-                    String s = postImage.get_path() + ".jpg";
-                    CloudBlockBlob blob = container.getBlockBlobReference(s);
-
-                    File outputDir = getBaseContext().getCacheDir();
-                    File sourceFile = File.createTempFile("101", "jpg", outputDir);
-                    OutputStream outputStream = new FileOutputStream(sourceFile);
-                    bm.compress(Bitmap.CompressFormat.JPEG, 50, outputStream);
-                    outputStream.close();
-                    blob.upload(new FileInputStream(sourceFile), sourceFile.length());
-
-                    mPostTable = mClient.getTable(Post.class);
-                    mPostImageTable = mClient.getTable(PostImage.class);
-                    mPostTable.insert(post).get();
-                    mPostImageTable.insert(postImage);
-
-                } catch (FileNotFoundException fileNotFoundException) {
-                    Log.d("SALLEM APP", fileNotFoundException.getCause().getMessage());
-                } catch (StorageException storageException) {
-                    Log.d("SALLEM APP", storageException.getCause().getMessage());
-
-
-                } catch (IOException e){
-                    Log.d("SALLEM APP", e.getCause().getMessage());
-
-                } catch (URISyntaxException e){
-                    Log.d("SALLEM APP", e.getCause().getMessage());
-
-                }catch (InvalidKeyException e){
-                    Log.d("SALLEM APP", e.getCause().getMessage());
-                }
-                catch (Exception e) {
-                    Log.d("SALLEM APP", e.getCause().getMessage());
-                }
-
-
-                return null;
-            }
-        };
-        task.execute();
+    @Override
+    public void processFinish(Post result) {
+        Post p = result;
     }
+
     private class ProgressFilter implements ServiceFilter {
 
         @Override
-        public ListenableFuture<ServiceFilterResponse> handleRequest(ServiceFilterRequest request, NextServiceFilterCallback nextServiceFilterCallback) {
+        public ListenableFuture<ServiceFilterResponse> handleRequest
+                (ServiceFilterRequest request, NextServiceFilterCallback nextServiceFilterCallback) {
 
             final SettableFuture<ServiceFilterResponse> resultFuture = SettableFuture.create();
-
-
             runOnUiThread(new Runnable() {
 
                 @Override
@@ -263,24 +213,78 @@ public class AddPostActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(ServiceFilterResponse response) {
                     runOnUiThread(new Runnable() {
-
                         @Override
                         public void run() {
                             if (progressBar != null) progressBar.setVisibility(ProgressBar.GONE);
 
                         }
-
-
                     });
-
-
-
-                    //finish();
+                    finish();
                 }
             });
 
             return resultFuture;
         }
     }
+
+    public class SavePostAsync extends AsyncTask<Void, Void, Post> {
+        EntityAsyncResult<Post> delegate;
+        private Post mPost;
+
+        public SavePostAsync(Post post) {
+            mPost = post;
+        }
+
+        @Override
+        protected Post doInBackground(Void... params) {
+            String imagePath = mPost.get_imagePath();
+            if (imagePath != null &&  !imagePath.isEmpty()) {
+                try {
+                    CloudStorageAccount account = CloudStorageAccount.parse(storageConnectionString);
+                    CloudBlobClient serviceClient = account.createCloudBlobClient();
+
+                    // Container name must be lower case.
+                    CloudBlobContainer container = serviceClient.getContainerReference("sallemphotos");
+                    //container.createIfNotExists();
+
+                    // Upload an image file.
+                    CloudBlockBlob blob = container.getBlockBlobReference(imagePath);
+
+                    File outputDir = getBaseContext().getCacheDir();
+                    File sourceFile = File.createTempFile("101", "jpg", outputDir);
+                    OutputStream outputStream = new FileOutputStream(sourceFile);
+                    bm.compress(Bitmap.CompressFormat.JPEG, 50, outputStream);
+                    outputStream.close();
+                    blob.upload(new FileInputStream(sourceFile), sourceFile.length());
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (StorageException e) {
+                    e.printStackTrace();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                } catch (InvalidKeyException e) {
+                    e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            mPostTable = mClient.getTable(Post.class);
+            mPostTable.insert(mPost);
+            return mPost;
+        }
+
+
+        @Override
+        protected void onPostExecute(Post post) {
+            if (delegate != null) {
+
+                delegate.processFinish(post);
+            }
+        }
+    }
+
 
 }

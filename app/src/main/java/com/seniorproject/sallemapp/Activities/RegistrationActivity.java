@@ -147,10 +147,10 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private void registerUser() {
         if (isValidUser()) {
-            String firstName = ((EditText) findViewById(R.id.registeration_txtfirstName)).getText().toString();
-            String lastName = ((EditText) findViewById(R.id.registeration_txtLastName)).getText().toString();
-            String email = ((EditText) findViewById(R.id.registeration_txtemail)).getText().toString();
-            String password = ((EditText) findViewById(R.id.registeration_txtPassword)).getText().toString();
+            String firstName = mTextFirstName.getText().toString();
+            String lastName = mTextLastName.getText().toString();
+            String email = mTextEmail.getText().toString();
+            String password = mTextPassword.getText().toString();
             String joinedAt = new LocalDateTime().toString();
             //Byte[] photo = null;
             User user = new User();
@@ -160,17 +160,14 @@ public class RegistrationActivity extends AppCompatActivity {
             user.setPassword(password);
             user.setEmail(email);
             user.setJoinedAt(joinedAt);
-            Drawable drawable = this.getResources().getDrawable(R.drawable.testimage);
-            bm = ((BitmapDrawable) drawable).getBitmap();
-
+            user.setImageTitle(UUID.randomUUID().toString());
             user.setStatus(0);
 
-            AsyncTask task = addUserToDb(user);
+            addUserToDb(user);
         }
 
 
     }
-    String imageName = null;
 //    private AsyncTask<Void, Void, Void> uploadUserImage() {
 //
 //        AsyncTask<Void, Void,Void> task =new AsyncTask<Void, Void, Void>() {
@@ -213,8 +210,7 @@ public class RegistrationActivity extends AppCompatActivity {
 //
 //        return task.execute();
 //    }
-    private String uploadUserImage(){
-        String s = null;
+    private void uploadUserImage(String avatarName){
         try {
             CloudStorageAccount account = CloudStorageAccount.parse(storageConnectionString);
             CloudBlobClient serviceClient = account.createCloudBlobClient();
@@ -225,8 +221,8 @@ public class RegistrationActivity extends AppCompatActivity {
 
             // Upload an image file.
 
-            s = UUID.randomUUID().toString() + ".jpg";
-            CloudBlockBlob blob = container.getBlockBlobReference(s);
+            String name = avatarName + ".jpg";
+            CloudBlockBlob blob = container.getBlockBlobReference(name);
 
             File outputDir = getBaseContext().getCacheDir();
             File sourceFile = File.createTempFile("101", "jpg", outputDir);
@@ -248,10 +244,9 @@ public class RegistrationActivity extends AppCompatActivity {
         } catch (Exception e) {
             createAndShowDialogFromTask(e, "Error");
         }
-        return s;
     }
 
-    private AsyncTask<Void,Void,Void> addUserToDb(final User user) {
+    private void addUserToDb(final User user) {
 
 
         AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
@@ -259,32 +254,25 @@ public class RegistrationActivity extends AppCompatActivity {
             protected Void doInBackground(Void... params) {
                try {
 
-                   String s2 =  uploadUserImage();
-                   user.setImageTitle(s2);
+                   uploadUserImage(user.getImageTitle());
                    _userTable = _client.getTable(User.class);
                    _userTable.insert(user).get();
-
-
-
-
                }
                catch (Exception e){
                    createAndShowDialogFromTask(e, "Error");
                }
-
-
                 return null;
             }
 
         };
-       return task.execute();
+       task.execute();
 
 
     }
 
     public boolean isValidUser() {
         clearErrors();
-        mTextFirstName.setError(null);
+
         boolean valid = true;
         String firstName = mTextFirstName.getText().toString();
         String lastName = mTextLastName.getText().toString();
@@ -318,22 +306,23 @@ public class RegistrationActivity extends AppCompatActivity {
             mTextRePassword.setError("Password is not matched");
             valid = false;
         }
-        try {
-            if (registeredEmail(email)) {
-                mTextEmail.setError("This email has already registered");
-                valid = false;
-            }
-        }
-        catch (Exception e){
-            Log.e(CommonMethods.APP_TAG, e.getCause().getMessage());
-            valid = false;
-            createAndShowDialog("Cannot verify your email right, try again later", "Error");
-
-        }
+//        try {
+//            if (registeredEmail(email)) {
+//                mTextEmail.setError("This email has already registered");
+//                valid = false;
+//            }
+//        }
+//        catch (Exception e){
+//            Log.e(CommonMethods.APP_TAG, e.getCause().getMessage());
+//            valid = false;
+//            createAndShowDialog("Cannot verify your email right, try again later", "Error");
+//
+//        }
         return valid;
     }
 
     private boolean registeredEmail(final String email)throws InterruptedException, ExecutionException {
+        _userTable = _client.getTable(User.class);
         List<User> user = _userTable.where()
                             .field("email").eq(val(email)).select("email").execute().get();
         if(user.size() > 0){

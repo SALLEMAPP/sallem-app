@@ -2,6 +2,7 @@ package com.seniorproject.sallemapp.Activities;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import com.microsoft.azure.storage.CloudStorageAccount;
 import com.microsoft.azure.storage.StorageException;
 import com.microsoft.azure.storage.blob.CloudBlobClient;
 import com.microsoft.azure.storage.blob.CloudBlobContainer;
+import com.microsoft.azure.storage.blob.CloudBlockBlob;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.MobileServiceException;
 import com.microsoft.windowsazure.mobileservices.http.NextServiceFilterCallback;
@@ -30,25 +32,33 @@ import com.microsoft.windowsazure.mobileservices.http.ServiceFilter;
 import com.microsoft.windowsazure.mobileservices.http.ServiceFilterRequest;
 import com.microsoft.windowsazure.mobileservices.http.ServiceFilterResponse;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
+import com.microsoft.windowsazure.mobileservices.table.query.QueryOrder;
 import com.seniorproject.sallemapp.Activities.listsadpaters.PostsListAdapter;
 import com.seniorproject.sallemapp.R;
 import com.seniorproject.sallemapp.entities.Comment;
 import com.seniorproject.sallemapp.entities.DomainPost;
+import com.seniorproject.sallemapp.entities.DomainUser;
 import com.seniorproject.sallemapp.entities.Post;
 import com.seniorproject.sallemapp.entities.PostImage;
 import com.seniorproject.sallemapp.entities.User;
 import com.seniorproject.sallemapp.helpers.CommonMethods;
+import com.seniorproject.sallemapp.helpers.DownloadImage;
+import com.seniorproject.sallemapp.helpers.ListAsyncResult;
 import com.squareup.okhttp.OkHttpClient;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -58,7 +68,7 @@ import java.util.stream.Collectors;
  * Use the {@link PostsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PostsFragment extends ListFragment {
+public class PostsFragment extends ListFragment implements ListAsyncResult<DomainPost> {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -154,36 +164,10 @@ public class PostsFragment extends ListFragment {
 
     private void loadPosts() {
 
+       LoadPosts p = new LoadPosts();
+        p.delegate = this;
+        p.execute();
 
-        AsyncTask<Void, Void, List<DomainPost>> task = new AsyncTask<Void, Void, List<DomainPost>>() {
-            @Override
-            protected Void doInBackground(Void... params) {
-                try {
-
-                    FragmentActivity  a =  getActivity();
-                    a.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            ArrayList r = new ArrayList<Post>();
-                            for(Post post: posts){
-                               r.add(post);
-                            }
-                            _adpater = new PostsListAdapter(PostsFragment.this.getContext(),
-
-                                    r
-                                    );
-                            setListAdapter(_adpater);
-                        }
-                    });
-
-                }
-
-
-                return null;
-            }
-        };
-
-        task.execute();
 
 
     }
@@ -213,6 +197,15 @@ public class PostsFragment extends ListFragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void processFinish(List<DomainPost> result) {
+
+        _adpater = new PostsListAdapter(this.getContext(), (ArrayList<DomainPost>) result);
+        setListAdapter(_adpater);
+
+
     }
 
     /**
@@ -282,66 +275,106 @@ public class PostsFragment extends ListFragment {
             return resultFuture;
         }
     }
-    private class LoadPosts extends AsyncTask<Void, Void, List<DomainPost>{
-
+    private class LoadPosts extends AsyncTask<Void, Void, List<DomainPost>> {
+        public ListAsyncResult<DomainPost> delegate;
         @Override
         protected List<DomainPost> doInBackground(Void... params) {
-
+            ArrayList<DomainPost> domainPosts = new ArrayList<>();
             mPostTable = mClient.getTable(Post.class);
-            MobileServiceTable<PostImage> imageTable = mClient.getTable(PostImage.class);
+            //MobileServiceTable<PostImage> imageTable = mClient.getTable(PostImage.class);
+            MobileServiceTable<User> userTable = mClient.getTable(User.class);
 
             try {
-                List<Post> posts = mPostTable.execute().get();
-                List<PostImage> images = imageTable.execute().get();
-                for (Post p : posts){
-                    List<PostImage> f = images.stream()
-                            .filter(new Predicate<PostImage>() {
-                                @Override
-                                public boolean test(PostImage postImage) {
-                                    return postImage.getPostId() == p.getId();
-                                }
-                            }).collect(Collectors.toList());
+                List<Post> posts = mPostTable.orderBy("postedAt", QueryOrder.Descending).execute().get();
+                for (Post post : posts) {
+//                    List<PostImage> images = imageTable.where()
+//                            .field("postId").eq(post.getId()).execute().get();
+                    DomainPost p = new DomainPost();
+                    p.set_id(post.getId());
+                    p.set_subject(post.getSubject());
+                    p.set_postedAt(post.getPostedAt());
 
-                    Bitmap postImage = getImage(p.getId());
+                    User user = userTable.where().field("id").eq(post.getUserId()).execute().get().get(0);
+                    if (user != null) {
+                        String imageTitle = user.getImageTitle() + ".jpg";
+                        Bitmap avatar = DownloadImage.getImage(PostsFragment.this.getContext(), imageTitle);
+                        DomainUser domainUser = new DomainUser(user);
+                        domainUser.setAvatar(avatar);
+                        p.set_user(domainUser);
+                    }
+                    String imagePath = post.get_imagePath();
+                    if (imagePath != null ) {
+                        p.set_image(getImage(imagePath));
+                    }
+
+                    domainPosts.add(p);
                 }
             }
-            catch (ExecutionException e){
+             catch (ExecutionException e) {
+                Log.e(CommonMethods.APP_TAG, e.getCause().getMessage());
+                e.printStackTrace();
+
+            } catch (InterruptedException e) {
+                Log.e(CommonMethods.APP_TAG, e.getCause().getMessage());
+
+
+            } catch (URISyntaxException e) {
+                Log.e(CommonMethods.APP_TAG, e.getCause().getMessage());
+
+
+            } catch (StorageException e) {
+                Log.e(CommonMethods.APP_TAG, e.getCause().getMessage());
+
+
+            } catch (InvalidKeyException e) {
+                Log.e(CommonMethods.APP_TAG, e.getCause().getMessage());
+
 
             }
-            catch (MobileServiceException e){
+            catch (IOException e){
+                Log.e(CommonMethods.APP_TAG, e.getCause().getMessage());
 
             }
-            catch(InterruptedException e){
 
-            }
+            return domainPosts;
+        }
+
+
+        private Bitmap getImage(String id) throws InvalidKeyException, URISyntaxException, StorageException, IOException {
+            CloudStorageAccount account = CloudStorageAccount.parse(CommonMethods.storageConnectionString);
+            CloudBlobClient serviceClient = account.createCloudBlobClient();
+
+            // Container name must be lower case.
+            CloudBlobContainer container = serviceClient.getContainerReference("sallemphotos");
+            //container.createIfNotExists();
+
+            // Upload an image file.
+            //String imageName = UUID.randomUUID().toString();
+            CloudBlockBlob blob = container.getBlockBlobReference(id);
+
+            File outputDir = getActivity().getBaseContext().getCacheDir();
+            File sourceFile = File.createTempFile("101", "jpg", outputDir);
+            OutputStream outputStream = new FileOutputStream(sourceFile);
+            //bm.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+            //outputStream.close();
+            //blob.upload(new FileInputStream(sourceFile), sourceFile.length());
+
+            // Download the image file.
+            File destinationFile = new File(sourceFile.getParentFile(), "image1Download.tmp");
+            blob.downloadToFile(destinationFile.getAbsolutePath());
+            Bitmap image = BitmapFactory.decodeStream(new FileInputStream(destinationFile));
+            return image;
+
 
 
         }
 
 
-        private Bitmap getImage(String id) throws InvalidKeyException, URISyntaxException, StorageException {
-            CloudStorageAccount account = CloudStorageAccount.parse(CommonMethods.storageConnectionString);
-                    CloudBlobClient serviceClient = account.createCloudBlobClient();
-
-                    // Container name must be lower case.
-                    CloudBlobContainer container = serviceClient.getContainerReference("sallemphotos");
-                    //container.createIfNotExists();
-
-                    // Upload an image file.
-                    imageName = UUID.randomUUID().toString();
-                    CloudBlockBlob blob = container.getBlockBlobReference(imageName);
-
-                    File outputDir = getBaseContext().getCacheDir();
-                    File sourceFile = File.createTempFile("101", "jpg", outputDir);
-                    OutputStream outputStream = new FileOutputStream(sourceFile);
-                    bm.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
-                    outputStream.close();
-                    blob.upload(new FileInputStream(sourceFile), sourceFile.length());
-
-                    // Download the image file.
-                    //File destinationFile = new File(sourceFile.getParentFile(), "image1Download.tmp");
-                    //blob.downloadToFile(destinationFile.getAbsolutePath());
+        @Override
+        protected void onPostExecute(List<DomainPost> domainPosts) {
+            delegate.processFinish(domainPosts);
         }
     }
+
 
 }

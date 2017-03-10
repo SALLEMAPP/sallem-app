@@ -22,6 +22,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.support.design.widget.TabLayout;
 import android.widget.Toast;
@@ -33,6 +34,7 @@ import com.seniorproject.sallemapp.Activities.pagesadapters.NearbyPageAdapter;
 import com.seniorproject.sallemapp.Activities.pagesadapters.NotificationPageAdapter;
 import com.seniorproject.sallemapp.Activities.pagesadapters.SettingsPageAdapter;
 import com.seniorproject.sallemapp.R;
+import com.seniorproject.sallemapp.entities.DomainUser;
 
 
 public class HomeActivity extends AppCompatActivity
@@ -111,7 +113,9 @@ public class HomeActivity extends AppCompatActivity
         //Update navigation header to contains user information
         View v = navigationView.getHeaderView(0);
         TextView t =(TextView) v.findViewById(R.id.textView);
-        t.setText("Abdullah");
+        t.setText(DomainUser.CURRENT_USER.getFirstName() + " " + DomainUser.CURRENT_USER.getLasttName());
+        ImageView avatar =(ImageView) v.findViewById(R.id.navHeader_avatr);
+        avatar.setImageBitmap(DomainUser.CURRENT_USER.getAvatar());
         _currnetMenu = CurrentMenu.HOME;
     }
 

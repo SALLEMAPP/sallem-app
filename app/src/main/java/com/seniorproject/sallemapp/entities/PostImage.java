@@ -38,4 +38,7 @@ public class PostImage {
     public void set_path(String _path) {
         this._path = _path;
     }
+    public PostImage(){
+
+    }
 }
