@@ -112,6 +112,8 @@ public class SignInActivity extends AppCompatActivity implements EntityAsyncResu
     private void openHomeActivity(){
         Intent homeIntent = new Intent(SignInActivity.this, HomeActivity.class);
         startActivity(homeIntent);
+        finish();
+
     }
 
 
@@ -174,7 +176,6 @@ public class SignInActivity extends AppCompatActivity implements EntityAsyncResu
         }
         DomainUser.CURRENT_USER = result;
         openHomeActivity();
-        finish();
 
 
     }

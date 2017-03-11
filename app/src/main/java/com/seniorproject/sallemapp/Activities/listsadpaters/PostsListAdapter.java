@@ -3,6 +3,7 @@ package com.seniorproject.sallemapp.Activities.listsadpaters;
 import android.content.Context;
 import android.content.Intent;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,8 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDateTime;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by Centeral on 2/21/2017.
@@ -61,7 +64,6 @@ public class PostsListAdapter  extends ArrayAdapter<DomainPost> {
     }
 
     private void bindPost(DomainPost post, View v) {
-        DbContext db = new DbContext();
         ImageView userAvatart = (ImageView) v.findViewById(R.id.post_layout_user_avatar);
         TextView posDate = (TextView)
                 v.findViewById(R.id.post_layout_lbl_post_date);
@@ -81,10 +83,14 @@ public class PostsListAdapter  extends ArrayAdapter<DomainPost> {
         DateTime postedAt = new DateTime(post.get_postedAt());
         posDate.setText(postedAt.toString("MMMM dd, yyyy HH:mm"));
         quickComment.setText(post.get_subject());
-        if(post.get_image() == null){
-            postImage.setVisibility(View.GONE);
+        if(post.get_image() != null){
+            //postImage.setVisibility(View.GONE);
+            postImage.setImageBitmap(post.get_image());
         }
-        postImage.setImageBitmap(post.get_image());
+        else{
+            postImage.setImageBitmap(null);
+        }
+
         postSubject.setText("This is test comment");
         commentsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,5 +112,13 @@ public class PostsListAdapter  extends ArrayAdapter<DomainPost> {
                 v.getContext().startActivity(i);
             }
         });
+    }
+
+    @Override
+    public void addAll(@NonNull Collection<? extends DomainPost> collection) {
+        //super.addAll(collection);
+        _items.clear();
+        _items.addAll(collection);
+        notifyDataSetChanged();
     }
 }
