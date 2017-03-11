@@ -26,6 +26,7 @@ public class SettingsFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
 
+
     private int _page;
     private String _title;
 
@@ -68,13 +69,15 @@ public class SettingsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_settings, container, false);
+        View view = inflater.inflate(R.layout.fragment_settings, container, false);  //Reorder onCreateView by Fisal
 
         //below line added by Fisal to start loading Sallem Settings from SharedPreferences and view it to layout
         initSettings();
 
         //below line added by Fisal to start saving Sallem Settings to SharedPreferences
-        initSaveSettings();
+       initSaveSettings();
+
+        return view;   //Reorder onCreateView by Fisal
 
     }
 
@@ -143,7 +146,7 @@ public class SettingsFragment extends Fragment {
 
 
 
-    //below initSettings() added by Fisal to start saving Sallem Settings to SharedPreferences (THIS IS TEMPORARY ... I WILL MODIFY IT ASAP)
+    //below initSettings() added by Fisal to start saving Sallem Settings to SharedPreferences 
     private void initSaveSettings() {
         RelativeLayout rlyout = (RelativeLayout) findViewById(R.id.rlyout_settings);
         rlyout.setOnClickListener(new setOnClickListener() {
