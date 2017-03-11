@@ -4,97 +4,101 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.seniorproject.sallemapp.Activities.SettingsFragment">
+
     <RelativeLayout
+        android:id="@+id/rlyout_settings"
+        android:clickable="true"
+        android:filterTouchesWhenObscured="true"
         android:layout_width="wrap_content"
         android:layout_height="match_parent">
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_menu_camera"
-                android:id="@+id/img_add_photo"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_marginTop="70dp" />
 
-            <TextView
-                android:text="TextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/img_add_photo"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="13dp"
-                android:id="@+id/txt_username"
-                tools:text="User Name"
-                android:textColor="@android:color/black" />
+        <ImageButton
+            android:id="@+id/img_add_photo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="70dp"
+            app:srcCompat="@drawable/ic_menu_camera" />
 
-            <Spinner
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/spinner2"
-                android:layout_centerVertical="true"
-                android:layout_alignLeft="@+id/txt_username"
-                android:layout_alignStart="@+id/txt_username"
-                android:layout_marginLeft="13dp"
-                android:layout_marginStart="13dp"
-                android:entries="@array/pref_search_distance"
-                android:background="@color/sallemBlue" />
+        <TextView
+            android:id="@+id/txt_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/img_add_photo"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="13dp"
+            android:text="TextView"
+            android:textColor="@android:color/black"
+            tools:text="User Name" />
 
-            <TextView
-                android:text="@string/serach_distance_settings_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/spinner2"
-                android:layout_toLeftOf="@+id/spinner2"
-                android:id="@+id/txt_search_distance"
-                android:textColorLink="@android:color/black"
-                android:textColor="@android:color/black" />
+        <Spinner
+            android:id="@+id/spinner2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/txt_username"
+            android:layout_alignStart="@+id/txt_username"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="13dp"
+            android:layout_marginStart="13dp"
+            android:background="@color/sallemBlue"
+            android:entries="@array/pref_search_distance" />
 
-            <Switch
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/btn_allow_user_location"
-                android:text="@string/allow_location_setting_label"
-                android:checked="true"
-                android:layout_above="@+id/spinner2"
-                android:layout_alignLeft="@+id/txt_search_distance"
-                android:layout_alignStart="@+id/txt_search_distance"
-                android:layout_marginBottom="51dp" />
+        <TextView
+            android:id="@+id/txt_search_distance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/spinner2"
+            android:layout_toLeftOf="@+id/spinner2"
+            android:text="@string/serach_distance_settings_label"
+            android:textColor="@android:color/black"
+            android:textColorLink="@android:color/black" />
 
-            <TextView
-                android:text="Status"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/spinner2"
-                android:layout_marginTop="40dp"
-                android:id="@+id/txt_user_status"
-                android:textColor="@android:color/black"
-                android:layout_alignLeft="@+id/txt_search_distance"
-                android:layout_alignStart="@+id/txt_search_distance" />
+        <Switch
+            android:id="@+id/btn_allow_user_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/spinner2"
+            android:layout_alignLeft="@+id/txt_search_distance"
+            android:layout_alignStart="@+id/txt_search_distance"
+            android:layout_marginBottom="51dp"
+            android:checked="true"
+            android:text="@string/allow_location_setting_label" />
 
-            <Button
-                android:text="Save"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="65dp"
-                android:id="@+id/btn_save_settings"
-                android:textColor="@color/sallemWhite"
-                android:background="@color/sallemBlue" />
+        <TextView
+            android:id="@+id/txt_user_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/txt_search_distance"
+            android:layout_alignStart="@+id/txt_search_distance"
+            android:layout_below="@+id/spinner2"
+            android:layout_marginTop="40dp"
+            android:text="Status"
+            android:textColor="@android:color/black" />
 
-            <Spinner
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/spinner3"
-                android:entries="@array/pref_status"
-                android:background="@color/sallemBlue"
-                android:layout_alignBaseline="@+id/txt_user_status"
-                android:layout_alignBottom="@+id/txt_user_status"
-                android:layout_alignLeft="@+id/spinner2"
-                android:layout_alignStart="@+id/spinner2" />
+        <Button
+            android:id="@+id/btn_save_settings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="65dp"
+            android:background="@color/sallemBlue"
+            android:text="Save"
+            android:textColor="@color/sallemWhite" />
+
+        <Spinner
+            android:id="@+id/spinner3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/txt_user_status"
+            android:layout_alignBottom="@+id/txt_user_status"
+            android:layout_alignLeft="@+id/spinner2"
+            android:layout_alignStart="@+id/spinner2"
+            android:background="@color/sallemBlue"
+            android:entries="@array/pref_status" />
     </RelativeLayout>
-
 
 
 </FrameLayout>
