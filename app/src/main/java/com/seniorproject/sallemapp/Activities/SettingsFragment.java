@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
 import com.seniorproject.sallemapp.R;
@@ -29,6 +30,8 @@ public class SettingsFragment extends Fragment {
     private String _title;
 
     private OnFragmentInteractionListener mListener;
+
+
 
     public SettingsFragment() {
         // Required empty public constructor
@@ -78,7 +81,7 @@ public class SettingsFragment extends Fragment {
     //below initSettings() added by Fisal to start loading Sallem Settings from SharedPreferences and view it to layout
     private void initSettings() {
         String allow_user_location = getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).getString("allow_location", "true");
-        String search_distance = getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).getString("search_distance", "1");
+        String search_distance = getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).getString("search_distance", "1 KM");
         String status = getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).getString("status", "Online");
 
         Switch allowLocationSW = (Switch) findViewById(R.id.btn_allow_user_location);
@@ -127,10 +130,10 @@ public class SettingsFragment extends Fragment {
 
         Spinner statusSpinner = (Spinner) findViewById(R.id.spinner3);
 
-        if (search_distance.equalsIgnoreCase("Online")) {
+        if (status.equalsIgnoreCase("Online")) {
             statusSpinner.equals("Online");
         }
-        else if (search_distance.equalsIgnoreCase("Busy")) {
+        else if (status.equalsIgnoreCase("Busy")) {
             statusSpinner.equals("Busy");
         }
         else {
@@ -138,24 +141,67 @@ public class SettingsFragment extends Fragment {
         }
     }
 
+
+
     //below initSettings() added by Fisal to start saving Sallem Settings to SharedPreferences (THIS IS TEMPORARY ... I WILL MODIFY IT ASAP)
     private void initSaveSettings() {
-        RadioGroup rgSortBy = (RadioGroup) findViewById(R.id.radioGroup1);
-        rgSortBy.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+        RelativeLayout rlyout = (RelativeLayout) findViewById(R.id.rlyout_settings);
+        rlyout.setOnClickListener(new setOnClickListener() {
 
             @Override
-            public void onCheckedChanged(RadioGroup arg0, int arg1) {
+            public void setOnClickListener(RelativeLayout arg0, int arg1) {
                 Switch allowLocationSW = (Switch) findViewById(R.id.btn_allow_user_location);
-                Switch allowLocationSW = (Switch) findViewById(R.id.radioCity);
-//				Switch rbBirthDay = (Switch) findViewById(R.id.radioBirthdate);
+                Spinner distanceSpinner = (Spinner) findViewById(R.id.spinner2);
+                Spinner statusSpinner = (Spinner) findViewById(R.id.spinner3);
+
                 if (allowLocationSW.isChecked()) {
                     getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putString("allow_location", "true").commit();
                 }
-                else if (allowLocationSW.isChecked()) {
-                    getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putString("allow_location", "city").commit();
+                else {
+                    getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putString("allow_location", "false").commit();
+                }
+
+
+                if (distanceSpinner.getSelectedItem() == "1 KM") {
+                    getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putString("search_distance", "1 KM").commit();
+                }
+                else if (distanceSpinner.getSelectedItem() == "2 KM") {
+                    getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putString("search_distance", "2 KM").commit();
+                }
+                else if (distanceSpinner.getSelectedItem() == "3 KM") {
+                    getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putString("search_distance", "3 KM").commit();
+                }
+                else if (distanceSpinner.getSelectedItem() == "4 KM") {
+                    getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putString("search_distance", "4 KM").commit();
+                }
+                else if (distanceSpinner.getSelectedItem() == "5 KM") {
+                    getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putString("search_distance", "5 KM").commit();
+                }
+                else if (distanceSpinner.getSelectedItem() == "6 KM") {
+                    getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putString("search_distance", "6 KM").commit();
+                }
+                else if (distanceSpinner.getSelectedItem() == "7 KM") {
+                    getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putString("search_distance", "7 KM").commit();
+                }
+                else if (distanceSpinner.getSelectedItem() == "8 KM") {
+                    getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putString("search_distance", "8 KM").commit();
+                }
+                else if (distanceSpinner.getSelectedItem() == "9 KM") {
+                    getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putString("search_distance", "9 KM").commit();
                 }
                 else {
-                    getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putString("allow_location", "birthday").commit();
+                    getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putString("search_distance", "10 KM").commit();
+                }
+
+
+                if (statusSpinner.getSelectedItem() == "Online") {
+                    getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putString("status", "Online").commit();
+                }
+                else if (statusSpinner.getSelectedItem() == "Busy") {
+                    getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putString("status", "Busy").commit();
+                }
+                else {
+                    getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putString("status", "Offline").commit();
                 }
             }
         });

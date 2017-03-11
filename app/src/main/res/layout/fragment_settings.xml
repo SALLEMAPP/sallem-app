@@ -6,6 +6,9 @@
     tools:context="com.seniorproject.sallemapp.Activities.SettingsFragment">
 
     <RelativeLayout
+        android:id="@+id/rlyout_settings"
+        android:clickable="true"
+        android:filterTouchesWhenObscured="true"
         android:layout_width="wrap_content"
         android:layout_height="match_parent">
 
