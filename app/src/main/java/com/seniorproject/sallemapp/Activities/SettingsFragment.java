@@ -174,27 +174,27 @@ public class SettingsFragment extends Fragment {
                     }
 
 
-                    if (distanceSpinner.getSelectedItem() == 1) {
-                        getActivity().getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putInt("search_distance", 1).apply();
-                    } else if (distanceSpinner.getSelectedItem() == 2) {
-                        getActivity().getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putInt("search_distance", 2).apply();
-                    } else if (distanceSpinner.getSelectedItem() == 3) {
-                        getActivity().getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putInt("search_distance", 3).apply();
-                    } else if (distanceSpinner.getSelectedItem() == 4) {
-                        getActivity().getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putInt("search_distance", 4).apply();
-                    } else if (distanceSpinner.getSelectedItem() == 5) {
-                        getActivity().getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putInt("search_distance", 5).apply();
-                    } else if (distanceSpinner.getSelectedItem() == 6) {
-                        getActivity().getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putInt("search_distance", 6).apply();
-                    } else if (distanceSpinner.getSelectedItem() == 7) {
-                        getActivity().getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putInt("search_distance", 7).apply();
-                    } else if (distanceSpinner.getSelectedItem() == 8) {
-                        getActivity().getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putInt("search_distance", 8).apply();
-                    } else if (distanceSpinner.getSelectedItem() == 9) {
-                        getActivity().getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putInt("search_distance", 9).apply();
-                    } else {
-                        getActivity().getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putInt("search_distance", 10).apply();
-                    }
+//                    if (distanceSpinner.getSelectedItem() == 1) {
+//                        getActivity().getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putInt("search_distance", 1).apply();
+//                    } else if (distanceSpinner.getSelectedItem() == 2) {
+//                        getActivity().getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putInt("search_distance", 2).apply();
+//                    } else if (distanceSpinner.getSelectedItem() == 3) {
+//                        getActivity().getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putInt("search_distance", 3).apply();
+//                    } else if (distanceSpinner.getSelectedItem() == 4) {
+//                        getActivity().getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putInt("search_distance", 4).apply();
+//                    } else if (distanceSpinner.getSelectedItem() == 5) {
+//                        getActivity().getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putInt("search_distance", 5).apply();
+//                    } else if (distanceSpinner.getSelectedItem() == 6) {
+//                        getActivity().getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putInt("search_distance", 6).apply();
+//                    } else if (distanceSpinner.getSelectedItem() == 7) {
+//                        getActivity().getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putInt("search_distance", 7).apply();
+//                    } else if (distanceSpinner.getSelectedItem() == 8) {
+//                        getActivity().getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putInt("search_distance", 8).apply();
+//                    } else if (distanceSpinner.getSelectedItem() == 9) {
+//                        getActivity().getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putInt("search_distance", 9).apply();
+//                    } else {
+//                        getActivity().getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putInt("search_distance", 10).apply();
+//                    }
 
 
                     if (statusSpinner.getSelectedItem() == "Online") {

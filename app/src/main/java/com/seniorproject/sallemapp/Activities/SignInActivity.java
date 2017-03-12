@@ -271,9 +271,9 @@ public class SignInActivity extends AppCompatActivity implements EntityAsyncResu
         }
         private List<User> getUserByEmail(String email, String password) throws ExecutionException, InterruptedException{
             _userTable = _client.getTable(User.class);
-            return _userTable.where().field("email").eq(val(email))
+            return _userTable.where().field("email").eq(email)
                     .and()
-                    .field("password").eq(val(password))
+                    .field("password").eq(password)
                     .execute().get();
         }
         @Override
