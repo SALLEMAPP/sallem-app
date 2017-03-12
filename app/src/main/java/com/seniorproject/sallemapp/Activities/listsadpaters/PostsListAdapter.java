@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.seniorproject.sallemapp.Activities.AddEventActivity;
+import com.seniorproject.sallemapp.Activities.ShowPostActivity;
 import com.seniorproject.sallemapp.Activities.dbhelpers.DbContext;
 import com.seniorproject.sallemapp.entities.DomainComment;
 import com.seniorproject.sallemapp.entities.DomainPost;
@@ -108,7 +109,7 @@ public class PostsListAdapter  extends ArrayAdapter<DomainPost> {
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(v.getContext(), AddEventActivity.class);
+                Intent i = new Intent(v.getContext(), ShowPostActivity.class);
                 v.getContext().startActivity(i);
             }
         });

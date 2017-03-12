@@ -50,7 +50,7 @@
 
         <activity
             android:name=".Activities.MapsActivity"
-            android:label="@string/title_activity_maps"></activity>
+            android:label="@string/title_activity_maps" />
 
         <receiver
             android:name="com.microsoft.windowsazure.notifications.NotificationsBroadcastReceiver"
@@ -62,9 +62,13 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".Activities.AddPostActivity"></activity>
-        <service android:name=".Activities.UserLocationService"
-            android:exported="false"/>
+        <activity android:name=".Activities.AddPostActivity" />
+
+        <service
+            android:name=".Activities.UserLocationService"
+            android:exported="false" />
+
+        <activity android:name=".Activities.ShowPostActivity"></activity>
     </application>
 
 </manifest>
