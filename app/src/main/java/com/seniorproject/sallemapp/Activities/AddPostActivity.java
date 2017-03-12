@@ -35,6 +35,7 @@ import com.microsoft.windowsazure.mobileservices.http.ServiceFilter;
 import com.microsoft.windowsazure.mobileservices.http.ServiceFilterRequest;
 import com.microsoft.windowsazure.mobileservices.http.ServiceFilterResponse;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
+import com.microsoft.windowsazure.mobileservices.table.TableOperationCallback;
 import com.seniorproject.sallemapp.R;
 import com.seniorproject.sallemapp.entities.DomainPost;
 import com.seniorproject.sallemapp.entities.DomainUser;
@@ -55,6 +56,7 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 public class AddPostActivity extends AppCompatActivity implements EntityAsyncResult<Post> {
@@ -65,10 +67,7 @@ public class AddPostActivity extends AppCompatActivity implements EntityAsyncRes
     Bitmap bm;
     private static final int REQUEST_CODE = 121;
     ProgressBar progressBar;
-    MobileServiceClient mClient;
-    MobileServiceTable<Post> mPostTable;
-    MobileServiceTable<PostImage> mPostImageTable;
-
+    private String mPostId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,26 +76,7 @@ public class AddPostActivity extends AppCompatActivity implements EntityAsyncRes
         progressBar.setVisibility(View.GONE);
         attchPostButton();
         attachOpenGalaryButton();
-        try {
-            mClient = new MobileServiceClient(
-                    "https://sallem.azurewebsites.net",
-                    this).withFilter(new ProgressFilter());
-            ;
 
-
-            mClient.setAndroidHttpClientFactory(new OkHttpClientFactory() {
-                @Override
-                public OkHttpClient createOkHttpClient() {
-                    OkHttpClient okHttpClient = new OkHttpClient();
-                    okHttpClient.setReadTimeout(20, TimeUnit.SECONDS);
-                    okHttpClient.setWriteTimeout(20, TimeUnit.SECONDS);
-                    return okHttpClient;
-                }
-            });
-        } catch (MalformedURLException e) {
-            Log.d("SALLEM APP", e.getCause().getMessage());
-
-        }
 
     }
 
@@ -184,51 +164,19 @@ public class AddPostActivity extends AppCompatActivity implements EntityAsyncRes
 
     @Override
     public void processFinish(Post result) {
-        Post p = result;
+        mPostId = result.getId();
+        finish();
+
     }
 
-    private class ProgressFilter implements ServiceFilter {
 
-        @Override
-        public ListenableFuture<ServiceFilterResponse> handleRequest
-                (ServiceFilterRequest request, NextServiceFilterCallback nextServiceFilterCallback) {
-
-            final SettableFuture<ServiceFilterResponse> resultFuture = SettableFuture.create();
-            runOnUiThread(new Runnable() {
-
-                @Override
-                public void run() {
-                    if (progressBar != null) progressBar.setVisibility(ProgressBar.VISIBLE);
-                }
-            });
-
-            ListenableFuture<ServiceFilterResponse> future = nextServiceFilterCallback.onNext(request);
-
-            Futures.addCallback(future, new FutureCallback<ServiceFilterResponse>() {
-                @Override
-                public void onFailure(Throwable e) {
-                    resultFuture.setException(e);
-                }
-
-                @Override
-                public void onSuccess(ServiceFilterResponse response) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (progressBar != null) progressBar.setVisibility(ProgressBar.GONE);
-
-                        }
-                    });
-                    finish();
-                }
-            });
-
-            return resultFuture;
-        }
-    }
 
     public class SavePostAsync extends AsyncTask<Void, Void, Post> {
         EntityAsyncResult<Post> delegate;
+        MobileServiceClient mClient;
+        MobileServiceTable<Post> mPostTable;
+        MobileServiceTable<PostImage> mPostImageTable;
+
         private Post mPost;
 
         public SavePostAsync(Post post) {
@@ -238,8 +186,29 @@ public class AddPostActivity extends AppCompatActivity implements EntityAsyncRes
         @Override
         protected Post doInBackground(Void... params) {
             String imagePath = mPost.get_imagePath();
-            if (imagePath != null &&  !imagePath.isEmpty()) {
-                try {
+            try {
+
+                mClient = new MobileServiceClient(
+                        "https://sallem.azurewebsites.net",
+                        AddPostActivity.this);
+                mClient.setAndroidHttpClientFactory(new OkHttpClientFactory() {
+                    @Override
+                    public OkHttpClient createOkHttpClient() {
+                        OkHttpClient okHttpClient = new OkHttpClient();
+                        okHttpClient.setReadTimeout(20, TimeUnit.SECONDS);
+                        okHttpClient.setWriteTimeout(20, TimeUnit.SECONDS);
+                        return okHttpClient;
+                    }
+                });
+            }
+              catch (MalformedURLException e){
+                    e.printStackTrace();
+                }
+
+
+                if (imagePath != null &&  !imagePath.isEmpty()) {
+
+                    try{
                     CloudStorageAccount account = CloudStorageAccount.parse(storageConnectionString);
                     CloudBlobClient serviceClient = account.createCloudBlobClient();
 
@@ -256,7 +225,8 @@ public class AddPostActivity extends AppCompatActivity implements EntityAsyncRes
                     bm.compress(Bitmap.CompressFormat.JPEG, 50, outputStream);
                     outputStream.close();
                     blob.upload(new FileInputStream(sourceFile), sourceFile.length());
-                } catch (FileNotFoundException e) {
+                }
+                catch (FileNotFoundException e) {
                     e.printStackTrace();
                 } catch (StorageException e) {
                     e.printStackTrace();
@@ -272,7 +242,15 @@ public class AddPostActivity extends AppCompatActivity implements EntityAsyncRes
                 }
             }
             mPostTable = mClient.getTable(Post.class);
-            mPostTable.insert(mPost);
+           try {
+               mPostTable.insert(mPost).get();
+           }
+           catch (ExecutionException e){
+               e.printStackTrace();
+           }
+           catch (InterruptedException e){
+               e.printStackTrace();
+           }
             return mPost;
         }
 
@@ -280,7 +258,6 @@ public class AddPostActivity extends AppCompatActivity implements EntityAsyncRes
         @Override
         protected void onPostExecute(Post post) {
             if (delegate != null) {
-
                 delegate.processFinish(post);
             }
         }

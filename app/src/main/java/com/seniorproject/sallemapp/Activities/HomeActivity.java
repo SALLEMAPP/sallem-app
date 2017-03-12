@@ -7,9 +7,7 @@ import android.content.ServiceConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
@@ -34,26 +32,21 @@ import com.seniorproject.sallemapp.Activities.pagesadapters.NearbyPageAdapter;
 import com.seniorproject.sallemapp.Activities.pagesadapters.NotificationPageAdapter;
 import com.seniorproject.sallemapp.Activities.pagesadapters.SettingsPageAdapter;
 import com.seniorproject.sallemapp.R;
+import com.seniorproject.sallemapp.entities.DomainPost;
 import com.seniorproject.sallemapp.entities.DomainUser;
 
 
 public class HomeActivity extends AppCompatActivity
-        implements
-        NavigationView.OnNavigationItemSelectedListener,
-        FriendsFragment.OnFragmentInteractionListener,
-        SearchFriendsFragment.OnFragmentInteractionListener,
-        FriendRequestFragment.OnFragmentInteractionListener,
-        NearByFragment.OnFragmentInteractionListener,
-        PostsFragment.OnFragmentInteractionListener,
-        SettingsFragment.OnFragmentInteractionListener,
-        NotificationFragment.OnFragmentInteractionListener,
-        UpcomingActivitiesFragment.OnFragmentInteractionListener,
-        OrganizeActivityFragment.OnFragmentInteractionListener,
+        implements NavigationView.OnNavigationItemSelectedListener, FriendsFragment.OnFragmentInteractionListener,
+        SearchFriendsFragment.OnFragmentInteractionListener, FriendRequestFragment.OnFragmentInteractionListener,
+        NearByFragment.OnFragmentInteractionListener, PostsFragment.OnFragmentInteractionListener,
+        SettingsFragment.OnFragmentInteractionListener, NotificationFragment.OnFragmentInteractionListener,
+        UpcomingActivitiesFragment.OnFragmentInteractionListener, OrganizeActivityFragment.OnFragmentInteractionListener,
         PastActivitiesFragment.OnFragmentInteractionListener
-
 {
     FragmentStatePagerAdapter adapterViewPager;
     ViewPager myViewPager;
+
     private enum CurrentMenu{
         HOME,
         ACTIVITIES,
@@ -119,6 +112,7 @@ public class HomeActivity extends AppCompatActivity
         _currnetMenu = CurrentMenu.HOME;
     }
 
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -150,7 +144,6 @@ public class HomeActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
-    ViewPager viewPager = null;
 
     @Override
     protected void onStart() {

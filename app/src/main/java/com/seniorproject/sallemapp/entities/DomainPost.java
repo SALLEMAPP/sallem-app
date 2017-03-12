@@ -4,13 +4,14 @@ import android.graphics.Bitmap;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by abdul on 08-Mar-2017.
  */
 
-public class DomainPost {
+public class DomainPost implements Serializable {
     private String _id;
     private String _postedAt;
     private String _subject;
