@@ -2,8 +2,8 @@ package com.seniorproject.sallemapp.Activities.listsadpaters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,20 +12,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.seniorproject.sallemapp.Activities.AddEventActivity;
 import com.seniorproject.sallemapp.Activities.ShowPostActivity;
-import com.seniorproject.sallemapp.Activities.dbhelpers.DbContext;
-import com.seniorproject.sallemapp.entities.DomainComment;
 import com.seniorproject.sallemapp.entities.DomainPost;
-import com.seniorproject.sallemapp.entities.Post;
 import com.seniorproject.sallemapp.R;
 
 import org.joda.time.DateTime;
-import org.joda.time.LocalDateTime;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Created by Centeral on 2/21/2017.
@@ -34,25 +28,43 @@ import java.util.List;
 public class PostsListAdapter  extends ArrayAdapter<DomainPost> {
     private ArrayList<DomainPost> _items;
     private Context _adpaterContext;
+    private String mSelectedId;
+    public Button mCommentsButton;
+
     public PostsListAdapter(Context context, ArrayList<DomainPost> items) {
         super(context, R.layout.post_layout, items);
         _adpaterContext = context;
         _items = items;
 
     }
+
     @Override
-    public View getView(int position, View convertView, ViewGroup parent){
+    public View getView(final int position, View convertView, ViewGroup parent){
         View v = convertView;
+
         try {
-            DomainPost post = _items.get(position);
+            final DomainPost post = _items.get(position);
             if(v == null){
                 LayoutInflater vi =
                         (LayoutInflater) _adpaterContext.getSystemService(
                                 Context.LAYOUT_INFLATER_SERVICE
                         );
                 v = vi.inflate(R.layout.post_layout, null);
+                mCommentsButton = (Button) v.findViewById(R.id.postLayout_btnComments);
+                mCommentsButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.e("post ID", post.get_id());
+                        Intent i = new Intent(v.getContext(), ShowPostActivity.class);
+                        Log.e("Selected Id", mSelectedId);
+                        i.putExtra("postId", post.get_id());
+                        v.getContext().startActivity(i);
+                    }
+                });
+
             }
             //Bind the UI elements to entity
+            mSelectedId = post.get_id();
            bindPost(post, v);
 
         }
@@ -65,19 +77,17 @@ public class PostsListAdapter  extends ArrayAdapter<DomainPost> {
     }
 
     private void bindPost(DomainPost post, View v) {
-        ImageView userAvatart = (ImageView) v.findViewById(R.id.post_layout_user_avatar);
+        ImageView userAvatart = (ImageView) v.findViewById(R.id.postLayout_imgUserAvatar);
         TextView posDate = (TextView)
-                v.findViewById(R.id.post_layout_lbl_post_date);
+                v.findViewById(R.id.postLayout_lblPostDate);
         TextView poster = (TextView)
-                v.findViewById(R.id.post_layout_lbl_user_name);
+                v.findViewById(R.id.postLayout_lblUserName);
         TextView postSubject = (TextView)
-                v.findViewById(R.id.postlayout_txtPostSubject);
+                v.findViewById(R.id.postLayout_txtComment);
         ImageView postImage = (ImageView)
-                v.findViewById(R.id.post_layout_img_post_image);
-        Button commentsButton = (Button)
-                v.findViewById(R.id.post_layout_btn_comments);
+                v.findViewById(R.id.postLayout_imgPostImage);
         TextView quickComment = (TextView)
-                v.findViewById(R.id.postlayout_txtPostCom);
+                v.findViewById(R.id.postLayout_txtPosSubject);
 
         poster.setText(post.get_user().getFirstName() + " " + post.get_user().getLasttName());
         userAvatart.setImageBitmap(post.get_user().getAvatar());
@@ -93,23 +103,20 @@ public class PostsListAdapter  extends ArrayAdapter<DomainPost> {
         }
 
         postSubject.setText("This is test comment");
-        commentsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                attachButtonEvent(v);
-            }
-        });
+
 
 
 
     }
     private void attachButtonEvent(View v) {
 
-        Button b = (Button)v.findViewById(R.id.post_layout_btn_comments);
+        Button b = (Button)v.findViewById(R.id.postLayout_btnComments);
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.e("POSTS LIST ADAPTER", mSelectedId);
                 Intent i = new Intent(v.getContext(), ShowPostActivity.class);
+                i.putExtra("postId", mSelectedId);
                 v.getContext().startActivity(i);
             }
         });
