@@ -3,6 +3,7 @@ package com.seniorproject.sallemapp.Activities.listsadpaters;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -73,6 +74,7 @@ public class CommentsListAdapter extends ArrayAdapter<DomainComment> {
         userAvatart.setImageBitmap(comment.get_user().getAvatar());
         DateTime postedAt = new DateTime(comment.get_commentedAt());
         commentDate.setText(postedAt.toString("MMMM dd, yyyy HH:mm"));
+        commentSubject.setText(comment.get_subject());
 
 
 
@@ -82,8 +84,17 @@ public class CommentsListAdapter extends ArrayAdapter<DomainComment> {
     @Override
     public void addAll(@NonNull Collection<? extends DomainComment> collection) {
         //super.addAll(collection);
+        Log.e("AddAll", String.valueOf(collection.size()));
         _items.clear();
         _items.addAll(collection);
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public void add(@Nullable DomainComment object) {
+        //super.add(object);
+        Log.e("add", object.toString());
+        _items.add(object);
         notifyDataSetChanged();
     }
 }

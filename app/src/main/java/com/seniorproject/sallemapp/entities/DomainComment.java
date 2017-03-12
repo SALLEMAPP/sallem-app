@@ -13,6 +13,8 @@ public class DomainComment {
     private String _userId;
     private String _subject;
     private DomainUser _user;
+    private String _posId;
+    private DomainPost _post;
 
 
     public String get_id() {
@@ -57,5 +59,21 @@ public class DomainComment {
 
     public void set_user(DomainUser _user) {
         this._user = _user;
+    }
+
+    public String get_posId() {
+        return _posId;
+    }
+
+    public void set_posId(String _posId) {
+        this._posId = _posId;
+    }
+
+    public DomainPost get_post() {
+        return _post;
+    }
+
+    public void set_post(DomainPost _post) {
+        this._post = _post;
     }
 }
