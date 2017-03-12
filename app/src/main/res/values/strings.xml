@@ -31,7 +31,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="allow_location_setting_label">Allow Location Discovery</string>
-    <string name="serach_distance_settings_label">Search distance</string>
+    <string name="serach_distance_settings_label">Search distance by KM</string>
     <string name="terms_of_use">Your access to or use SALLEM APP (including the licenses, public domain tools, and choosers) signifies that you have read, understood, and agreed to be bound by the terms. By accessing or using any services you also represent that you have the legal authority to accept the terms on behalf of yourself and any party you represent in connection with your use of any services. If you do not agree to the terms, you are not authorized to use any services.</string>
 
     <!-- Strings related to Settings -->
@@ -39,16 +39,16 @@
     <!-- Example General settings -->
 
     <string-array name="pref_search_distance">
-        <item>1 KM</item>
-        <item>2 KM</item>
-        <item>3 KM</item>
-        <item>4 KM</item>
-        <item>5 KM</item>
-        <item>6 KM</item>
-        <item>7 KM</item>
-        <item>8 KM</item>
-        <item>9 KM</item>
-        <item>10 KM</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
     </string-array>
 
     <string-array name="pref_status">

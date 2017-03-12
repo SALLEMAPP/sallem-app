@@ -43,7 +43,9 @@
             android:layout_marginLeft="13dp"
             android:layout_marginStart="13dp"
             android:background="@color/sallemBlue"
-            android:entries="@array/pref_search_distance" />
+            android:entries="@array/pref_search_distance"
+            android:spinnerMode="dropdown"
+            android:scrollbars="vertical"/>
 
         <TextView
             android:id="@+id/txt_search_distance"
@@ -97,7 +99,8 @@
             android:layout_alignLeft="@+id/spinner2"
             android:layout_alignStart="@+id/spinner2"
             android:background="@color/sallemBlue"
-            android:entries="@array/pref_status" />
+            android:entries="@array/pref_status"
+            android:spinnerMode="dropdown" />
     </RelativeLayout>
 
 
