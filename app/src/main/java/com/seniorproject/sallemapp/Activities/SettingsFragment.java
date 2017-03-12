@@ -7,7 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Switch;
 
@@ -149,8 +149,12 @@ public class SettingsFragment extends Fragment {
 
     //below initSettings() added by Fisal to start saving Sallem Settings to SharedPreferences
     private void initSaveSettings() {
+        /*
         RelativeLayout rlyout = (RelativeLayout) getActivity().findViewById(R.id.rlyout_settings);
-        rlyout.setOnClickListener(new View.OnClickListener() {
+        rlyout.setOnClickListener(new View.OnClickListener()
+        */
+        Button b = (Button) getActivity().findViewById(R.id.btn_save_settings);
+        b.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
                     Switch allowLocationSW = (Switch) getActivity().findViewById(R.id.btn_allow_user_location);
