@@ -4,10 +4,13 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.support.v4.app.NotificationCompatExtras;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.microsoft.azure.storage.CloudStorageAccount;
 import com.microsoft.azure.storage.StorageException;
@@ -16,9 +19,8 @@ import com.microsoft.azure.storage.blob.CloudBlobContainer;
 import com.microsoft.azure.storage.blob.CloudBlockBlob;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.http.OkHttpClientFactory;
-import com.microsoft.windowsazure.mobileservices.http.ServiceFilter;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
-import com.microsoft.windowsazure.mobileservices.table.query.QueryOrder;
+import com.seniorproject.sallemapp.Activities.listsadpaters.CommentsListAdapter;
 import com.seniorproject.sallemapp.R;
 import com.seniorproject.sallemapp.entities.Comment;
 import com.seniorproject.sallemapp.entities.DomainComment;
@@ -29,7 +31,6 @@ import com.seniorproject.sallemapp.entities.User;
 import com.seniorproject.sallemapp.helpers.CommonMethods;
 import com.seniorproject.sallemapp.helpers.DownloadImage;
 import com.seniorproject.sallemapp.helpers.EntityAsyncResult;
-import com.seniorproject.sallemapp.helpers.ListAsyncResult;
 import com.squareup.okhttp.OkHttpClient;
 
 import java.io.File;
@@ -47,13 +48,46 @@ import java.util.concurrent.TimeUnit;
 
 public class ShowPostActivity extends AppCompatActivity implements EntityAsyncResult<DomainPost> {
 
+    ImageView mUserAvatart;
+    TextView mPosDate;
+    TextView mPoster;
+    TextView mPostSubject;
+    ImageView mPostImage;
+    ImageButton mSendCommentButton;
+    CommentsListAdapter mCommentsAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_post);
+        mUserAvatart = (ImageView) findViewById(R.id.showPost_imgUserAvatar);
+        mPosDate = (TextView)
+                findViewById(R.id.showPost_lblPostDate);
+        mPoster = (TextView)
+                findViewById(R.id.showPost_lblUserName);
+        mPostSubject = (TextView)
+                findViewById(R.id.showPost_txtPosSubject);
+        mPostImage = (ImageView)
+                findViewById(R.id.showPost_imgPostImage);
+        mSendCommentButton = (ImageButton)
+                findViewById(R.id.showPost_btnSendComment);
+        attachSendCommentButton();
+        ArrayList<DomainComment> comments =new ArrayList();
+        mCommentsAdapter = new CommentsListAdapter(this , comments);
+
         Bundle b = getIntent().getExtras();
         String postId = b.getString("postId");
         loadPost(postId);
+    }
+
+    private void attachSendCommentButton() {
+        mSendCommentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
     }
 
     private void loadPost(String postId) {
@@ -65,6 +99,13 @@ public class ShowPostActivity extends AppCompatActivity implements EntityAsyncRe
     @Override
     public void processFinish(DomainPost result) {
         if(result != null){
+         mPostImage.setImageBitmap(result.get_image());
+            mPoster.setText(result.get_user().getFirstName() + " " + result.get_user().getLasttName());;
+            mUserAvatart.setImageBitmap(result.get_user().getAvatar());;
+            mPosDate.setText(result.get_postedAt());
+            mPostSubject.setText(result.get_subject());
+            mCommentsAdapter.addAll(result.get_comments());
+
 
         }
     }
@@ -114,6 +155,7 @@ public class ShowPostActivity extends AppCompatActivity implements EntityAsyncRe
                 Post post = mPostTable.where().field("id").eq(mId).execute().get().get(0);
                 User user = mUserTable.where().field("id").eq(post.getUserId()).execute().get().get(0);
                 List<Comment> comments = mCommentTable.where().field("postId").eq(post.getId()).execute().get();
+                p = new DomainPost();
                 p.set_id(post.getId());
                 p.set_subject(post.getSubject());
                 p.set_postedAt(post.getPostedAt());

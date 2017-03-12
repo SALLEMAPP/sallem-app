@@ -1,6 +1,7 @@
 package com.seniorproject.sallemapp.Activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -14,6 +15,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 
 import com.google.common.util.concurrent.FutureCallback;
@@ -131,6 +134,7 @@ public class PostsFragment extends ListFragment implements ListAsyncResult<Domai
         _adpater = new PostsListAdapter(mContext, mPostsList);
         setListAdapter(_adpater);
         return _currentView;
+
     }
 
 
@@ -176,6 +180,7 @@ public class PostsFragment extends ListFragment implements ListAsyncResult<Domai
     public void onResume() {
         super.onResume();
             loadPosts();
+        
     }
 
 
