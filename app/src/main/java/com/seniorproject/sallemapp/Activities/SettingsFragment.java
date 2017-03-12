@@ -1,6 +1,7 @@
 package com.seniorproject.sallemapp.Activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Switch;
 
@@ -25,6 +27,7 @@ public class SettingsFragment extends Fragment {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final int REQUEST_CODE = 1000;
 
 
 
@@ -77,6 +80,9 @@ public class SettingsFragment extends Fragment {
 
         //below line added by Fisal to start saving Sallem Settings to SharedPreferences
        initSaveSettings();
+
+        // Below added by Fisal for change image button
+        attachOpenAvatar();
 
         return view;   //Reorder onCreateView by Fisal
 
@@ -203,6 +209,28 @@ public class SettingsFragment extends Fragment {
         });
     }
 
+
+    private void attachOpenAvatar() {
+        ImageButton openAvatarButton = (ImageButton) getActivity().findViewById(R.id.img_add_photo);
+        openAvatarButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                openImageFromGalary();
+
+            }
+        });
+
+    }
+
+
+    private void openImageFromGalary(){
+
+        Intent gallaryIntent = new Intent();
+        gallaryIntent.setType("image/*");
+        gallaryIntent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(gallaryIntent, REQUEST_CODE);
+    }
 
 
     // TODO: Rename method, update argument and hook method into UI event
