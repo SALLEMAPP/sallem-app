@@ -32,7 +32,8 @@
         <activity
             android:name=".Activities.HomeActivity"
             android:label="@string/title_activity_home"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme"
+            android:exported="true" />
         <activity android:name=".Activities.ResetPasswordActivity" />
         <activity android:name=".Activities.RegistrationActivity" />
         <activity android:name=".Activities.AddEventActivity" />
