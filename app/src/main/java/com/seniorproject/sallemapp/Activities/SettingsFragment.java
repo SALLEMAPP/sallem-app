@@ -140,11 +140,12 @@ public class SettingsFragment extends Fragment {
 
         Spinner statusSpinner = (Spinner) getActivity().findViewById(R.id.spinner3);
 
-        for(int i=0;i<3;i++)
-            if(status.equals(statusSpinner.getItemAtPosition(i).toString())){
+        for(int i=0;i<3;i++) {
+            if (status.equals(statusSpinner.getItemAtPosition(i).toString())) {
                 statusSpinner.setSelection(i);
                 break;
             }
+        }
     /*
         if (status.equalsIgnoreCase("Online")) {
             statusSpinner.setSelection("Online");
@@ -175,12 +176,17 @@ public class SettingsFragment extends Fragment {
                     Spinner distanceSpinner = (Spinner) getActivity().findViewById(R.id.spinner2);
                     Spinner statusSpinner = (Spinner) getActivity().findViewById(R.id.spinner3);
 
+
                     if (allowLocationSW.isChecked()) {
                         getActivity().getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putString("allow_location", "true").apply();
                     } else {
                         getActivity().getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putString("allow_location", "false").apply();
                     }
 
+
+                getActivity().getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putInt("search_distance", distanceSpinner.getId()).apply();
+
+/*
 
                     if (distanceSpinner.getSelectedItem() == 1) {
                         getActivity().getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putInt("search_distance", 1).apply();
@@ -204,6 +210,7 @@ public class SettingsFragment extends Fragment {
                         getActivity().getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putInt("search_distance", 10).apply();
                     }
 
+*/
 
                     if (statusSpinner.getSelectedItem() == "Online") {
                         getActivity().getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putString("status", "Online").apply();
