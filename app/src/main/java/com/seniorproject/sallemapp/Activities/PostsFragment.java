@@ -179,7 +179,7 @@ public class PostsFragment extends ListFragment implements ListAsyncResult<Domai
     @Override
     public void onResume() {
         super.onResume();
-            loadPosts();
+            //loadPosts();
 
     }
 

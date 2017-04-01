@@ -227,7 +227,7 @@ public class HomeActivity extends AppCompatActivity
             case HOME:
                 break;
             case ACTIVITIES:
-                fab.setImageResource(R.drawable.ic_me_24px);
+                fab.setImageResource(R.drawable.ic_account_circle_black_24dp);
                 break;
         }
     }
