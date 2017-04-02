@@ -7,8 +7,16 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ListView;
 
+import com.seniorproject.sallemapp.Activities.listsadpaters.FriendRequestsListAdapter;
+import com.seniorproject.sallemapp.Activities.listsadpaters.SearchUsersListAdapter;
 import com.seniorproject.sallemapp.R;
+import com.seniorproject.sallemapp.entities.DomainFriendship;
+import com.seniorproject.sallemapp.entities.DomainUser;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -25,6 +33,11 @@ public class FriendRequestFragment extends Fragment {
 
     private String _title;
     private int _page;
+    private ArrayList<DomainFriendship> mFriendsRequests;
+    private FriendRequestsListAdapter mAdapter = null;
+    private View mCurrentView;
+    private Context mContext;
+    private ListView mResultList;
 
     private OnFragmentInteractionListener mListener;
 
@@ -62,7 +75,9 @@ public class FriendRequestFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_friend_request, container, false);
+        mCurrentView = inflater.inflate(R.layout.fragment_friend_request, container, false);
+         mContext = getActivity().getApplicationContext();
+        return mCurrentView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
