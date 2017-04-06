@@ -10,9 +10,11 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.seniorproject.sallemapp.Activities.ShowPostActivity;
+import com.seniorproject.sallemapp.entities.DomainComment;
 import com.seniorproject.sallemapp.entities.DomainPost;
 import com.seniorproject.sallemapp.R;
 
@@ -20,6 +22,7 @@ import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by Centeral on 2/21/2017.
@@ -82,18 +85,18 @@ public class PostsListAdapter  extends ArrayAdapter<DomainPost> {
                 v.findViewById(R.id.postLayout_lblPostDate);
         TextView poster = (TextView)
                 v.findViewById(R.id.postLayout_lblUserName);
-        TextView postSubject = (TextView)
-                v.findViewById(R.id.postLayout_txtComment);
+
         ImageView postImage = (ImageView)
                 v.findViewById(R.id.postLayout_imgPostImage);
-        TextView quickComment = (TextView)
+        TextView subject = (TextView)
                 v.findViewById(R.id.postLayout_txtPosSubject);
+        ListView commentsList = (ListView) v.findViewById(R.id.postLayout_commentsList);
 
         poster.setText(post.get_user().getFirstName() + " " + post.get_user().getLasttName());
         userAvatart.setImageBitmap(post.get_user().getAvatar());
         DateTime postedAt = new DateTime(post.get_postedAt());
         posDate.setText(postedAt.toString("MMMM dd, yyyy HH:mm"));
-        quickComment.setText(post.get_subject());
+        subject.setText(post.get_subject());
         if(post.get_image() != null){
             //postImage.setVisibility(View.GONE);
             postImage.setImageBitmap(post.get_image());
@@ -101,8 +104,20 @@ public class PostsListAdapter  extends ArrayAdapter<DomainPost> {
         else{
             postImage.setImageBitmap(null);
         }
+        List<DomainComment> postCommments = post.get_comments();
+        if(postCommments != null && postCommments.size() > 0){
+            ArrayList<DomainComment> topComments = new ArrayList<>();
+            for(int i = 0; i < postCommments.size(); i++){
+                if(i > 1){break;}
+                topComments.add(postCommments.get(i));
 
-        postSubject.setText("This is test comment");
+                CommentsListAdapter commentsAdapter = new CommentsListAdapter(_adpaterContext, topComments);
+                commentsList.setAdapter(commentsAdapter);
+            }
+
+        }
+
+
 
 
 

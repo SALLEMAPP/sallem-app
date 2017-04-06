@@ -243,17 +243,27 @@ public class SallemService extends Service implements LocationListener, Refreshe
 
     @Override
     public void onGotResult(List<DomainPost> result) {
+        if(result != null && result.size() > 0){
+//            PostDataSource postDs = new PostDataSource(getApplicationContext());
+//            postDs.open();
+//            for(DomainPost post: result){
+//                if(postDs.getPost(post.get_id()) != null)continue; //already there.
+//                Post newPost = new Post();
+//                newPost.setId(post.get_id());
+//                newPost.setPostedAt(post.get_postedAt());
+//                newPost.setSubject(post.get_subject());
+//                newPost.setUserId(post.get_userId());
+//                newPost.set_imagePath(post.getImagePath());
+//                newPost.setActivityId(post.get_activityId());
+//                postDs.insert(newPost);
+//            }
+            if(CachStore.POSTS_CACH != null && CachStore.POSTS_CACH.size() == result.size()){return;}
+            CachStore.POSTS_CACH = result;
+            Intent i = new Intent();
+            i.setAction(CommonMethods.ACTION_NOTIFY_REFRESH);
+            sendBroadcast(i);
+        }
 
-//        if(Looper.getMainLooper().getThread() == Thread.currentThread()){
-//            Log.e("SALLEMAPP", "onGotResult: ON UI THREAD" );
-//        }
-//        else{
-//            Log.e("SALLEMAPP", "onGotResult: NOT UI THREAD" );
-//        }
-        CachStore.POSTS_CACH = result;
-        Intent i = new Intent();
-        i.setAction(CommonMethods.ACTION_NOTIFY_REFRESH);
-        sendBroadcast(i);
 
     }
 }

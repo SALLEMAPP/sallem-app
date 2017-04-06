@@ -38,6 +38,7 @@ import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 import com.seniorproject.sallemapp.R;
 import com.seniorproject.sallemapp.entities.User;
 import com.seniorproject.sallemapp.helpers.CommonMethods;
+import com.seniorproject.sallemapp.helpers.MyHelper;
 import com.squareup.okhttp.OkHttpClient;
 
 import org.joda.time.LocalDateTime;
@@ -152,7 +153,6 @@ public class RegistrationActivity extends AppCompatActivity {
             String email = mTextEmail.getText().toString();
             String password = mTextPassword.getText().toString();
             String joinedAt = new LocalDateTime().toString();
-            //Byte[] photo = null;
             User user = new User();
             user.setId(UUID.randomUUID().toString());
             user.setFirstName(firstName);
@@ -160,7 +160,12 @@ public class RegistrationActivity extends AppCompatActivity {
             user.setPassword(password);
             user.setEmail(email);
             user.setJoinedAt(joinedAt);
-            user.setImageTitle(UUID.randomUUID().toString());
+            if(bm == null){
+                user.setImageTitle(MyHelper.DEFAULT_AVATAR_TITLE);
+            }
+            else {
+                user.setImageTitle(UUID.randomUUID().toString());
+            }
             user.setStatus(0);
 
             addUserToDb(user);
@@ -253,8 +258,9 @@ public class RegistrationActivity extends AppCompatActivity {
             @Override
             protected Void doInBackground(Void... params) {
                try {
-
-                   uploadUserImage(user.getImageTitle());
+                    if(bm !=null) {
+                        uploadUserImage(user.getImageTitle());
+                    }
                    _userTable = _client.getTable(User.class);
                    _userTable.insert(user).get();
                }
