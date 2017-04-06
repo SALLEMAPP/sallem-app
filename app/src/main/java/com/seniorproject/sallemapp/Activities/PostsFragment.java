@@ -1,7 +1,9 @@
 package com.seniorproject.sallemapp.Activities;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -12,6 +14,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.ListFragment;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,11 +48,14 @@ import com.seniorproject.sallemapp.entities.DomainUser;
 import com.seniorproject.sallemapp.entities.Post;
 import com.seniorproject.sallemapp.entities.PostImage;
 import com.seniorproject.sallemapp.entities.User;
+import com.seniorproject.sallemapp.helpers.AzureHelper;
+import com.seniorproject.sallemapp.helpers.CachStore;
 import com.seniorproject.sallemapp.helpers.CommonMethods;
 import com.seniorproject.sallemapp.helpers.DownloadImage;
 import com.seniorproject.sallemapp.helpers.EntityAsyncResult;
 import com.seniorproject.sallemapp.helpers.ListAsyncResult;
 import com.seniorproject.sallemapp.helpers.LoadPostsAsync;
+import com.seniorproject.sallemapp.helpers.RefreshedPostsResult;
 import com.squareup.okhttp.OkHttpClient;
 
 import java.io.File;
@@ -76,7 +82,8 @@ import java.util.concurrent.TimeUnit;
  * Use the {@link PostsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PostsFragment extends ListFragment implements ListAsyncResult<DomainPost> {
+public class PostsFragment extends ListFragment implements ListAsyncResult<DomainPost>
+{
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -89,6 +96,8 @@ public class PostsFragment extends ListFragment implements ListAsyncResult<Domai
     private OnFragmentInteractionListener mListener;
     private ProgressBar mLoadinggProgressBar;
     private  static Context mContext;
+    EventsReceiver mEventsReciever;
+    IntentFilter mIntentFilter;
     public PostsFragment() {
         // Required empty public constructor
     }
@@ -123,6 +132,12 @@ public class PostsFragment extends ListFragment implements ListAsyncResult<Domai
     }
 
     @Override
+    public void onDestroyView() {
+        getActivity().unregisterReceiver(mEventsReciever);
+        super.onDestroyView();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -133,19 +148,13 @@ public class PostsFragment extends ListFragment implements ListAsyncResult<Domai
         mPostsList = new ArrayList<>();
         _adpater = new PostsListAdapter(mContext, mPostsList);
         setListAdapter(_adpater);
+        mEventsReciever = new EventsReceiver();
+        mIntentFilter = new IntentFilter(CommonMethods.ACTION_NOTIFY_REFRESH);
+        getActivity().registerReceiver(mEventsReciever, mIntentFilter);
         return _currentView;
 
     }
-
-
-
-    private void loadPosts() {
-       LoadPostsAsync p = new LoadPostsAsync (mContext, new ProgressFilter());
-       p.delegate = this;
-       p.execute();
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
+  // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -171,8 +180,9 @@ public class PostsFragment extends ListFragment implements ListAsyncResult<Domai
 
     @Override
     public void processFinish(List<DomainPost> result) {
-        Log.e("SALLEM-POSTS FRAGMENT", String.valueOf(result.size()));
-        _adpater.addAll(result);
+        if(result != null) {
+            _adpater.addAll(result);
+        }
 
    }
 
@@ -243,6 +253,18 @@ public class PostsFragment extends ListFragment implements ListAsyncResult<Domai
             });
 
             return resultFuture;
+        }
+    }
+    public class EventsReceiver extends BroadcastReceiver{
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if(intent != null){
+                if(intent.getAction() == CommonMethods.ACTION_NOTIFY_REFRESH){
+                    List<DomainPost> posts = CachStore.POSTS_CACH;
+                    processFinish(posts);
+                }
+            }
         }
     }
 }

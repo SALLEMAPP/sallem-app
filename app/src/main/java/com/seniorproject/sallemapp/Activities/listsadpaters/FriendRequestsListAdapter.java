@@ -49,7 +49,7 @@ public class FriendRequestsListAdapter extends ArrayAdapter<DomainFriendship> {
                         (LayoutInflater) mAdpaterContext.getSystemService(
                                 Context.LAYOUT_INFLATER_SERVICE
                         );
-                v = vi.inflate(R.layout.fragment_friend_request, null);
+                v = vi.inflate(R.layout.friendship_requests_list, null);
                 mAcceptButton = (Button) v.findViewById(R.id.friendRequests_btnAccept);
                 mAcceptButton.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -82,8 +82,6 @@ public class FriendRequestsListAdapter extends ArrayAdapter<DomainFriendship> {
                         UpdateFriendRequestAsync updateFriendshi
                                 = new UpdateFriendRequestAsync(
                                 v.getContext(),decline
-
-
                         );
                         updateFriendshi.execute();
 
@@ -103,8 +101,8 @@ public class FriendRequestsListAdapter extends ArrayAdapter<DomainFriendship> {
         return v;
     }
     private void bindUser(DomainFriendship friendship, View v){
-        ImageView avatar = (ImageView) v.findViewById(R.id.searchUsers_imgAvatar);
-        TextView userName = (TextView) v.findViewById(R.id.searchUsers_lblUserName);
+        ImageView avatar = (ImageView) v.findViewById(R.id.friendRequests_imgAvatar);
+        TextView userName = (TextView) v.findViewById(R.id.friendRequests_lblUserName);
         if(friendship.getmDomainUser().getAvatar() == null){
             avatar.setImageResource(R.drawable.ic_account_circle_black_24dp);
         }

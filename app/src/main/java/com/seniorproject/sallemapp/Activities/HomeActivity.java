@@ -2,14 +2,17 @@ package com.seniorproject.sallemapp.Activities;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -25,6 +28,7 @@ import android.widget.TextView;
 import android.support.design.widget.TabLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.seniorproject.sallemapp.Activities.pagesadapters.ActivitiesPageAdapter;
 import com.seniorproject.sallemapp.Activities.pagesadapters.FriendsPageAdapter;
 import com.seniorproject.sallemapp.Activities.pagesadapters.HomePageAdater;
@@ -32,8 +36,10 @@ import com.seniorproject.sallemapp.Activities.pagesadapters.NearbyPageAdapter;
 import com.seniorproject.sallemapp.Activities.pagesadapters.NotificationPageAdapter;
 import com.seniorproject.sallemapp.Activities.pagesadapters.SettingsPageAdapter;
 import com.seniorproject.sallemapp.R;
-import com.seniorproject.sallemapp.entities.DomainPost;
+import com.seniorproject.sallemapp.SallemService;
 import com.seniorproject.sallemapp.entities.DomainUser;
+import com.seniorproject.sallemapp.helpers.LocationService;
+import com.seniorproject.sallemapp.helpers.MyHelper;
 
 
 public class HomeActivity extends AppCompatActivity
@@ -42,10 +48,18 @@ public class HomeActivity extends AppCompatActivity
         NearByFragment.OnFragmentInteractionListener, PostsFragment.OnFragmentInteractionListener,
         SettingsFragment.OnFragmentInteractionListener, NotificationFragment.OnFragmentInteractionListener,
         UpcomingActivitiesFragment.OnFragmentInteractionListener, OrganizeActivityFragment.OnFragmentInteractionListener,
-        PastActivitiesFragment.OnFragmentInteractionListener
+        PastActivitiesFragment.OnFragmentInteractionListener,
+        LocationService.LocationChanged, ServiceConnection
 {
     FragmentStatePagerAdapter adapterViewPager;
     ViewPager myViewPager;
+    Intent sallemService;
+    @Override
+    public void onLocationChanged(LatLng newLocation) {
+
+    }
+
+
 
     private enum CurrentMenu{
         HOME,
@@ -54,8 +68,7 @@ public class HomeActivity extends AppCompatActivity
     }
     private CurrentMenu _currnetMenu;
     FloatingActionButton fab;
-    UserLocationService mService;
-    boolean mBound = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +76,7 @@ public class HomeActivity extends AppCompatActivity
         myViewPager = (ViewPager)findViewById(R.id.viewPager);
         TabLayout  tableLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tableLayout.setupWithViewPager(myViewPager);
-
+        LocationService service = LocationService.getLocationManager(this);
 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -110,6 +123,9 @@ public class HomeActivity extends AppCompatActivity
         ImageView avatar =(ImageView) v.findViewById(R.id.navHeader_avatr);
         avatar.setImageBitmap(DomainUser.CURRENT_USER.getAvatar());
         _currnetMenu = CurrentMenu.HOME;
+        sallemService = new Intent(getApplicationContext(), SallemService.class);
+        startService(sallemService);
+
     }
 
 
@@ -145,23 +161,7 @@ public class HomeActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
 
-            super.onStart();
-        Intent intent = new Intent(this, UserLocationService.class);
-        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if(mBound){
-            unbindService(mConnection);
-            mBound =false;
-        }
-    }
 
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -208,10 +208,19 @@ public class HomeActivity extends AppCompatActivity
 
             adapterViewPager = new SettingsPageAdapter(getSupportFragmentManager());
             myViewPager.setAdapter(adapterViewPager);
-            int num = mService.getRandomNumber();
-            Toast.makeText(this, "number: " + num,
-            Toast.LENGTH_LONG).show();
-
+           }
+           else if(id == R.id.nav_logout){
+            new AlertDialog.Builder(this)
+                    .setTitle("SALLEM")
+                    .setMessage("Are you sure to logout?")
+                    .setIcon(R.drawable.ic_warning_black_24dp)
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            SharedPreferences shared = getSharedPreferences(MyHelper.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
+                            shared.edit().putString("userid", null).apply();
+                            finish();
+                        }})
+                    .setNegativeButton(android.R.string.no, null).show();
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -231,19 +240,25 @@ public class HomeActivity extends AppCompatActivity
                 break;
         }
     }
-    private ServiceConnection mConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            UserLocationService.LocalBinder binder = (UserLocationService.LocalBinder) service;
-            mService = binder.getService();
-            mBound = true;
 
-        }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        bindService(sallemService, this, Context.BIND_AUTO_CREATE);
+    }
 
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            mBound = false;
-        }
-    };
+    @Override
+    protected void onStop() {
+        stopService(sallemService);
+        super.onStop();
+    }
+    @Override
+    public void onServiceConnected(ComponentName name, IBinder service) {
 
+    }
+
+    @Override
+    public void onServiceDisconnected(ComponentName name) {
+
+    }
 }

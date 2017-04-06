@@ -1,8 +1,8 @@
 package com.seniorproject.sallemapp.Activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ApplicationInfo;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -27,15 +27,16 @@ import com.microsoft.windowsazure.mobileservices.http.ServiceFilter;
 import com.microsoft.windowsazure.mobileservices.http.ServiceFilterRequest;
 import com.microsoft.windowsazure.mobileservices.http.ServiceFilterResponse;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
-import com.seniorproject.sallemapp.entities.DomainPost;
+import com.seniorproject.sallemapp.Activities.localdb.SallemDbHelper;
+import com.seniorproject.sallemapp.Activities.localdb.UserDataSource;
 import com.seniorproject.sallemapp.entities.DomainUser;
 import com.seniorproject.sallemapp.entities.User;
+import com.seniorproject.sallemapp.helpers.AzureHelper;
 import com.seniorproject.sallemapp.helpers.CommonMethods;
 import com.seniorproject.sallemapp.helpers.DownloadImage;
 import com.seniorproject.sallemapp.helpers.EntityAsyncResult;
+import com.seniorproject.sallemapp.helpers.MyHelper;
 import com.squareup.okhttp.OkHttpClient;
-
-import static com.microsoft.windowsazure.mobileservices.table.query.QueryOperations.*;
 
 
 import com.seniorproject.sallemapp.R;
@@ -50,38 +51,13 @@ import java.util.concurrent.TimeUnit;
 
 public class SignInActivity extends AppCompatActivity implements EntityAsyncResult<DomainUser> {
 
-    MobileServiceClient _client;
-    MobileServiceTable<User> _userTable;
     ProgressBar _savingProgressBar;
-    UserLocationService mService;
-    boolean mBound = false;
-    User mCurrentUser = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
         _savingProgressBar = (ProgressBar)findViewById(R.id.singin_progress_bar);
         _savingProgressBar.setVisibility(ProgressBar.GONE);
-        try {
-
-            _client = new MobileServiceClient(
-                    "https://sallem.azurewebsites.net",
-                    this).withFilter(new ProgressFilter());
-
-            _client.setAndroidHttpClientFactory(new OkHttpClientFactory() {
-                @Override
-                public OkHttpClient createOkHttpClient() {
-                    OkHttpClient okHttpClient =new OkHttpClient();
-                    okHttpClient.setReadTimeout(20, TimeUnit.SECONDS);
-                    okHttpClient.setWriteTimeout(20, TimeUnit.SECONDS);
-                    return okHttpClient;
-                }
-            });
-        }
-        catch (MalformedURLException e){
-
-
-        }
         attachResetButton();
         attachSigninButton();
 
@@ -99,18 +75,16 @@ public class SignInActivity extends AppCompatActivity implements EntityAsyncResu
                 String email = ((EditText)findViewById(R.id.sign_in_txt_user_name)).getText().toString();
                 String password = ((EditText)findViewById(R.id.txt_password)).getText().toString();
 
-                LoadUserAsync loadUserAsync = new LoadUserAsync(email, password);
-                loadUserAsync.delegate = SignInActivity.this;
+                LoadUserAsync loadUserAsync = new LoadUserAsync(SignInActivity.this, email, password, SignInActivity.this);
                 loadUserAsync.execute();
-
-
+                _savingProgressBar.setVisibility(View.VISIBLE);
             }
         });
 
     }
 
     private void openHomeActivity(){
-        Intent homeIntent = new Intent(SignInActivity.this, HomeActivity.class);
+        Intent homeIntent = new Intent(getApplicationContext(), HomeActivity.class);
         startActivity(homeIntent);
         finish();
 
@@ -161,7 +135,6 @@ public class SignInActivity extends AppCompatActivity implements EntityAsyncResu
             @Override
             public void onClick(View view) {
                 //frgt is the name of intent that will be used to link between sign in activity and reset password activity
-
                 Intent frgt = new Intent(SignInActivity.this, ResetPasswordActivity.class);
                 startActivity(frgt);
             }
@@ -170,72 +143,34 @@ public class SignInActivity extends AppCompatActivity implements EntityAsyncResu
 
     @Override
     public void processFinish(DomainUser result) {
+        _savingProgressBar.setVisibility(View.GONE);
         if(result == null){
             Toast.makeText(this, "Wrong Email or Password", Toast.LENGTH_LONG).show();
             return;
+        }
+        SharedPreferences shared = getSharedPreferences(MyHelper.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
+        String userId = shared.getString("userid", null);
+        if(userId == null){
+            shared.edit().putString("userid", result.getId()).apply();
         }
         DomainUser.CURRENT_USER = result;
         openHomeActivity();
 
 
     }
-
-    private class ProgressFilter implements ServiceFilter {
-
-        @Override
-        public ListenableFuture<ServiceFilterResponse> handleRequest(ServiceFilterRequest request, NextServiceFilterCallback nextServiceFilterCallback) {
-
-            final SettableFuture<ServiceFilterResponse> resultFuture = SettableFuture.create();
-
-
-            runOnUiThread(new Runnable() {
-
-                @Override
-                public void run() {
-                    if (_savingProgressBar != null) _savingProgressBar.setVisibility(ProgressBar.VISIBLE);
-                }
-            });
-
-            ListenableFuture<ServiceFilterResponse> future = nextServiceFilterCallback.onNext(request);
-
-            Futures.addCallback(future, new FutureCallback<ServiceFilterResponse>() {
-                @Override
-                public void onFailure(Throwable e) {
-                    resultFuture.setException(e);
-                }
-
-                @Override
-                public void onSuccess(ServiceFilterResponse response) {
-                    runOnUiThread(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            if (_savingProgressBar != null) _savingProgressBar.setVisibility(ProgressBar.GONE);
-
-                        }
-
-
-                    });
-
-
-                    resultFuture.set(response);
-
-
-                }
-            });
-
-            return resultFuture;
-        }
-    }
-
     private class LoadUserAsync extends AsyncTask<Void, Void, DomainUser>{
         private String mEmail;
         private String mPassword;
-        public EntityAsyncResult<DomainUser> delegate;
 
-        public LoadUserAsync(String email, String passowrd){
+        private EntityAsyncResult<DomainUser> mCallback;
+        private Context mContext;
+
+
+        public LoadUserAsync(Context context, String email, String passowrd, EntityAsyncResult<DomainUser> callback){
             mEmail = email;
             mPassword = passowrd;
+            mContext = context;
+            mCallback =callback;
         }
 
         @Override
@@ -245,11 +180,36 @@ public class SignInActivity extends AppCompatActivity implements EntityAsyncResu
                 List<User> users = getUserByEmail(mEmail, mPassword);
                 if(users.size() == 1){
                     User user = users.get(0);
-                    Bitmap avatar = DownloadImage.getImage(SignInActivity.this, user.getImageTitle()+".jpg");
-                    domainUser = new DomainUser(user);
-                    domainUser.setAvatar(avatar);
-                }
+                    String imageTitle = user.getImageTitle();
+                    Bitmap avatar = null;
+                    if(!imageTitle.equals(MyHelper.DEFAULT_AVATAR_TITLE)) {
+                        try {
+                            //In case no avatar, just fail gracefully.
+                            imageTitle = user.getImageTitle() + ".jpg";
+                            avatar = DownloadImage.getImage(mContext, imageTitle);
+                        } catch (StorageException e) {
+                            //e.printStackTrace();
+                            //Log.e("SALLEM APP", "doInBackground: " + e.getCause().getMessage());
 
+                        }
+                    }
+                    else{
+                        avatar =  MyHelper.getDefaultAvatar(getApplicationContext());
+                    }
+                    domainUser = new DomainUser(
+                            user.getId(), user.getFirstName(), user.getLastName(),
+                            user.getPassword(), user.getEmail(), user.getJoinedAt(),
+                            user.getImageTitle(), user.getStatus(),
+                            avatar, 0, 0, false
+                    );
+                    UserDataSource dc = new UserDataSource(mContext);
+                    dc.open();
+                    DomainUser localUser = dc.getUser(domainUser.getId());
+                    if(localUser ==null) {
+                        dc.insert(user, domainUser.getAvatar());
+                    }
+                    dc.close();
+                }
             }
             catch (ExecutionException e){
                 Log.d(CommonMethods.APP_TAG, e.getCause().getMessage());
@@ -258,28 +218,26 @@ public class SignInActivity extends AppCompatActivity implements EntityAsyncResu
                 Log.d(CommonMethods.APP_TAG, e.getCause().getMessage());
             } catch (IOException e) {
                 e.printStackTrace();
-            } catch (StorageException e) {
-                e.printStackTrace();
             } catch (URISyntaxException e) {
                 e.printStackTrace();
             } catch (InvalidKeyException e) {
                 e.printStackTrace();
             }
 
-
             return domainUser;
         }
-        private List<User> getUserByEmail(String email, String password) throws ExecutionException, InterruptedException{
-            _userTable = _client.getTable(User.class);
-            return _userTable.where().field("email").eq(email)
+        private List<User> getUserByEmail(String email, String password) throws ExecutionException, InterruptedException, MalformedURLException{
+            MobileServiceClient client = AzureHelper.CreateClient(mContext);
+            MobileServiceTable<User> userTable = client.getTable(User.class);
+            return userTable.where().field("email").eq(email)
                     .and()
                     .field("password").eq(password)
                     .execute().get();
         }
         @Override
         protected void onPostExecute(DomainUser user) {
-            if(delegate != null) {
-                delegate.processFinish(user);
+            if(mCallback != null) {
+                mCallback.processFinish(user);
             }
         }
 

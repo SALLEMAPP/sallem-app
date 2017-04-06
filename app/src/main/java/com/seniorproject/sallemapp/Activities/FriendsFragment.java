@@ -13,6 +13,8 @@ import android.widget.EditText;
 
 import com.seniorproject.sallemapp.Activities.listsadpaters.FriendsListAdapter;
 import com.seniorproject.sallemapp.R;
+import com.seniorproject.sallemapp.entities.DomainPost;
+import com.seniorproject.sallemapp.entities.DomainUser;
 import com.seniorproject.sallemapp.entities.User;
 
 import java.util.ArrayList;
@@ -37,7 +39,7 @@ public class FriendsFragment extends ListFragment {
     private int _page;
     private FriendsListAdapter _adpater= null;
     private View _currentView;
-    ArrayList<User> _friendsList = new ArrayList<User>();
+    ArrayList<DomainUser> _friendsList = new ArrayList<DomainUser>();
 
     private OnFragmentInteractionListener mListener;
 
@@ -95,9 +97,9 @@ public class FriendsFragment extends ListFragment {
 
     }
     private void searchFriends(final String term){
-    ArrayList<User> s = new ArrayList<>();
+    ArrayList<DomainUser> s = new ArrayList<>();
         for(int i = 0; i < _friendsList.size(); i++){
-        boolean b = _friendsList.get(i).getLastName().toLowerCase().contains(term);
+        boolean b = _friendsList.get(i).getLasttName().toLowerCase().contains(term);
         boolean n = _friendsList.get(i).getFirstName().toLowerCase().contains(term);
             if(b || n){
                 s.add(_friendsList.get(i));
@@ -114,33 +116,33 @@ public class FriendsFragment extends ListFragment {
 
 
     }
-    private ArrayList<User> dummyData(){
+    private ArrayList<DomainUser> dummyData(){
         ArrayList r = new ArrayList<User>();
-        User s = new User();
-        s.setId(UUID.randomUUID().toString());
-        s.setFirstName("Amr");
-        s.setLastName("Zaid");
-        r.add(s);s = new User();
-        s.setId(UUID.randomUUID().toString());
-        s.setFirstName("Ali");
-        s.setLastName("Ahmed");
-        r.add(s);
-        s = new User();
-        s.setId(UUID.randomUUID().toString());
-        s.setFirstName("Khalid");
-        s.setLastName("Omar");
-        r.add(s);
-        s = new User();
-        s.setId(UUID.randomUUID().toString());
-        s.setFirstName("Saeed");
-        s.setLastName("Saleh");
-        r.add(s);
-        s = new User();
-
-        s.setId(UUID.randomUUID().toString());
-        s.setFirstName("Muhammad");
-        s.setLastName("Yousf");
-        r.add(s);
+//        DomainUser s = new DomainUser();
+//        s.setId(UUID.randomUUID().toString());
+//        s.setFirstName("Amr");
+//        s.setLastName("Zaid");
+//        r.add(s);s = new User();
+//        s.setId(UUID.randomUUID().toString());
+//        s.setFirstName("Ali");
+//        s.setLastName("Ahmed");
+//        r.add(s);
+//        s = new User();
+//        s.setId(UUID.randomUUID().toString());
+//        s.setFirstName("Khalid");
+//        s.setLastName("Omar");
+//        r.add(s);
+//        s = new User();
+//        s.setId(UUID.randomUUID().toString());
+//        s.setFirstName("Saeed");
+//        s.setLastName("Saleh");
+//        r.add(s);
+//        s = new User();
+//
+//        s.setId(UUID.randomUUID().toString());
+//        s.setFirstName("Muhammad");
+//        s.setLastName("Yousf");
+//        r.add(s);
         //Bitmap b = BitmapFactory.decodeResource(getResources(), R.drawable.ic_me_24px);
         //s.setAvatar(b);
 

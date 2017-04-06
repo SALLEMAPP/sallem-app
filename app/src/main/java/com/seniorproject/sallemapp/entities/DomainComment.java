@@ -1,12 +1,15 @@
 package com.seniorproject.sallemapp.entities;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.joda.time.DateTime;
 
 /**
  * Created by abdul on 08-Mar-2017.
  */
 
-public class DomainComment {
+public class DomainComment implements Parcelable {
 
     private String _id;
     private String _commentedAt;
@@ -41,10 +44,6 @@ public class DomainComment {
         this._userId = _userId;
     }
 
-
-
-
-
     public String get_subject() {
         return _subject;
     }
@@ -76,4 +75,43 @@ public class DomainComment {
     public void set_post(DomainPost _post) {
         this._post = _post;
     }
+    public DomainComment(){}
+    protected DomainComment(Parcel in) {
+        _id = in.readString();
+        _commentedAt = in.readString();
+        _userId = in.readString();
+        _subject = in.readString();
+        _user = (DomainUser) in.readValue(DomainUser.class.getClassLoader());
+        _posId = in.readString();
+        _post = (DomainPost) in.readValue(DomainPost.class.getClassLoader());
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(_id);
+        dest.writeString(_commentedAt);
+        dest.writeString(_userId);
+        dest.writeString(_subject);
+        dest.writeValue(_user);
+        dest.writeString(_posId);
+        dest.writeValue(_post);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<DomainComment> CREATOR = new Parcelable.Creator<DomainComment>() {
+        @Override
+        public DomainComment createFromParcel(Parcel in) {
+            return new DomainComment(in);
+        }
+
+        @Override
+        public DomainComment[] newArray(int size) {
+            return new DomainComment[size];
+        }
+    };
 }

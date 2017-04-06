@@ -14,6 +14,7 @@ import android.widget.Spinner;
 import android.widget.Switch;
 
 import com.seniorproject.sallemapp.R;
+import com.seniorproject.sallemapp.helpers.MyHelper;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -90,9 +91,9 @@ public class SettingsFragment extends Fragment {
 
     //below initSettings() added by Fisal to start loading Sallem Settings from SharedPreferences and view it to layout
     private void initSettings() {
-        String allow_user_location = getActivity().getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).getString("allow_location", "true");
-        Integer search_distance = getActivity().getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).getInt("search_distance", 1);
-        String status = getActivity().getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).getString("status", "Online");
+        String allow_user_location = getActivity().getSharedPreferences(MyHelper.SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE).getString("allow_location", "true");
+        Integer search_distance = getActivity().getSharedPreferences(MyHelper.SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE).getInt("search_distance", 1);
+        String status = getActivity().getSharedPreferences(MyHelper.SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE).getString("status", "Online");
 
         Switch allowLocationSW = (Switch) getActivity().findViewById(R.id.btn_allow_user_location);
 

@@ -199,8 +199,12 @@ public class ShowPostActivity extends AppCompatActivity implements EntityAsyncRe
                 if (user != null) {
                     String imageTitle = user.getImageTitle() + ".jpg";
                     Bitmap avatar = DownloadImage.getImage(mContext, imageTitle);
-                    DomainUser domainUser = new DomainUser(user);
-                        domainUser.setAvatar(avatar);
+                    DomainUser domainUser = new DomainUser(
+                            user.getId(), user.getFirstName(), user.getLastName(),
+                            user.getPassword(), user.getEmail(), user.getJoinedAt(),
+                            user.getImageTitle(), user.getStatus(),
+                            avatar, 0, 0, false
+                    );
                         p.set_user(domainUser);
                     }
                     String imagePath = post.get_imagePath();
@@ -219,8 +223,13 @@ public class ShowPostActivity extends AppCompatActivity implements EntityAsyncRe
                             if (userCommented != null) {
                                 String imageTitle = userCommented.getImageTitle() + ".jpg";
                                 Bitmap avatar = DownloadImage.getImage(mContext, imageTitle);
-                                DomainUser commentedDomainUser = new DomainUser(user);
-                                commentedDomainUser.setAvatar(avatar);
+
+                                DomainUser commentedDomainUser = new DomainUser(
+                                        user.getId(), user.getFirstName(), user.getLastName(),
+                                        user.getPassword(), user.getEmail(), user.getJoinedAt(),
+                                        user.getImageTitle(), user.getStatus(),
+                                        avatar, 0, 0, false
+                                );
                                 domainComment.set_user(commentedDomainUser);
                             }
                             doaminComments.add(domainComment);

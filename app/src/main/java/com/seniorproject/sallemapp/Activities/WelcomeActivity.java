@@ -22,8 +22,9 @@ public class WelcomeActivity extends AppCompatActivity {
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent registerIntent = new Intent(WelcomeActivity.this, RegistrationActivity.class);
+                Intent registerIntent = new Intent(getApplicationContext(), RegistrationActivity.class);
                 startActivity(registerIntent);
+                finish();
             }
         });
     }
@@ -33,8 +34,9 @@ public class WelcomeActivity extends AppCompatActivity {
         signinButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent signinIntent = new Intent(WelcomeActivity.this, SignInActivity.class);
+                Intent signinIntent = new Intent(getApplicationContext(), SignInActivity.class);
                 startActivity(signinIntent);
+                finish();
             }
         });
     }

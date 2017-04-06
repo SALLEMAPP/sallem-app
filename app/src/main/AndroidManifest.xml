@@ -31,9 +31,9 @@
         <activity android:name=".Activities.SignInActivity" />
         <activity
             android:name=".Activities.HomeActivity"
+            android:exported="true"
             android:label="@string/title_activity_home"
-            android:theme="@style/AppTheme"
-            android:exported="true" />
+            android:theme="@style/AppTheme" />
         <activity android:name=".Activities.ResetPasswordActivity" />
         <activity android:name=".Activities.RegistrationActivity" />
         <activity android:name=".Activities.AddEventActivity" />
@@ -64,12 +64,22 @@
         </receiver>
 
         <activity android:name=".Activities.AddPostActivity" />
-        <activity android:name=".Activities.ShowPostActivity"/>
+        <activity android:name=".Activities.ShowPostActivity" />
+
         <service
-            android:name=".Activities.UserLocationService"
-            android:exported="false" />
+            android:enabled="true"
+            android:name=".SallemService"
+            >
+            <intent-filter>
+                <action android:name=
+                    "com.seniorproject.sallemapp.SallemService.SERVICE"/>
+            </intent-filter>
+        </service>
 
-
+        <activity
+            android:name=".Activities.SelectParticipantsActivity"
+            android:label="@string/title_activity_select_participants"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>

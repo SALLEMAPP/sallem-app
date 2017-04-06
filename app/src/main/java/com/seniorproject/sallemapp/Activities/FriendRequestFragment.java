@@ -1,22 +1,34 @@
 package com.seniorproject.sallemapp.Activities;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.microsoft.azure.storage.StorageException;
+import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
+import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 import com.seniorproject.sallemapp.Activities.listsadpaters.FriendRequestsListAdapter;
 import com.seniorproject.sallemapp.Activities.listsadpaters.SearchUsersListAdapter;
 import com.seniorproject.sallemapp.R;
 import com.seniorproject.sallemapp.entities.DomainFriendship;
 import com.seniorproject.sallemapp.entities.DomainUser;
+import com.seniorproject.sallemapp.entities.Friendship;
+import com.seniorproject.sallemapp.entities.User;
+import com.seniorproject.sallemapp.helpers.AzureHelper;
+import com.seniorproject.sallemapp.helpers.DownloadImage;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,7 +38,7 @@ import java.util.ArrayList;
  * Use the {@link FriendRequestFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FriendRequestFragment extends Fragment {
+public class FriendRequestFragment extends ListFragment {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -37,7 +49,6 @@ public class FriendRequestFragment extends Fragment {
     private FriendRequestsListAdapter mAdapter = null;
     private View mCurrentView;
     private Context mContext;
-    private ListView mResultList;
 
     private OnFragmentInteractionListener mListener;
 
@@ -76,8 +87,21 @@ public class FriendRequestFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mCurrentView = inflater.inflate(R.layout.fragment_friend_request, container, false);
-         mContext = getActivity().getApplicationContext();
+        mContext = getActivity().getApplicationContext();
+        loadFriendRequest();
         return mCurrentView;
+    }
+
+    private void loadFriendRequest() {
+        String userId = DomainUser.CURRENT_USER.getId();
+        LoadFriendsRequestAsync requestAsync = new LoadFriendsRequestAsync(userId);
+        requestAsync.execute();
+    }
+
+    private void wireResultList(ArrayList<DomainFriendship> result){
+        mFriendsRequests = result;
+        mAdapter = new FriendRequestsListAdapter(mContext, mFriendsRequests);
+        setListAdapter(mAdapter);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -117,5 +141,67 @@ public class FriendRequestFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+    public class LoadFriendsRequestAsync extends AsyncTask<Void,Void,List<DomainFriendship>> {
+        private final String mUserId;
+        public LoadFriendsRequestAsync(String userId){
+            mUserId = userId;
+        }
+
+        @Override
+        protected List<DomainFriendship> doInBackground(Void... params) {
+            List<DomainFriendship> result = new ArrayList<>();
+            try {
+                MobileServiceClient client = AzureHelper.CreateClient(mContext);
+                MobileServiceTable<Friendship> friendsTable = client.getTable(Friendship.class);
+                List<Friendship> requests = friendsTable.where().field("id")
+                        .eq(mUserId).and().field("StatusId").eq(1).execute().get();
+                MobileServiceTable<User> userTable = client.getTable(User.class);
+
+                if (requests != null && requests.size() > 0) {
+                    for(Friendship friendship: requests){
+                       String friendId = friendship.getFriendId();
+                    List<User> users = userTable.where().field("id").eq(friendId).execute().get();
+                        User user = users.get(0);
+                        if(user != null){
+                            Bitmap avatar = null;
+
+                            try {
+                                //In case no avatar, just fail gracefully.
+                                String title = user.getImageTitle() + ".jpg";
+                                avatar = DownloadImage.getImage(mContext, title);
+                            } catch (StorageException e) {
+                                //e.printStackTrace();
+                                //Log.e("SALLEM APP", "doInBackground: " + e.getCause().getMessage());
+
+                            }
+                            DomainUser domainUser = new DomainUser(
+                                   user.getId(), user.getFirstName(), user.getLastName(),
+                                    user.getPassword(), user.getEmail(), user.getJoinedAt(),
+                                    user.getImageTitle(), user.getStatus(),
+                                    avatar, 0, 0, false
+                            );
+                            DomainFriendship domainFriendship = new DomainFriendship(friendship, domainUser);
+                            result.add(domainFriendship);
+                        }
+
+
+
+                }
+            }
+            }
+            catch (Exception e){
+                e.printStackTrace();
+                Log.e("SALLEM APP", e.getCause().getMessage());
+            }
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(List<DomainFriendship> result) {
+            if(result != null && result.size() > 0){
+                wireResultList((ArrayList<DomainFriendship>) result);
+            }
+        }
     }
 }

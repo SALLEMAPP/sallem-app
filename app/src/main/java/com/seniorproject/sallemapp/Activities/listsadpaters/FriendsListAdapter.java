@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.seniorproject.sallemapp.R;
+import com.seniorproject.sallemapp.entities.DomainUser;
 import com.seniorproject.sallemapp.entities.User;
 
 import java.util.ArrayList;
@@ -16,10 +17,10 @@ import java.util.ArrayList;
  * Created by abdul on 19-Feb-2017.
  */
 
-public class FriendsListAdapter extends ArrayAdapter<User> {
-    private ArrayList<User> _items;
+public class FriendsListAdapter extends ArrayAdapter<DomainUser> {
+    private ArrayList<DomainUser> _items;
     private Context _adpaterContext;
-    public FriendsListAdapter(Context context, ArrayList<User> items) {
+    public FriendsListAdapter(Context context, ArrayList<DomainUser> items) {
         super(context, R.layout.friends_list, items);
         _adpaterContext = context;
         _items = items;
@@ -29,7 +30,7 @@ public class FriendsListAdapter extends ArrayAdapter<User> {
     public View getView(int position, View convertView, ViewGroup parent){
         View v = convertView;
         try {
-            User user = _items.get(position);
+            DomainUser user = _items.get(position);
             if(v == null){
                 LayoutInflater vi =
                         (LayoutInflater) _adpaterContext.getSystemService(
@@ -42,7 +43,7 @@ public class FriendsListAdapter extends ArrayAdapter<User> {
             //friendAvatar.setImageBitmap();
             TextView friendName = (TextView)
                     v.findViewById(R.id.lbl_friend_name);
-            String name = user.getLastName() + " " + user.getFirstName();
+            String name = user.getLasttName() + " " + user.getFirstName();
             friendName.setText(name);
         }
         catch (Exception e){

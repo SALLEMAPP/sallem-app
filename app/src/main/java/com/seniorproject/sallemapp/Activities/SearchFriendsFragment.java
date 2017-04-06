@@ -169,8 +169,12 @@ public class SearchFriendsFragment extends Fragment {
                             //Log.e("SALLEM APP", "doInBackground: " + e.getCause().getMessage());
 
                         }
-                        DomainUser domainUser = new DomainUser(user);
-                        domainUser.setAvatar(avatar);
+                        DomainUser domainUser = new DomainUser(
+                                user.getId(), user.getFirstName(), user.getLastName(),
+                                user.getPassword(), user.getEmail(), user.getJoinedAt(),
+                                user.getImageTitle(), user.getStatus(),
+                                avatar, 0, 0, false
+                        );
                         resultUsers.add(domainUser)    ;
                     }
 

@@ -57,6 +57,7 @@
         <item>Offline</item>
     </string-array>
     <string name="title_activity_maps">Map</string>
+    <string name="title_activity_select_participants">SelectParticipantsActivity</string>
 
     <!-- Example settings for Data & Sync -->
 

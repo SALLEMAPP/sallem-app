@@ -9,11 +9,11 @@ import com.google.gson.annotations.SerializedName;
 public class Friendship {
     @SerializedName("id")
     private String id;
-    @SerializedName("FriendId")
+    @SerializedName("friendId")
     private String FriendId;
-    @SerializedName("FriendsSince")
+    @SerializedName("friendsSince")
     private String FriendsSince;
-    @SerializedName("StatusId")
+    @SerializedName("statusId")
     private int StatusId;
     public Friendship(){
 

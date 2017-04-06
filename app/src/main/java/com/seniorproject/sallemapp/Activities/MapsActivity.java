@@ -22,8 +22,10 @@ import android.widget.Toast;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.seniorproject.sallemapp.R;
@@ -36,7 +38,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private LocationManager _locationManager;
     private static final long MIN_TIME = 400;
     private static final float MIN_DISTANCE = 1000;
-    private String selectedlocation;
+    private LatLng selectedlocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +87,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
@@ -95,7 +98,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 mMap.addMarker(marker);
                 //Address address = Address.CREATOR()
-                selectedlocation = latLng.toString();
+                selectedlocation = latLng;
 
             }
         });
@@ -112,15 +115,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             mMap.setMyLocationEnabled(true);
         }
-
-
-
-
     }
     @Override
     public void onLocationChanged(LatLng newLocation) {
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(newLocation, 16);
-        mMap.animateCamera(cameraUpdate);
+
+        CameraPosition cameraPosition = new CameraPosition.Builder().target(newLocation).zoom(12).build();
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+        //CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(newLocation, 12);
+        //mMap.animateCamera(cameraUpdate);
     }
 
     @TargetApi(23)
@@ -131,7 +134,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (requestCode == MY_PERMISSION_FOR_ACCESS_LOCATION) {
             if (grantResults.length == 1 &&
                     grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Read Contacts permission granted", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Read LOCATION permission granted", Toast.LENGTH_SHORT).show();
             } else {
                 // showRationale = false if user clicks Never Ask Again, otherwise true
                 boolean showRationale = shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION);
@@ -140,7 +143,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if (showRationale) {
                     // do something here to handle degraded mode
                 } else {
-                    Toast.makeText(this, "Read Contacts permission denied", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Read LOCATION permission denied", Toast.LENGTH_SHORT).show();
                 }
             }
         } else {

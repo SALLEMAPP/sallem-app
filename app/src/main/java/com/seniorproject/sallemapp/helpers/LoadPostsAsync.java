@@ -42,12 +42,19 @@ import java.util.concurrent.TimeUnit;
 
 public class LoadPostsAsync extends AsyncTask<Void, Void, List<DomainPost>> {
     public ListAsyncResult<DomainPost> delegate;
+    private RefreshedPostsResult mCallback;
     public static MobileServiceClient mClient;
     MobileServiceTable<User> mUserTable;
     MobileServiceTable<Post> mPostTable;
     MobileServiceTable<Comment> mCommentTable;
     Context mContext;
+    String mLastRefresh;
+    public LoadPostsAsync(Context context, String lastRefresh, RefreshedPostsResult callback){
+        mContext = context;
+        mLastRefresh = lastRefresh;
+        mCallback =callback;
 
+    }
     public LoadPostsAsync( Context context, ServiceFilter progressFilter){
         mContext = context;
         try {
@@ -76,13 +83,20 @@ public class LoadPostsAsync extends AsyncTask<Void, Void, List<DomainPost>> {
     @Override
     protected List<DomainPost> doInBackground(Void... params) {
         ArrayList<DomainPost> domainPosts = new ArrayList<>();
-        mPostTable = mClient.getTable(Post.class);
-        //MobileServiceTable<PostImage> imageTable = mClient.getTable(PostImage.class);
-        MobileServiceTable<User> userTable = mClient.getTable(User.class);
 
         try {
+            MobileServiceClient client = AzureHelper.CreateClient(mContext);
+            mPostTable = client.getTable(Post.class);
+            //MobileServiceTable<PostImage> imageTable = mClient.getTable(PostImage.class);
+            MobileServiceTable<User> userTable = client.getTable(User.class);
             List<Post> posts;
+            if(mLastRefresh == null) {
                 posts = mPostTable.orderBy("postedAt", QueryOrder.Descending).execute().get();
+            }
+            else{
+                posts = mPostTable.where().field("postedAt").gt(mLastRefresh)
+                        .orderBy("postedAt", QueryOrder.Descending).execute().get();
+            }
             Log.e("SALLEM-LOAD POSTS ASYNC", String.valueOf(posts.size()));
             for (Post post : posts) {
 //                    List<PostImage> images = imageTable.where()
@@ -95,8 +109,12 @@ public class LoadPostsAsync extends AsyncTask<Void, Void, List<DomainPost>> {
                 if (user != null) {
                     String imageTitle = user.getImageTitle() + ".jpg";
                     Bitmap avatar = DownloadImage.getImage(mContext, imageTitle);
-                    DomainUser domainUser = new DomainUser(user);
-                    domainUser.setAvatar(avatar);
+                    DomainUser domainUser = new DomainUser(
+                            user.getId(), user.getFirstName(), user.getLastName(),
+                            user.getPassword(), user.getEmail(), user.getJoinedAt(),
+                            user.getImageTitle(), user.getStatus(),
+                            avatar, 0, 0, false
+                    );
                     p.set_user(domainUser);
                 }
                 String imagePath = post.get_imagePath();
@@ -169,7 +187,12 @@ public class LoadPostsAsync extends AsyncTask<Void, Void, List<DomainPost>> {
 
     @Override
     protected void onPostExecute(List<DomainPost> domainPosts) {
-        delegate.processFinish(domainPosts);
+       if(delegate != null) {
+           delegate.processFinish(domainPosts);
+       }
+       if(mCallback != null){
+           mCallback.onGotResult(domainPosts);
+       }
     }
 
 

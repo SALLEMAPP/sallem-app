@@ -25,8 +25,7 @@ public class UpdateFriendRequestAsync extends AsyncTask {
             MobileServiceClient client = AzureHelper.CreateClient(mContext);
             MobileServiceTable<Friendship> friendsTable =
                     client.getTable(Friendship.class);
-            friendsTable.update(mFriendship);
-
+            friendsTable.update(mFriendship).get();
         }
         catch (Exception e){
             e.printStackTrace();
