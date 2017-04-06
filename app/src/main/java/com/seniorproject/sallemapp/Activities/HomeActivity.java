@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -118,10 +119,13 @@ public class HomeActivity extends AppCompatActivity
 
         //Update navigation header to contains user information
         View v = navigationView.getHeaderView(0);
-        TextView t =(TextView) v.findViewById(R.id.textView);
-        t.setText(DomainUser.CURRENT_USER.getFirstName() + " " + DomainUser.CURRENT_USER.getLasttName());
+        TextView userName=(TextView) v.findViewById(R.id.menu_lblUserName);
+        TextView email=(TextView) v.findViewById(R.id.menu_lblEmail);
+        userName.setText(DomainUser.CURRENT_USER.getFirstName() + " " + DomainUser.CURRENT_USER.getLasttName());
+        email.setText(DomainUser.CURRENT_USER.getEmail());
         ImageView avatar =(ImageView) v.findViewById(R.id.navHeader_avatr);
-        avatar.setImageBitmap(DomainUser.CURRENT_USER.getAvatar());
+        Bitmap scaledPhoto = Bitmap.createScaledBitmap(DomainUser.CURRENT_USER.getAvatar(), 90, 90, false);
+        avatar.setImageBitmap(scaledPhoto);
         _currnetMenu = CurrentMenu.HOME;
         sallemService = new Intent(getApplicationContext(), SallemService.class);
         startService(sallemService);

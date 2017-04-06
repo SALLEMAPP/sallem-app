@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import com.seniorproject.sallemapp.R;
+import com.seniorproject.sallemapp.entities.DomainUser;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -19,7 +20,9 @@ public class MyHelper {
     public static final String SHARED_PREFERENCE_NAME = "sallemappsettings";
     public static Bitmap getDefaultAvatar(Context context){
         Bitmap avatar = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_user_avatar);
-        return avatar;
+        Bitmap scaledPhoto = Bitmap.createScaledBitmap(avatar, 90, 90, false);
+
+        return scaledPhoto;
 
     }
     public static byte[] encodeBitmap(Bitmap image){
