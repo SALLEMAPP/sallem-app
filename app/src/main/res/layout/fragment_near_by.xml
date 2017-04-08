@@ -1,12 +1,14 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.seniorproject.sallemapp.Activities.NearByFragment">
+
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <com.google.android.gms.maps.MapView
             android:id="@+id/newFriends_mapView"
@@ -20,7 +22,51 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <ProgressBar
+            android:id="@+id/nearFriends_progBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
     </android.support.constraint.ConstraintLayout>
 
+    <LinearLayout
+        android:id="@+id/bottom_sheet"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:behavior_hideable="false"
+        app:behavior_peekHeight="20dp"
+        app:layout_behavior="android.support.design.widget.BottomSheetBehavior"
+        android:background="@color/sallemBlue"
+        >
 
-</FrameLayout>
+        <TextView
+            android:id="@+id/bottom_lblCaption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Near Friend"
+            />
+        <TextView
+            android:id="@+id/bottom_lblInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Near Friend"
+            />
+        <Button
+            android:id="@+id/bottom_btnNotify"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Notify"
+            />
+    </LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

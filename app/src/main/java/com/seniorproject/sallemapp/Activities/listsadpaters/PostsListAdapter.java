@@ -3,12 +3,12 @@ package com.seniorproject.sallemapp.Activities.listsadpaters;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -32,7 +32,6 @@ public class PostsListAdapter  extends ArrayAdapter<DomainPost> {
     private ArrayList<DomainPost> _items;
     private Context _adpaterContext;
     private String mSelectedId;
-    public Button mCommentsButton;
 
     public PostsListAdapter(Context context, ArrayList<DomainPost> items) {
         super(context, R.layout.post_layout, items);
@@ -53,17 +52,6 @@ public class PostsListAdapter  extends ArrayAdapter<DomainPost> {
                                 Context.LAYOUT_INFLATER_SERVICE
                         );
                 v = vi.inflate(R.layout.post_layout, null);
-                mCommentsButton = (Button) v.findViewById(R.id.postLayout_btnComments);
-                mCommentsButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Log.e("post ID", post.get_id());
-                        Intent i = new Intent(v.getContext(), ShowPostActivity.class);
-                        Log.e("Selected Id", mSelectedId);
-                        i.putExtra("postId", post.get_id());
-                        v.getContext().startActivity(i);
-                    }
-                });
 
             }
             //Bind the UI elements to entity
@@ -114,34 +102,9 @@ public class PostsListAdapter  extends ArrayAdapter<DomainPost> {
                 CommentsListAdapter commentsAdapter = new CommentsListAdapter(_adpaterContext, topComments);
                 commentsList.setAdapter(commentsAdapter);
             }
-
         }
-
-
-
-
-
-
-    }
-    private void attachButtonEvent(View v) {
-
-        Button b = (Button)v.findViewById(R.id.postLayout_btnComments);
-        b.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.e("POSTS LIST ADAPTER", mSelectedId);
-                Intent i = new Intent(v.getContext(), ShowPostActivity.class);
-                i.putExtra("postId", mSelectedId);
-                v.getContext().startActivity(i);
-            }
-        });
     }
 
-    @Override
-    public void addAll(@NonNull Collection<? extends DomainPost> collection) {
-        //super.addAll(collection);
-        _items.clear();
-        _items.addAll(collection);
-        notifyDataSetChanged();
-    }
+
+
 }

@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:descendantFocusability="blocksDescendants"
     >
 
 
@@ -14,7 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
+        android:layout_marginLeft="4dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -22,7 +23,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.032"
+        app:layout_constraintVertical_bias="0.031"
         app:srcCompat="@drawable/ic_account_circle_black_24dp" />
 
     <TextView
@@ -43,19 +44,21 @@
 
     <Button
         android:id="@+id/searchUsers_btnRequest"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="102dp"
+        android:layout_height="39dp"
         android:layout_marginBottom="0dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginRight="4dp"
         android:layout_marginTop="8dp"
         android:background="@color/sallemBlue"
         android:text="Send Request"
         android:textColor="@color/sallemWhite"
-        app:layout_constraintBottom_toBottomOf="@+id/searchUsers_imgAvatar"
-        app:layout_constraintHorizontal_bias="0.945"
+        app:layout_constraintBottom_toBottomOf="@+id/searchUsers_lblUserName"
+        app:layout_constraintHorizontal_bias="0.941"
         app:layout_constraintLeft_toRightOf="@+id/searchUsers_lblUserName"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/searchUsers_imgAvatar"
-        app:layout_constraintVertical_bias="0.015" />
+        app:layout_constraintTop_toTopOf="@+id/searchUsers_lblUserName"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        />
 </android.support.constraint.ConstraintLayout>

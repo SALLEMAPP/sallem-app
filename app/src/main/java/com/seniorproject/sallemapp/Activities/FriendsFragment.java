@@ -10,39 +10,35 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 
 import com.seniorproject.sallemapp.Activities.listsadpaters.FriendsListAdapter;
 import com.seniorproject.sallemapp.R;
 import com.seniorproject.sallemapp.entities.DomainPost;
 import com.seniorproject.sallemapp.entities.DomainUser;
 import com.seniorproject.sallemapp.entities.User;
+import com.seniorproject.sallemapp.helpers.ListAsyncResult;
+import com.seniorproject.sallemapp.helpers.LoadFriendsAsync;
+import com.seniorproject.sallemapp.helpers.MyApplication;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link FriendsFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link FriendsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class FriendsFragment extends ListFragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
+public class FriendsFragment extends ListFragment implements ListAsyncResult<DomainUser> {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String _title;
     private int _page;
-    private FriendsListAdapter _adpater= null;
-    private View _currentView;
-    ArrayList<DomainUser> _friendsList = new ArrayList<DomainUser>();
-
+    private FriendsListAdapter mAdpater= null;
+    private View mCurrentView;
+    ArrayList<DomainUser> mFriendsList = new ArrayList<DomainUser>();
+    ProgressBar mProgress;
     private OnFragmentInteractionListener mListener;
-
+    Context mContext;
+    MyApplication mMyApplication;
     public FriendsFragment() {
         // Required empty public constructor
     }
@@ -55,7 +51,6 @@ public class FriendsFragment extends ListFragment {
      * @param title Parameter 2.
      * @return A new instance of fragment FriendsFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static FriendsFragment newInstance(int page, String title) {
         FriendsFragment fragment = new FriendsFragment();
         Bundle args = new Bundle();
@@ -76,83 +71,65 @@ public class FriendsFragment extends ListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        _currentView =    inflater.inflate(R.layout.fragment_friends, container, false);
-        attachList();
+        mCurrentView = inflater.inflate(R.layout.fragment_friends, container, false);
+        mProgress = (ProgressBar)mCurrentView.findViewById(R.id.friends_progressBar);
+        mProgress.setVisibility(View.GONE);
+        mContext =getActivity();
+        mMyApplication = (MyApplication)getActivity().getApplication();
         attachSearchButton();
-        return _currentView;
+        loadFriends();
+        return mCurrentView;
 
     }
 
+    private void loadFriends() {
+        if(mMyApplication.Friends_Cach != null){
+            processFinish(mMyApplication.Friends_Cach);
+        }
+        else
+        {
+            LoadFriendsAsync loadFrinds = new LoadFriendsAsync
+                    (getActivity().getApplicationContext(), DomainUser.CURRENT_USER.getId());
+            loadFrinds.delegat = this;
+            loadFrinds.execute();
+            mProgress.setVisibility(View.VISIBLE);
+        }
+    }
+
     private void attachSearchButton() {
-        Button b = (Button) _currentView.findViewById(R.id.btn_search_friends);
+        Button b = (Button) mCurrentView.findViewById(R.id.friends_btnSearch);
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText searchText = (EditText)_currentView.findViewById(R.id.txt_search_friends);
+                EditText searchText = (EditText)mCurrentView.findViewById(R.id.friends_txtSearch);
                 String searchTerm = searchText.getText().toString();
                 searchFriends(searchTerm);
             }
         });
 
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadFriends();
+    }
+
     private void searchFriends(final String term){
     ArrayList<DomainUser> s = new ArrayList<>();
-        for(int i = 0; i < _friendsList.size(); i++){
-        boolean b = _friendsList.get(i).getLasttName().toLowerCase().contains(term);
-        boolean n = _friendsList.get(i).getFirstName().toLowerCase().contains(term);
+        for(int i = 0; i < mFriendsList.size(); i++){
+        boolean b = mFriendsList.get(i).getLasttName().toLowerCase().contains(term);
+        boolean n = mFriendsList.get(i).getFirstName().toLowerCase().contains(term);
             if(b || n){
-                s.add(_friendsList.get(i));
+                s.add(mFriendsList.get(i));
             }
     }
-        _adpater = new FriendsListAdapter(this.getContext(), s);
-        setListAdapter(_adpater);
-    }
-
-    private void attachList() {
-        _friendsList = dummyData();
-        _adpater = new FriendsListAdapter(this.getContext(), _friendsList);
-        setListAdapter(_adpater);
-
-
-    }
-    private ArrayList<DomainUser> dummyData(){
-        ArrayList r = new ArrayList<User>();
-//        DomainUser s = new DomainUser();
-//        s.setId(UUID.randomUUID().toString());
-//        s.setFirstName("Amr");
-//        s.setLastName("Zaid");
-//        r.add(s);s = new User();
-//        s.setId(UUID.randomUUID().toString());
-//        s.setFirstName("Ali");
-//        s.setLastName("Ahmed");
-//        r.add(s);
-//        s = new User();
-//        s.setId(UUID.randomUUID().toString());
-//        s.setFirstName("Khalid");
-//        s.setLastName("Omar");
-//        r.add(s);
-//        s = new User();
-//        s.setId(UUID.randomUUID().toString());
-//        s.setFirstName("Saeed");
-//        s.setLastName("Saleh");
-//        r.add(s);
-//        s = new User();
-//
-//        s.setId(UUID.randomUUID().toString());
-//        s.setFirstName("Muhammad");
-//        s.setLastName("Yousf");
-//        r.add(s);
-        //Bitmap b = BitmapFactory.decodeResource(getResources(), R.drawable.ic_me_24px);
-        //s.setAvatar(b);
-
-
-        return r;
-
+        mAdpater = new FriendsListAdapter(this.getContext(), s);
+        setListAdapter(mAdpater);
     }
 
 
-    // TODO: Rename method, update argument and hook method into UI event
+
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -175,7 +152,17 @@ public class FriendsFragment extends ListFragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
 
+    @Override
+    public void processFinish(List<DomainUser> result) {
+        mProgress.setVisibility(View.GONE);
+        if(result != null){
+            mMyApplication.Friends_Cach = result;
+            mFriendsList = (ArrayList<DomainUser>)result;
+            mAdpater = new FriendsListAdapter(mContext, mFriendsList);
+            setListAdapter(mAdpater);
+        }
 
     }
 

@@ -164,7 +164,7 @@ public class RegistrationActivity extends AppCompatActivity {
                 user.setImageTitle(MyHelper.DEFAULT_AVATAR_TITLE);
             }
             else {
-                user.setImageTitle(UUID.randomUUID().toString());
+                user.setImageTitle(MyHelper.ImageAsString(bm));
             }
             user.setStatus(0);
 
@@ -258,9 +258,9 @@ public class RegistrationActivity extends AppCompatActivity {
             @Override
             protected Void doInBackground(Void... params) {
                try {
-                    if(bm !=null) {
-                        uploadUserImage(user.getImageTitle());
-                    }
+                   // if(bm !=null) {
+                     //   uploadUserImage(user.getImageTitle());
+                    //}
                    _userTable = _client.getTable(User.class);
                    _userTable.insert(user).get();
                }

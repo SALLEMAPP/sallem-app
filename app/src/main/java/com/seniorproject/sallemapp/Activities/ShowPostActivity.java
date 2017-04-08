@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.google.gson.annotations.SerializedName;
+import com.google.common.base.Predicate;
 import com.microsoft.azure.storage.CloudStorageAccount;
 import com.microsoft.azure.storage.StorageException;
 import com.microsoft.azure.storage.blob.CloudBlobClient;
@@ -23,7 +23,6 @@ import com.microsoft.azure.storage.blob.CloudBlockBlob;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.http.OkHttpClientFactory;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
-import com.microsoft.windowsazure.mobileservices.table.query.QueryOrder;
 import com.seniorproject.sallemapp.Activities.listsadpaters.CommentsListAdapter;
 import com.seniorproject.sallemapp.R;
 import com.seniorproject.sallemapp.entities.Comment;
@@ -33,9 +32,11 @@ import com.seniorproject.sallemapp.entities.DomainUser;
 import com.seniorproject.sallemapp.entities.Post;
 import com.seniorproject.sallemapp.entities.User;
 import com.seniorproject.sallemapp.helpers.CommonMethods;
-import com.seniorproject.sallemapp.helpers.DownloadImage;
+import com.seniorproject.sallemapp.helpers.AzureBlob;
 import com.seniorproject.sallemapp.helpers.EntityAsyncResult;
 import com.seniorproject.sallemapp.helpers.EntityAsyncResultTwo;
+import com.seniorproject.sallemapp.helpers.MyApplication;
+import com.seniorproject.sallemapp.helpers.MyHelper;
 import com.squareup.okhttp.OkHttpClient;
 
 import org.joda.time.LocalDateTime;
@@ -66,7 +67,7 @@ public class ShowPostActivity extends AppCompatActivity implements EntityAsyncRe
     ImageButton mSendCommentButton;
     CommentsListAdapter mCommentsAdapter;
     DomainPost mCurrentPost;
-
+    MyApplication myApp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +92,7 @@ public class ShowPostActivity extends AppCompatActivity implements EntityAsyncRe
         ArrayList<DomainComment> comments =new ArrayList();
         mCommentsAdapter = new CommentsListAdapter(this , comments);
         mCommentsList.setAdapter(mCommentsAdapter);
+        myApp = (MyApplication) getApplication();
         Bundle b = getIntent().getExtras();
         String postId = b.getString("postId");
         loadPost(postId);
@@ -120,10 +122,19 @@ public class ShowPostActivity extends AppCompatActivity implements EntityAsyncRe
 
     }
 
-    private void loadPost(String postId) {
-        LoadPost asyncLoading = new LoadPost(this, postId);
-        asyncLoading.Delegate = this;
-        asyncLoading.execute();
+    private void loadPost(final String postId) {
+//        LoadPost asyncLoading = new LoadPost(this, postId);
+//        asyncLoading.Delegate = this;
+//        asyncLoading.execute();
+        DomainPost showedPost = null;
+         for(DomainPost p: myApp.Posts_Cach){
+             if(p.get_id().equals(postId)){
+                 showedPost = p;
+                 break;
+             }
+         }
+        processFinish(showedPost);
+
     }
 
     @Override
@@ -136,7 +147,6 @@ public class ShowPostActivity extends AppCompatActivity implements EntityAsyncRe
             mPostSubject.setText(result.get_subject());
             mCommentsAdapter.addAll(result.get_comments());
             mCurrentPost = result;
-
         }
     }
 
@@ -161,18 +171,7 @@ public class ShowPostActivity extends AppCompatActivity implements EntityAsyncRe
             mContext = context;
             mId = id;
             try {
-                mClient = new MobileServiceClient(
-                        "https://sallem.azurewebsites.net",
-                        context);
-                mClient.setAndroidHttpClientFactory(new OkHttpClientFactory() {
-                    @Override
-                    public OkHttpClient createOkHttpClient() {
-                        OkHttpClient okHttpClient =new OkHttpClient();
-                        okHttpClient.setReadTimeout(20, TimeUnit.SECONDS);
-                        okHttpClient.setWriteTimeout(20, TimeUnit.SECONDS);
-                        return okHttpClient;
-                    }
-                });
+                mClient = MyHelper.getAzureClient(mContext);
             }
             catch (MalformedURLException e){
                 Log.d("SALLEMAPP", e.getCause().getMessage());
@@ -198,7 +197,7 @@ public class ShowPostActivity extends AppCompatActivity implements EntityAsyncRe
                 p.set_postedAt(post.getPostedAt());
                 if (user != null) {
                     String imageTitle = user.getImageTitle() + ".jpg";
-                    Bitmap avatar = DownloadImage.getImage(mContext, imageTitle);
+                    Bitmap avatar = AzureBlob.getImage(mContext, imageTitle );
                     DomainUser domainUser = new DomainUser(
                             user.getId(), user.getFirstName(), user.getLastName(),
                             user.getPassword(), user.getEmail(), user.getJoinedAt(),
@@ -209,7 +208,7 @@ public class ShowPostActivity extends AppCompatActivity implements EntityAsyncRe
                     }
                     String imagePath = post.get_imagePath();
                     if (imagePath != null ) {
-                        p.set_image(getImage(imagePath));
+                        p.set_image(AzureBlob.getImage(mContext, imagePath));
                     }
                     if(comments != null){
                         ArrayList<DomainComment> doaminComments = new ArrayList<>();
@@ -222,7 +221,7 @@ public class ShowPostActivity extends AppCompatActivity implements EntityAsyncRe
                             User userCommented = mUserTable.where().field("id").eq(comment.get_userId()).execute().get().get(0);
                             if (userCommented != null) {
                                 String imageTitle = userCommented.getImageTitle() + ".jpg";
-                                Bitmap avatar = DownloadImage.getImage(mContext, imageTitle);
+                                Bitmap avatar = AzureBlob.getImage(mContext, imageTitle);
 
                                 DomainUser commentedDomainUser = new DomainUser(
                                         user.getId(), user.getFirstName(), user.getLastName(),
@@ -270,34 +269,7 @@ public class ShowPostActivity extends AppCompatActivity implements EntityAsyncRe
         }
 
 
-        private Bitmap getImage(String id) throws InvalidKeyException, URISyntaxException, StorageException, IOException {
-            CloudStorageAccount account = CloudStorageAccount.parse(CommonMethods.storageConnectionString);
-            CloudBlobClient serviceClient = account.createCloudBlobClient();
 
-            // Container name must be lower case.
-            CloudBlobContainer container = serviceClient.getContainerReference("sallemphotos");
-            //container.createIfNotExists();
-
-            // Upload an image file.
-            //String imageName = UUID.randomUUID().toString();
-            CloudBlockBlob blob = container.getBlockBlobReference(id);
-
-            File outputDir = mContext.getCacheDir();
-            File sourceFile = File.createTempFile("101", "jpg", outputDir);
-            OutputStream outputStream = new FileOutputStream(sourceFile);
-            //bm.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
-            //outputStream.close();
-            //blob.upload(new FileInputStream(sourceFile), sourceFile.length());
-
-            // Download the image file.
-            File destinationFile = new File(sourceFile.getParentFile(), "image1Download.tmp");
-            blob.downloadToFile(destinationFile.getAbsolutePath());
-            Bitmap image = BitmapFactory.decodeStream(new FileInputStream(destinationFile));
-            return image;
-
-
-
-        }
 
 
         @Override

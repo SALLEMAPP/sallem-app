@@ -11,21 +11,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.ListView;
 
 import com.microsoft.azure.storage.StorageException;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 import com.seniorproject.sallemapp.Activities.listsadpaters.FriendRequestsListAdapter;
-import com.seniorproject.sallemapp.Activities.listsadpaters.SearchUsersListAdapter;
 import com.seniorproject.sallemapp.R;
 import com.seniorproject.sallemapp.entities.DomainFriendship;
 import com.seniorproject.sallemapp.entities.DomainUser;
 import com.seniorproject.sallemapp.entities.Friendship;
 import com.seniorproject.sallemapp.entities.User;
-import com.seniorproject.sallemapp.helpers.AzureHelper;
-import com.seniorproject.sallemapp.helpers.DownloadImage;
+import com.seniorproject.sallemapp.helpers.AzureBlob;
+import com.seniorproject.sallemapp.helpers.MyHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -152,7 +149,7 @@ public class FriendRequestFragment extends ListFragment {
         protected List<DomainFriendship> doInBackground(Void... params) {
             List<DomainFriendship> result = new ArrayList<>();
             try {
-                MobileServiceClient client = AzureHelper.CreateClient(mContext);
+                MobileServiceClient client = MyHelper.getAzureClient(mContext);
                 MobileServiceTable<Friendship> friendsTable = client.getTable(Friendship.class);
                 List<Friendship> requests = friendsTable.where().field("id")
                         .eq(mUserId).and().field("StatusId").eq(1).execute().get();
@@ -169,7 +166,7 @@ public class FriendRequestFragment extends ListFragment {
                             try {
                                 //In case no avatar, just fail gracefully.
                                 String title = user.getImageTitle() + ".jpg";
-                                avatar = DownloadImage.getImage(mContext, title);
+                                avatar = AzureBlob.getImage(mContext, title);
                             } catch (StorageException e) {
                                 //e.printStackTrace();
                                 //Log.e("SALLEM APP", "doInBackground: " + e.getCause().getMessage());

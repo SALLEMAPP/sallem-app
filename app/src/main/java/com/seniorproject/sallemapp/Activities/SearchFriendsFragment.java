@@ -1,12 +1,9 @@
 package com.seniorproject.sallemapp.Activities;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,22 +11,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import com.microsoft.azure.storage.StorageException;
-import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
-import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 import com.seniorproject.sallemapp.Activities.listsadpaters.SearchUsersListAdapter;
 import com.seniorproject.sallemapp.R;
 import com.seniorproject.sallemapp.entities.DomainUser;
-import com.seniorproject.sallemapp.entities.User;
-import com.seniorproject.sallemapp.helpers.AzureHelper;
-import com.seniorproject.sallemapp.helpers.DownloadImage;
-import com.seniorproject.sallemapp.helpers.MyHelper;
+import com.seniorproject.sallemapp.helpers.ListAsyncResult;
+import com.seniorproject.sallemapp.helpers.MyApplication;
+import com.seniorproject.sallemapp.helpers.SearchUsersAsync;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class SearchFriendsFragment extends Fragment {
+public class SearchFriendsFragment extends Fragment implements ListAsyncResult<DomainUser> {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -98,7 +91,8 @@ public class SearchFriendsFragment extends Fragment {
             public void onClick(View v) {
                 String email = mEmailText.getText().toString();
                 if(email.isEmpty()){return;}
-                SearchUsersAsync search = new SearchUsersAsync(email);
+                SearchUsersAsync search = new SearchUsersAsync
+                        (email, mContext, SearchFriendsFragment.this);
                 search.execute();
             }
         });
@@ -128,6 +122,11 @@ public class SearchFriendsFragment extends Fragment {
         mListener = null;
     }
 
+    @Override
+    public void processFinish(List<DomainUser> result) {
+        wireResultList((ArrayList<DomainUser>)result);
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -142,56 +141,5 @@ public class SearchFriendsFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
-    public class SearchUsersAsync extends AsyncTask<Void,Void,List<DomainUser>>{
-        private final String mEmail;
-        public SearchUsersAsync(String email){
-            mEmail = email;
-        }
 
-        @Override
-        protected List<DomainUser> doInBackground(Void... params) {
-            List<DomainUser> resultUsers = new ArrayList<>();
-            try {
-                MobileServiceClient client = AzureHelper.CreateClient(mContext);
-                MobileServiceTable<User> userTable = client.getTable(User.class);
-                List<User> users = userTable.where().startsWith("email", mEmail).execute().get();
-                if(users.size() > 0){
-                    for(User user :users) {
-                        Bitmap avatar = null;
-
-                        try{
-                            //In case no avatar, just fail gracefully.
-                          String title = user.getImageTitle() +".jpg";
-                          avatar = DownloadImage.getImage(mContext, title);
-                        }
-                        catch(StorageException e){
-                            //e.printStackTrace();
-                            //Log.e("SALLEM APP", "doInBackground: " + e.getCause().getMessage());
-
-                        }
-                        DomainUser domainUser = new DomainUser(
-                                user.getId(), user.getFirstName(), user.getLastName(),
-                                user.getPassword(), user.getEmail(), user.getJoinedAt(),
-                                user.getImageTitle(), user.getStatus(),
-                                avatar, 0, 0, false
-                        );
-                        resultUsers.add(domainUser)    ;
-                    }
-
-                }
-            }
-            catch (Exception e){
-                e.printStackTrace();
-                Log.e("SALLEM APP", e.getCause().getMessage());
-            }
-            return resultUsers;
-        }
-
-        @Override
-        protected void onPostExecute(List<DomainUser> result) {
-              if(result != null && result.size() > 0){
-                wireResultList((ArrayList<DomainUser>) result);
-            }
-        }
-    }
 }

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.seniorproject.sallemapp.R;
@@ -38,9 +39,9 @@ public class FriendsListAdapter extends ArrayAdapter<DomainUser> {
                         );
                 v = vi.inflate(R.layout.friends_list, null);
             }
-            //ImageView friendAvatar = (ImageView)
-                    //v.findViewById(R.id.img_friend_avatar);
-            //friendAvatar.setImageBitmap();
+            ImageView friendAvatar = (ImageView)
+                    v.findViewById(R.id.img_friend_avatar);
+            friendAvatar.setImageBitmap(user.getAvatar());
             TextView friendName = (TextView)
                     v.findViewById(R.id.lbl_friend_name);
             String name = user.getLasttName() + " " + user.getFirstName();

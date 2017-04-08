@@ -15,28 +15,16 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.SettableFuture;
 import com.microsoft.azure.storage.StorageException;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
-import com.microsoft.windowsazure.mobileservices.http.NextServiceFilterCallback;
-import com.microsoft.windowsazure.mobileservices.http.OkHttpClientFactory;
-import com.microsoft.windowsazure.mobileservices.http.ServiceFilter;
-import com.microsoft.windowsazure.mobileservices.http.ServiceFilterRequest;
-import com.microsoft.windowsazure.mobileservices.http.ServiceFilterResponse;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
-import com.seniorproject.sallemapp.Activities.localdb.SallemDbHelper;
 import com.seniorproject.sallemapp.Activities.localdb.UserDataSource;
 import com.seniorproject.sallemapp.entities.DomainUser;
 import com.seniorproject.sallemapp.entities.User;
-import com.seniorproject.sallemapp.helpers.AzureHelper;
 import com.seniorproject.sallemapp.helpers.CommonMethods;
-import com.seniorproject.sallemapp.helpers.DownloadImage;
+import com.seniorproject.sallemapp.helpers.AzureBlob;
 import com.seniorproject.sallemapp.helpers.EntityAsyncResult;
 import com.seniorproject.sallemapp.helpers.MyHelper;
-import com.squareup.okhttp.OkHttpClient;
 
 
 import com.seniorproject.sallemapp.R;
@@ -47,7 +35,6 @@ import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 public class SignInActivity extends AppCompatActivity implements EntityAsyncResult<DomainUser> {
 
@@ -183,15 +170,16 @@ public class SignInActivity extends AppCompatActivity implements EntityAsyncResu
                     String imageTitle = user.getImageTitle();
                     Bitmap avatar = null;
                     if(!imageTitle.equals(MyHelper.DEFAULT_AVATAR_TITLE)) {
-                        try {
+                       // try {
                             //In case no avatar, just fail gracefully.
-                            imageTitle = user.getImageTitle() + ".jpg";
-                            avatar = DownloadImage.getImage(mContext, imageTitle);
-                        } catch (StorageException e) {
+                           // imageTitle = user.getImageTitle() + ".jpg";
+                            //avatar = AzureBlob.getImage(mContext, imageTitle);
+                       // } catch (StorageException e) {
                             //e.printStackTrace();
                             //Log.e("SALLEM APP", "doInBackground: " + e.getCause().getMessage());
 
-                        }
+                        //}
+                        avatar = MyHelper.decodeImage(imageTitle);
                     }
                     else{
                         avatar =  MyHelper.getDefaultAvatar(getApplicationContext());
@@ -218,16 +206,16 @@ public class SignInActivity extends AppCompatActivity implements EntityAsyncResu
                 Log.d(CommonMethods.APP_TAG, e.getCause().getMessage());
             } catch (IOException e) {
                 e.printStackTrace();
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            } catch (InvalidKeyException e) {
-                e.printStackTrace();
             }
-
+//            catch (URISyntaxException e) {
+//                e.printStackTrace();
+//            } catch (InvalidKeyException e) {
+//                e.printStackTrace();
+//            }
             return domainUser;
         }
         private List<User> getUserByEmail(String email, String password) throws ExecutionException, InterruptedException, MalformedURLException{
-            MobileServiceClient client = AzureHelper.CreateClient(mContext);
+            MobileServiceClient client = MyHelper.getAzureClient(mContext);
             MobileServiceTable<User> userTable = client.getTable(User.class);
             return userTable.where().field("email").eq(email)
                     .and()

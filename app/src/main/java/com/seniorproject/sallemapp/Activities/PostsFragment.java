@@ -5,74 +5,26 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.ListFragment;
-import android.support.v4.view.ViewPager;
-import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.SettableFuture;
-import com.microsoft.azure.storage.CloudStorageAccount;
-import com.microsoft.azure.storage.StorageException;
-import com.microsoft.azure.storage.blob.CloudBlobClient;
-import com.microsoft.azure.storage.blob.CloudBlobContainer;
-import com.microsoft.azure.storage.blob.CloudBlockBlob;
-import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
-import com.microsoft.windowsazure.mobileservices.MobileServiceException;
-import com.microsoft.windowsazure.mobileservices.http.NextServiceFilterCallback;
-import com.microsoft.windowsazure.mobileservices.http.OkHttpClientFactory;
-import com.microsoft.windowsazure.mobileservices.http.ServiceFilter;
-import com.microsoft.windowsazure.mobileservices.http.ServiceFilterRequest;
-import com.microsoft.windowsazure.mobileservices.http.ServiceFilterResponse;
-import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
-import com.microsoft.windowsazure.mobileservices.table.query.QueryOrder;
 import com.seniorproject.sallemapp.Activities.listsadpaters.PostsListAdapter;
 import com.seniorproject.sallemapp.R;
-import com.seniorproject.sallemapp.entities.Comment;
 import com.seniorproject.sallemapp.entities.DomainPost;
-import com.seniorproject.sallemapp.entities.DomainUser;
-import com.seniorproject.sallemapp.entities.Post;
-import com.seniorproject.sallemapp.entities.PostImage;
-import com.seniorproject.sallemapp.entities.User;
-import com.seniorproject.sallemapp.helpers.AzureHelper;
-import com.seniorproject.sallemapp.helpers.CachStore;
 import com.seniorproject.sallemapp.helpers.CommonMethods;
-import com.seniorproject.sallemapp.helpers.DownloadImage;
-import com.seniorproject.sallemapp.helpers.EntityAsyncResult;
 import com.seniorproject.sallemapp.helpers.ListAsyncResult;
-import com.seniorproject.sallemapp.helpers.LoadPostsAsync;
-import com.seniorproject.sallemapp.helpers.RefreshedPostsResult;
-import com.squareup.okhttp.OkHttpClient;
+import com.seniorproject.sallemapp.helpers.MyApplication;
+import com.seniorproject.sallemapp.helpers.MyHelper;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.security.InvalidKeyException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -98,6 +50,9 @@ public class PostsFragment extends ListFragment implements ListAsyncResult<Domai
     private  static Context mContext;
     EventsReceiver mEventsReciever;
     IntentFilter mIntentFilter;
+    IntentFilter mAddNewPostFiler;
+    EventsReceiver mAddNewPostReceiver;
+    private MyApplication mMyApp;
     public PostsFragment() {
         // Required empty public constructor
     }
@@ -143,18 +98,35 @@ public class PostsFragment extends ListFragment implements ListAsyncResult<Domai
         // Inflate the layout for this fragment
         _currentView  = inflater.inflate(R.layout.fragment_posts, container, false);
         mLoadinggProgressBar = (ProgressBar) _currentView.findViewById(R.id.postFrag_progressBar);
-        mLoadinggProgressBar.setVisibility(View.GONE);
+        mLoadinggProgressBar.setVisibility(View.VISIBLE);
         mContext = getActivity().getApplicationContext();
         mPostsList = new ArrayList<>();
         _adpater = new PostsListAdapter(mContext, mPostsList);
         setListAdapter(_adpater);
+
         mEventsReciever = new EventsReceiver();
         mIntentFilter = new IntentFilter(CommonMethods.ACTION_NOTIFY_REFRESH);
+        mAddNewPostReceiver = new EventsReceiver();
+        mAddNewPostFiler = new IntentFilter(CommonMethods.ACTION_NOTIFY_ADD_POST);
+
         getActivity().registerReceiver(mEventsReciever, mIntentFilter);
+        getActivity().registerReceiver(mAddNewPostReceiver, mAddNewPostFiler);
+        mMyApp =(MyApplication) getActivity().getApplication();
+
         return _currentView;
 
     }
-  // TODO: Rename method, update argument and hook method into UI event
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        //super.onListItemClick(l, v, position, id);
+       DomainPost post =  _adpater.getItem(position);
+        Intent i = new Intent(v.getContext(), ShowPostActivity.class);
+        i.putExtra("postId", post.get_id());
+        v.getContext().startActivity(i);
+    }
+
+    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -182,14 +154,26 @@ public class PostsFragment extends ListFragment implements ListAsyncResult<Domai
     public void processFinish(List<DomainPost> result) {
         if(result != null) {
             _adpater.addAll(result);
+            _adpater.notifyDataSetChanged();
+
+            mLoadinggProgressBar.setVisibility(View.GONE);
         }
 
    }
+   private void addNewPost(DomainPost post){
+       _adpater.insert(post, 0);
+       _adpater.notifyDataSetChanged();
+
+
+   }
+
 
     @Override
     public void onResume() {
         super.onResume();
-            //loadPosts();
+        if(mMyApp.Posts_Cach != null){
+            processFinish(mMyApp.Posts_Cach);
+        }
 
     }
 
@@ -209,60 +193,30 @@ public class PostsFragment extends ListFragment implements ListAsyncResult<Domai
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
-
-    public class ProgressFilter implements ServiceFilter {
-
-        @Override
-        public ListenableFuture<ServiceFilterResponse> handleRequest(ServiceFilterRequest request, NextServiceFilterCallback nextServiceFilterCallback) {
-
-            final SettableFuture<ServiceFilterResponse> resultFuture = SettableFuture.create();
-            getActivity().runOnUiThread(new Runnable() {
-
-                @Override
-                public void run() {
-                    if (mLoadinggProgressBar != null) mLoadinggProgressBar.setVisibility(ProgressBar.VISIBLE);
-                }
-            });
-
-            ListenableFuture<ServiceFilterResponse> future = nextServiceFilterCallback.onNext(request);
-
-            Futures.addCallback(future, new FutureCallback<ServiceFilterResponse>() {
-                @Override
-                public void onFailure(Throwable e) {
-                    resultFuture.setException(e);
-                }
-
-                @Override
-                public void onSuccess(ServiceFilterResponse response) {
-                   getActivity().runOnUiThread(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            if (mLoadinggProgressBar != null) mLoadinggProgressBar.setVisibility(ProgressBar.GONE);
-
-                        }
-
-
-                    });
-
-
-                    resultFuture.set(response);
-
-
-                }
-            });
-
-            return resultFuture;
-        }
-    }
     public class EventsReceiver extends BroadcastReceiver{
 
         @Override
         public void onReceive(Context context, Intent intent) {
             if(intent != null){
                 if(intent.getAction() == CommonMethods.ACTION_NOTIFY_REFRESH){
-                    List<DomainPost> posts = CachStore.POSTS_CACH;
+                    List<DomainPost> posts = mMyApp.Posts_Cach;
                     processFinish(posts);
+                    return;
+                }
+                if(intent.getAction() == CommonMethods.ACTION_NOTIFY_ADD_POST){
+                    DomainPost post = intent.getExtras().getParcelable("newPost");
+                    Bitmap image = null;
+                    if(post != null){
+                        if(post.getImagePath() != null) {
+                            image = MyHelper.readImageFromDisk(getActivity().getApplicationContext(), post.getImagePath());
+                        }
+                        if(image != null){
+                            post.set_image(image);
+                        }
+
+                        addNewPost(post);
+                    }
+                    return;
                 }
             }
         }

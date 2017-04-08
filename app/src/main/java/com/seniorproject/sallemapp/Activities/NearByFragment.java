@@ -5,31 +5,28 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.BaseBundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.BottomSheetBehavior.BottomSheetCallback;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.app.ListFragment;
+import android.widget.Button;
+import android.widget.PopupMenu;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -38,12 +35,12 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.microsoft.azure.storage.StorageException;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
@@ -51,15 +48,21 @@ import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 import com.seniorproject.sallemapp.R;
 import com.seniorproject.sallemapp.entities.DomainUser;
 import com.seniorproject.sallemapp.entities.Friendship;
+import com.seniorproject.sallemapp.entities.Notify;
 import com.seniorproject.sallemapp.entities.User;
 import com.seniorproject.sallemapp.entities.UserLocation;
 import com.seniorproject.sallemapp.entities.UserOnMap;
-import com.seniorproject.sallemapp.helpers.AzureHelper;
-import com.seniorproject.sallemapp.helpers.DownloadImage;
+import com.seniorproject.sallemapp.helpers.AzureBlob;
 import com.seniorproject.sallemapp.helpers.LocationService;
+import com.seniorproject.sallemapp.helpers.MyHelper;
+import com.seniorproject.sallemapp.helpers.SendNotifyAsync;
 
+import org.joda.time.LocalDateTime;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -69,19 +72,35 @@ import java.util.List;
  * Use the {@link NearByFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class NearByFragment extends Fragment {
+public class NearByFragment extends Fragment implements PopupMenu.OnMenuItemClickListener, GoogleMap.OnMarkerClickListener {
     private static final int MY_PERMISSION_FOR_ACCESS_LOCATION = 2;
     MapView mMapView;
     private GoogleMap mGooglMap;
     Context mContext;
     private LocationManager mLocationManager;
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState){
-        View  v =  inflater.inflate( R.layout.fragment_near_by, container, false);
+    private View mCurrentView;
+    private Marker mSelectedMarker;
+    private ProgressBar mProgressBar;
+    private BottomSheetBehavior mBottomSheetBehavior;
+    List<Pair<LatLng, UserOnMap>> mUsersOnMarkers;
+    private TextView mUserInfo;
+    private Button mNotifyBotton;
+    private String mNotifyReceiverId;
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState){
+        mCurrentView =  inflater.inflate( R.layout.fragment_near_by, container, false);
         mContext = getActivity().getApplicationContext();
         getPermissionToAccessLocation();
-        mMapView = (MapView) v.findViewById (R.id.newFriends_mapView);
+        mMapView = (MapView) mCurrentView.findViewById (R.id.newFriends_mapView);
+        mProgressBar = (ProgressBar) mCurrentView.findViewById(R.id.nearFriends_progBar);
+        View bottomSheet = mCurrentView.findViewById(R.id.bottom_sheet);
+        mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+        mBottomSheetBehavior.setBottomSheetCallback(mBottomSheetCallback);
+        mUsersOnMarkers = new ArrayList<>();
+        mUserInfo = (TextView) mCurrentView.findViewById(R.id.bottom_lblInfo);
+        attachButtomNotify();
         mMapView.onCreate(savedInstanceState);
+
         mMapView.onResume();
         try{
             MapsInitializer.initialize(mContext);
@@ -98,14 +117,51 @@ public class NearByFragment extends Fragment {
                         if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
                             googleMap.setMyLocationEnabled(true);
                         }
+                        googleMap.setOnMarkerClickListener(NearByFragment.this);
                         Location lastLocation = LocationService.LAST_LOCATION;
                         updateLocation(lastLocation);
+                        mProgressBar.setVisibility(View.VISIBLE);
+//                        mGooglMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+//                            @Override
+//                            public void onMapClick(LatLng latLng) {
+//                                PopupMenu popupMenu = new PopupMenu(getContext().getApplicationContext(), v);
+//                                //MenuInflater menuInflater = popupMenu.getMenuInflater();
+//                                //inflater.inflate(R.menu.map_popup_actions, popupMenu.getMenu());
+//                                popupMenu.setOnMenuItemClickListener(NearByFragment.this);
+//                                popupMenu.inflate(R.menu.map_popup_actions);
+//                                popupMenu.show();
+//                            }
+//                        });
                     }
                 }
         );
         SearchNearFriendsAsycn nearFriendsAsycn = new SearchNearFriendsAsycn(DomainUser.CURRENT_USER.getId());
         nearFriendsAsycn.execute();
-            return  v;
+            return  mCurrentView;
+        }
+        private void attachButtomNotify(){
+            mNotifyBotton = (Button)mCurrentView.findViewById(R.id.bottom_btnNotify);
+            mNotifyBotton.setEnabled(false);
+            mNotifyBotton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String currentUserId = DomainUser.CURRENT_USER.getId();
+                    if(mNotifyReceiverId != null && !mNotifyReceiverId.isEmpty() && !mNotifyReceiverId.equals(currentUserId)) {
+                        List<Notify> notifies = new ArrayList<Notify>();
+                        Notify notify = new Notify();
+                        notify.setId(UUID.randomUUID().toString());
+                        notify.setSourceUser(currentUserId);
+                        notify.setDestUser(mNotifyReceiverId);
+                        notify.setTitle(DomainUser.CURRENT_USER.getFirstName() + " " + DomainUser.CURRENT_USER.getLasttName());
+                        notify.setSubject("Invited you for a meeting");
+                        notify.setDelivered(false);
+                        notify.setPublishedAt(new LocalDateTime().toString());
+                        notifies.add(notify);
+                        SendNotifyAsync sendNotify = new SendNotifyAsync(notifies, mContext);
+                        sendNotify.execute();
+                    }
+                }
+            });
         }
 
     @Override
@@ -114,6 +170,8 @@ public class NearByFragment extends Fragment {
 
 
     }
+
+
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -129,6 +187,8 @@ public class NearByFragment extends Fragment {
     public NearByFragment() {
         // Required empty public constructor
     }
+
+
 
     /**
      * Use this factory method to create a new instance of
@@ -175,47 +235,107 @@ public class NearByFragment extends Fragment {
     }
 
     private void updateLocation(Location lastLocation) {
-        LatLng newLocation = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
+        LatLng point = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
         String userName = DomainUser.CURRENT_USER.getFirstName() + " " + DomainUser.CURRENT_USER.getLasttName();
-        mGooglMap.addMarker(new MarkerOptions().position(newLocation).title(userName)); //.snippet("Marker Description"));
+        mGooglMap.addMarker(new MarkerOptions().position(point).title(userName)); //.snippet("Marker Description"));
         // For zooming automatically to the location of the marker
-        CameraPosition cameraPosition = new CameraPosition.Builder().target(newLocation).zoom(12).build();
+        CameraPosition cameraPosition = new CameraPosition.Builder().target(point).zoom(12).build();
         mGooglMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
     private void updateMap(List<UserOnMap> result){
         for(UserOnMap user:result){
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
+          List<Address> addresses = null;
+            Geocoder geocoder = new Geocoder(mContext);
+            List<Address> list = null;
+            try {
+                list = geocoder.getFromLocation(user.getLatitude(), user.getLongitude(), 1);
 
+            } catch (IOException e) {
 
-                Geocoder geo = new Geocoder(mContext);
-                List<Address> addresses = null;
-
-//                String address = currentContact.getStreetAddress() + ", " +
-//                        currentContact.getCity() + ", " +
-//                        currentContact.getState() + " " +
-//                        currentContact.getZipCode();
-//
-//                try {
-//                    addresses = geo.getFromLocationName(address, 1);
-//                }
-//                catch (IOException e) {
-//                    e.printStackTrace();
-//                }
+            }
+            Address address = list.get(0);
+//            if (marker != null) {
+//                marker.remove();
+//            }
             LatLng point = new LatLng(user.getLatitude(),user.getLongitude());
-            builder.include(point);
             BitmapDescriptor icon = null;
             if(user.getAvatar() != null){
-             icon = BitmapDescriptorFactory.fromBitmap(user.getAvatar());
+                icon = BitmapDescriptorFactory.fromBitmap(user.getAvatar());
             }
             else {
-                 icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_account_circle_black_24dp);
+                icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_account_circle_black_24dp);
             }
-
-               mGooglMap.addMarker(new MarkerOptions().position(point).title(user.getUserName()).icon(icon));
+            MarkerOptions options = new MarkerOptions()
+                    .title(address.getLocality())
+                    .position(point)
+                    .icon(icon) ;
+            //marker = mMap.addMarker(options);
+           builder.include(point);
+             Marker m =  mGooglMap.addMarker(options);
+            Pair<LatLng, UserOnMap> userOnMaker = new Pair<>(point, user);
+            mUsersOnMarkers.add(userOnMaker);
             }
             //googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(),measuredWidth, measuredHeight, 100));
-
         }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_sendNotify:
+                Toast.makeText(mContext, mSelectedMarker.getTitle() , Toast.LENGTH_LONG).show();
+                return true;
+
+            default:
+                return false;
+        }
+    }
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        mSelectedMarker = marker;
+        //showPopup(mProgressBar);
+        UserOnMap userOnMap = null;
+        for(Pair<LatLng, UserOnMap> u: mUsersOnMarkers){
+            if(u.first.equals(marker.getPosition())){
+                userOnMap = u.second;
+                break;
+            }
+        }
+        if(userOnMap != null) {
+            mNotifyBotton.setEnabled(true);
+            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            mUserInfo.setText(userOnMap.getUserName());
+            mNotifyReceiverId = userOnMap.getUserId();
+        }
+        return true;
+    }
+    public void showPopup(View v){
+        PopupMenu popupMenu = new PopupMenu(getContext(), v);
+        //MenuInflater menuInflater = popupMenu.getMenuInflater();
+        //inflater.inflate(R.menu.map_popup_actions, popupMenu.getMenu());
+        popupMenu.setOnMenuItemClickListener(NearByFragment.this);
+        popupMenu.inflate(R.menu.map_popup_actions);
+
+        popupMenu.show();
+    }
+    private BottomSheetBehavior.BottomSheetCallback mBottomSheetCallback = new
+            BottomSheetCallback() {
+                @Override
+                public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                    if(newState == BottomSheetBehavior.STATE_HIDDEN){
+                      mNotifyBotton.setEnabled(false);
+                    }
+                    if(newState == BottomSheetBehavior.STATE_COLLAPSED){
+                        mNotifyBotton.setEnabled(false);
+                    }
+                   }
+
+                @Override
+                public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+                }
+            };
+
 
     /**
      * This interface must be implemented by activities that contain this
@@ -257,7 +377,6 @@ public class NearByFragment extends Fragment {
 
     }
 
-
     @TargetApi(23)
     public void getPermissionToAccessLocation() {
         if(ContextCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -288,7 +407,7 @@ public class NearByFragment extends Fragment {
         protected List<UserOnMap> doInBackground(Void... params) {
             List<UserOnMap> resultUsers = new ArrayList<>();
             try {
-                MobileServiceClient client = AzureHelper.CreateClient(mContext);
+                MobileServiceClient client = MyHelper.getAzureClient(mContext);
                 MobileServiceTable<User> usersTable = client.getTable(User.class);
                 MobileServiceTable<Friendship> friendsTable = client.getTable(Friendship.class);
                 MobileServiceTable<UserLocation> locationTable = client.getTable(UserLocation.class);
@@ -297,9 +416,15 @@ public class NearByFragment extends Fragment {
                         .execute().get();
                 if(friends.size() > 0){
                     for(Friendship friend :friends) {
-                        List<UserLocation> locations = locationTable.where().field("userId").eq(friend.getFriendId()).execute().get();
+                        String lastSeen = new LocalDateTime().minusMinutes(5).toString();
+                        List<UserLocation> locations = locationTable.where().field("userId").eq(friend.getFriendId())
+                                .and().field("seenAt").ge(lastSeen).execute().get();
+                        String tempUserId = null;
                         if (locations != null && locations.size() > 0) {
                             for (UserLocation friendLocation : locations) {
+                                //Check to take the user once, in case has has more than one location
+                                if(friendLocation.getUserId() == tempUserId){continue;}
+                                tempUserId = friendLocation.getUserId();
                                 Location userCurrentLocation = LocationService.LAST_LOCATION;
                                 double startLati = userCurrentLocation.getLatitude();
                                 double startLongi = userCurrentLocation.getLongitude();
@@ -319,7 +444,7 @@ public class NearByFragment extends Fragment {
                                         try {
                                             //In case no avatar, just fail gracefully.
                                             String title = user.getImageTitle() + ".jpg";
-                                            avatar = DownloadImage.getImage(mContext, title);
+                                            avatar = AzureBlob.getImage(mContext, title);
                                         } catch (StorageException e) {
                                             //e.printStackTrace();
                                             //Log.e("SALLEM APP", "doInBackground: " + e.getCause().getMessage());
@@ -353,6 +478,7 @@ public class NearByFragment extends Fragment {
 
         @Override
         protected void onPostExecute(List<UserOnMap> result) {
+            mProgressBar.setVisibility(View.GONE);
             if(result != null && result.size() > 0){
                 updateMap( result);
             }

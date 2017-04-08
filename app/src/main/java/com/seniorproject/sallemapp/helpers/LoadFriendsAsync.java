@@ -8,7 +8,6 @@ import android.util.Log;
 import com.microsoft.azure.storage.StorageException;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
-import com.seniorproject.sallemapp.Activities.FriendRequestFragment;
 import com.seniorproject.sallemapp.entities.DomainUser;
 import com.seniorproject.sallemapp.entities.Friendship;
 import com.seniorproject.sallemapp.entities.User;
@@ -24,7 +23,7 @@ public class LoadFriendsAsync extends AsyncTask<Void, Void, List<DomainUser>> {
     public ListAsyncResult<DomainUser> delegat;
     private Context mContext;
     private String mUserId;
-    public LoadFriendsAsync(Context context, String userId){
+    public LoadFriendsAsync(Context context, String userId ){
         mContext = context;
         mUserId = userId;
     }
@@ -33,7 +32,7 @@ public class LoadFriendsAsync extends AsyncTask<Void, Void, List<DomainUser>> {
     protected List<DomainUser> doInBackground(Void... params) {
         ArrayList<DomainUser> result = new ArrayList<>();
         try {
-            MobileServiceClient client = AzureHelper.CreateClient(mContext);
+            MobileServiceClient client =  MyHelper.getAzureClient(mContext);
             MobileServiceTable<Friendship> friendsTable = client.getTable(Friendship.class);
             MobileServiceTable<User> usersTable = client.getTable(User.class);
             List<Friendship> userFriends = friendsTable.where()
@@ -45,13 +44,12 @@ public class LoadFriendsAsync extends AsyncTask<Void, Void, List<DomainUser>> {
                     User user = usersTable.where()
                             .field("id").eq(friend.getFriendId()).execute().get().get(0);
                     Bitmap avatar = null;
-                    try {
-                        //In case no avatar, just fail gracefully.
-                        String title = user.getImageTitle() + ".jpg";
-                        avatar = DownloadImage.getImage(mContext, title);
-                    } catch (StorageException e) {
-                        //e.printStackTrace();
-                        //Log.e("SALLEM APP", "doInBackground: " + e.getCause().getMessage());
+                    String imageTitle = user.getImageTitle();
+                    if(!imageTitle.equals(MyHelper.DEFAULT_AVATAR_TITLE)) {
+                        avatar = MyHelper.decodeImage(imageTitle);
+                    }
+                    else{
+                        avatar =  MyHelper.getDefaultAvatar(mContext);
                     }
                     DomainUser domainUser = new DomainUser(
                             user.getId(),user.getFirstName(), user.getLastName(),

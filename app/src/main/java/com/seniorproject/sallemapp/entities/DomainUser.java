@@ -67,7 +67,11 @@ public class DomainUser implements Parcelable  {
         return status;
     }
     public Bitmap getAvatar(){
-        return avatar;
+        if(avatar == null){
+            return null;
+        }
+        Bitmap scaledPhoto = Bitmap.createScaledBitmap(avatar, 90, 90, false);
+        return scaledPhoto;
     }
     public void  setAvatar(Bitmap userAvatar){
         this.avatar =userAvatar;

@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -19,29 +20,15 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.SettableFuture;
-import com.microsoft.azure.storage.CloudStorageAccount;
-import com.microsoft.azure.storage.StorageException;
-import com.microsoft.azure.storage.blob.CloudBlobClient;
-import com.microsoft.azure.storage.blob.CloudBlobContainer;
-import com.microsoft.azure.storage.blob.CloudBlockBlob;
-import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
-import com.microsoft.windowsazure.mobileservices.http.NextServiceFilterCallback;
-import com.microsoft.windowsazure.mobileservices.http.OkHttpClientFactory;
-import com.microsoft.windowsazure.mobileservices.http.ServiceFilter;
-import com.microsoft.windowsazure.mobileservices.http.ServiceFilterRequest;
-import com.microsoft.windowsazure.mobileservices.http.ServiceFilterResponse;
-import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
-import com.microsoft.windowsazure.mobileservices.table.TableOperationCallback;
 import com.seniorproject.sallemapp.R;
 import com.seniorproject.sallemapp.entities.DomainPost;
 import com.seniorproject.sallemapp.entities.DomainUser;
 import com.seniorproject.sallemapp.entities.Post;
 import com.seniorproject.sallemapp.entities.PostImage;
+import com.seniorproject.sallemapp.helpers.CommonMethods;
 import com.seniorproject.sallemapp.helpers.EntityAsyncResult;
+import com.seniorproject.sallemapp.helpers.MyHelper;
+import com.seniorproject.sallemapp.helpers.SavePostAsync;
 import com.squareup.okhttp.OkHttpClient;
 
 import org.joda.time.LocalDateTime;
@@ -59,11 +46,8 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-public class AddPostActivity extends AppCompatActivity implements EntityAsyncResult<Post> {
-    public static final String storageConnectionString =
-            "DefaultEndpointsProtocol=http;" +
-                    "AccountName=sallemappphotos;" +
-                    "AccountKey=0ROm5ARwztUrPMEWcVuZYb4EgOS7/rB5v0y0kuaNPgRkoTnjBhHFXqaT82ydmgIIV+GeUqpCR5Mq/gI7WVcYyA==";
+public class AddPostActivity extends AppCompatActivity {
+
     Bitmap bm;
     private static final int REQUEST_CODE = 121;
     ProgressBar progressBar;
@@ -151,117 +135,42 @@ public class AddPostActivity extends AppCompatActivity implements EntityAsyncRes
         post.setPostedAt(postedAt);
         post.setUserId(userId);
         post.setSubject(subject);
+
         if (bm != null) {
-            post.set_imagePath(UUID.randomUUID().toString() + ".jpg");
+            //post.set_imagePath(UUID.randomUUID().toString() + ".jpg");
+            String imageAsString = MyHelper.ImageAsString(bm);
+            post.setPostImage(imageAsString);
         }
         //
-        SavePostAsync savePostAsync = new SavePostAsync(post);
-        savePostAsync.delegate = this;
+        SavePostAsync savePostAsync = new SavePostAsync(post, bm, this);
         savePostAsync.execute();
-
-
-    }
-
-    @Override
-    public void processFinish(Post result) {
-        mPostId = result.getId();
+        if(bm != null) {
+            MyHelper.saveImageToDisk(getApplicationContext(), post.get_imagePath(), bm);
+        }
+        DomainPost domainPost = createDomainPost(post);
+        Intent i = new Intent();
+        i.putExtra("newPost", domainPost);
+        i.setAction(CommonMethods.ACTION_NOTIFY_ADD_POST);
+        sendBroadcast(i);
         finish();
 
     }
-
-
-
-    public class SavePostAsync extends AsyncTask<Void, Void, Post> {
-        EntityAsyncResult<Post> delegate;
-        MobileServiceClient mClient;
-        MobileServiceTable<Post> mPostTable;
-        MobileServiceTable<PostImage> mPostImageTable;
-
-        private Post mPost;
-
-        public SavePostAsync(Post post) {
-            mPost = post;
-        }
-
-        @Override
-        protected Post doInBackground(Void... params) {
-            String imagePath = mPost.get_imagePath();
-            try {
-
-                mClient = new MobileServiceClient(
-                        "https://sallem.azurewebsites.net",
-                        AddPostActivity.this);
-                mClient.setAndroidHttpClientFactory(new OkHttpClientFactory() {
-                    @Override
-                    public OkHttpClient createOkHttpClient() {
-                        OkHttpClient okHttpClient = new OkHttpClient();
-                        okHttpClient.setReadTimeout(20, TimeUnit.SECONDS);
-                        okHttpClient.setWriteTimeout(20, TimeUnit.SECONDS);
-                        return okHttpClient;
-                    }
-                });
-            }
-              catch (MalformedURLException e){
-                    e.printStackTrace();
-                }
-
-
-                if (imagePath != null &&  !imagePath.isEmpty()) {
-
-                    try{
-                    CloudStorageAccount account = CloudStorageAccount.parse(storageConnectionString);
-                    CloudBlobClient serviceClient = account.createCloudBlobClient();
-
-                    // Container name must be lower case.
-                    CloudBlobContainer container = serviceClient.getContainerReference("sallemphotos");
-                    //container.createIfNotExists();
-
-                    // Upload an image file.
-                    CloudBlockBlob blob = container.getBlockBlobReference(imagePath);
-
-                    File outputDir = getBaseContext().getCacheDir();
-                    File sourceFile = File.createTempFile("101", "jpg", outputDir);
-                    OutputStream outputStream = new FileOutputStream(sourceFile);
-                    bm.compress(Bitmap.CompressFormat.JPEG, 50, outputStream);
-                    outputStream.close();
-                    blob.upload(new FileInputStream(sourceFile), sourceFile.length());
-                }
-                catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (StorageException e) {
-                    e.printStackTrace();
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (URISyntaxException e) {
-                    e.printStackTrace();
-                } catch (InvalidKeyException e) {
-                    e.printStackTrace();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            mPostTable = mClient.getTable(Post.class);
-           try {
-               mPostTable.insert(mPost).get();
-           }
-           catch (ExecutionException e){
-               e.printStackTrace();
-           }
-           catch (InterruptedException e){
-               e.printStackTrace();
-           }
-            return mPost;
-        }
-
-
-        @Override
-        protected void onPostExecute(Post post) {
-            if (delegate != null) {
-                delegate.processFinish(post);
-            }
-        }
+    private DomainPost createDomainPost(Post post){
+        DomainPost domainPost = new DomainPost();
+        domainPost.set_id(post.getId());
+        domainPost.set_userId(DomainUser.CURRENT_USER.getId());
+        domainPost.set_user(DomainUser.CURRENT_USER);
+        domainPost.set_subject(post.getSubject());
+        domainPost.setImagePath(post.get_imagePath());
+        domainPost.set_activityId(post.getActivityId());
+        domainPost.set_postedAt(post.getPostedAt());
+        return domainPost;
     }
+
+
+
+
+
 
 
 }

@@ -18,54 +18,45 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.util.Pair;
 
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 import com.seniorproject.sallemapp.Activities.HomeActivity;
-import com.seniorproject.sallemapp.Activities.PostsFragment;
-import com.seniorproject.sallemapp.Activities.localdb.PostDataSource;
 import com.seniorproject.sallemapp.entities.DomainPost;
 import com.seniorproject.sallemapp.entities.DomainUser;
-import com.seniorproject.sallemapp.entities.FriendPost;
-import com.seniorproject.sallemapp.entities.Post;
+import com.seniorproject.sallemapp.entities.Notify;
 import com.seniorproject.sallemapp.entities.UserLocation;
-import com.seniorproject.sallemapp.helpers.AzureHelper;
-import com.seniorproject.sallemapp.helpers.CachStore;
 import com.seniorproject.sallemapp.helpers.CommonMethods;
+import com.seniorproject.sallemapp.helpers.ListAsyncResult;
 import com.seniorproject.sallemapp.helpers.LoadFriendsPostsAsync;
-import com.seniorproject.sallemapp.helpers.LoadPostsAsync;
+import com.seniorproject.sallemapp.helpers.LoadNotifiesAsync;
+import com.seniorproject.sallemapp.helpers.MyApplication;
+import com.seniorproject.sallemapp.helpers.MyHelper;
 import com.seniorproject.sallemapp.helpers.RefreshedPostsResult;
 
 import org.joda.time.LocalDateTime;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Created by abdul on 04-Mar-2017.
  */
 
-public class SallemService extends Service implements LocationListener, RefreshedPostsResult {
+public class SallemService extends Service implements LocationListener, RefreshedPostsResult, ListAsyncResult<Notify> {
     private static final int SALLEM_NOTIFY = 0x2013;
     private LocationManager location = null;
     private NotificationManager notifier = null;
     public static final String SALLEM_SERVICE = "com.seniorproject.sallemapp.SallemService.SERVICE";
     public static boolean LISTEN_TO_DATABASE =true;
+    MyApplication mMyApp;
     public void onCreate(){
         super.onCreate();
+        mMyApp =(MyApplication) getApplication();
         initializeLocation();
     }
 
@@ -94,9 +85,10 @@ public class SallemService extends Service implements LocationListener, Refreshe
         String best = location.getBestProvider(criteria, true);
         int permissionCheck = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION);
         if(permissionCheck == PackageManager.PERMISSION_GRANTED) {
-            location.requestLocationUpdates(best, 30000, 0, (LocationListener) this);
+            //Get location updated every minute and after 100 distance
+            location.requestLocationUpdates(best, 60000, 100,  this);
         }
-        sendNotification("Service start");
+        sendNotification("Service", "Service started");
         listenForDatabaseChanges();
 
 
@@ -104,7 +96,7 @@ public class SallemService extends Service implements LocationListener, Refreshe
 
 
 
-    private void sendNotification(String content){
+    private void sendNotification(String title, String content){
         Intent toLauch = new Intent(
                 getApplicationContext(),
                 HomeActivity.class
@@ -122,7 +114,7 @@ public class SallemService extends Service implements LocationListener, Refreshe
         builder.setSmallIcon(
                 android.R.drawable.stat_notify_more);
         builder.setWhen(System.currentTimeMillis());
-        builder.setContentTitle("SALLEM");
+        builder.setContentTitle(title);
         builder.setContentText(content );
         builder.setContentIntent(intentBack);
         builder.setAutoCancel(true);
@@ -137,7 +129,7 @@ public class SallemService extends Service implements LocationListener, Refreshe
             location = null;
         }
         super.onDestroy();
-        Log.e("SALLEMAPP", "Sallem service onDestroy called");
+        Log.e("Sallem service", "Sallem service onDestroy called");
 
     }
 
@@ -152,7 +144,7 @@ public class SallemService extends Service implements LocationListener, Refreshe
         MobileServiceClient client;
         MobileServiceTable<UserLocation> userLocationTable;
         try {
-            client = AzureHelper.CreateClient(getApplicationContext());
+            client = MyHelper.getAzureClient(getApplicationContext());
             UserLocation userLocation = new UserLocation();
             userLocation.setId(UUID.randomUUID().toString());
             userLocation.setLongitude(location.getLongitude());
@@ -171,7 +163,7 @@ public class SallemService extends Service implements LocationListener, Refreshe
 
     @Override
     public void onLocationChanged(Location location) {
-        sendNotification("Location Changed");
+        sendNotification("Service", "Location Changed");
         saveLocation(location);
     }
 
@@ -198,6 +190,7 @@ public class SallemService extends Service implements LocationListener, Refreshe
                             public void run() {
                                 while (LISTEN_TO_DATABASE) {
                                     refreshPosts();
+                                    refreshNotifies();
                                     try {
                                         Thread.sleep(60000);
                                     } catch (InterruptedException e) {
@@ -233,8 +226,13 @@ public class SallemService extends Service implements LocationListener, Refreshe
 
         //LoadPostsAsync loadPosts = new LoadPostsAsync(getApplicationContext(), date, this);
         //loadPosts.execute();
-        LoadFriendsPostsAsync loadFriends = new LoadFriendsPostsAsync(getApplicationContext(), this);
+        LoadFriendsPostsAsync loadFriends = new LoadFriendsPostsAsync(getApplicationContext(),  this);
         loadFriends.LoadAsync(DomainUser.CURRENT_USER.getId());
+
+    }
+    private void refreshNotifies(){
+        LoadNotifiesAsync loadNotifies = new LoadNotifiesAsync(DomainUser.CURRENT_USER.getId(), getApplicationContext(), this);
+        loadNotifies.execute();
 
     }
 
@@ -257,13 +255,24 @@ public class SallemService extends Service implements LocationListener, Refreshe
 //                newPost.setActivityId(post.get_activityId());
 //                postDs.insert(newPost);
 //            }
-            if(CachStore.POSTS_CACH != null && CachStore.POSTS_CACH.size() == result.size()){return;}
-            CachStore.POSTS_CACH = result;
+            if(mMyApp.Posts_Cach != null && mMyApp.Posts_Cach.size() == result.size()){return;}
+            mMyApp.Posts_Cach = result;
             Intent i = new Intent();
             i.setAction(CommonMethods.ACTION_NOTIFY_REFRESH);
             sendBroadcast(i);
         }
 
+
+    }
+
+    @Override
+    public void processFinish(List<Notify> result) {
+        if(result != null) {
+            for (Notify n : result){
+                String title = n.getTitle();
+                String content = n.getSubject();
+            }
+        }
 
     }
 }

@@ -49,32 +49,21 @@ public class LoadPostsAsync extends AsyncTask<Void, Void, List<DomainPost>> {
     MobileServiceTable<Comment> mCommentTable;
     Context mContext;
     String mLastRefresh;
-    public LoadPostsAsync(Context context, String lastRefresh, RefreshedPostsResult callback){
+    MyApplication myApp;
+    public LoadPostsAsync(Context context, String lastRefresh, RefreshedPostsResult callback, MyApplication app){
         mContext = context;
         mLastRefresh = lastRefresh;
         mCallback =callback;
+        myApp =app;
 
     }
     public LoadPostsAsync( Context context, ServiceFilter progressFilter){
         mContext = context;
         try {
-            mClient = new MobileServiceClient(
-                    "https://sallem.azurewebsites.net",
-                    context).withFilter(progressFilter);
-            mClient.setAndroidHttpClientFactory(new OkHttpClientFactory() {
-                @Override
-                public OkHttpClient createOkHttpClient() {
-                    OkHttpClient okHttpClient =new OkHttpClient();
-                    okHttpClient.setReadTimeout(20, TimeUnit.SECONDS);
-                    okHttpClient.setWriteTimeout(20, TimeUnit.SECONDS);
-                    return okHttpClient;
-                }
-            });
-
-
+            mClient = MyHelper.getAzureClient(mContext);
         }
         catch (MalformedURLException e){
-            Log.d("SALLEMAPP", e.getCause().getMessage());
+            Log.d("LoadPostsAsync", e.getCause().getMessage());
 
         }
 
@@ -85,7 +74,7 @@ public class LoadPostsAsync extends AsyncTask<Void, Void, List<DomainPost>> {
         ArrayList<DomainPost> domainPosts = new ArrayList<>();
 
         try {
-            MobileServiceClient client = AzureHelper.CreateClient(mContext);
+            MobileServiceClient client =  MyHelper.getAzureClient(mContext);
             mPostTable = client.getTable(Post.class);
             //MobileServiceTable<PostImage> imageTable = mClient.getTable(PostImage.class);
             MobileServiceTable<User> userTable = client.getTable(User.class);
@@ -108,7 +97,7 @@ public class LoadPostsAsync extends AsyncTask<Void, Void, List<DomainPost>> {
                 User user = userTable.where().field("id").eq(post.getUserId()).execute().get().get(0);
                 if (user != null) {
                     String imageTitle = user.getImageTitle() + ".jpg";
-                    Bitmap avatar = DownloadImage.getImage(mContext, imageTitle);
+                    Bitmap avatar = AzureBlob.getImage(mContext, imageTitle);
                     DomainUser domainUser = new DomainUser(
                             user.getId(), user.getFirstName(), user.getLastName(),
                             user.getPassword(), user.getEmail(), user.getJoinedAt(),

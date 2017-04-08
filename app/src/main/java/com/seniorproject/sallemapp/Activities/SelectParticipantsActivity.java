@@ -16,6 +16,7 @@ import com.seniorproject.sallemapp.entities.DomainUser;
 import com.seniorproject.sallemapp.helpers.EntityAsyncResult;
 import com.seniorproject.sallemapp.helpers.ListAsyncResult;
 import com.seniorproject.sallemapp.helpers.LoadFriendsAsync;
+import com.seniorproject.sallemapp.helpers.MyApplication;
 import com.seniorproject.sallemapp.helpers.PassObject;
 
 import java.util.ArrayList;

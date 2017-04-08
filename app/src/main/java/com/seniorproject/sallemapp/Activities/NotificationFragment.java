@@ -2,7 +2,6 @@ package com.seniorproject.sallemapp.Activities;
 
 import android.content.Context;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -18,8 +17,6 @@ import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.seniorproject.sallemapp.R;
 import com.seniorproject.sallemapp.entities.DomainUser;
 import com.seniorproject.sallemapp.entities.FriendPost;
-import com.seniorproject.sallemapp.entities.Post;
-import com.seniorproject.sallemapp.helpers.AzureHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,49 +77,10 @@ public class NotificationFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v =  inflater.inflate(R.layout.fragment_notification, container, false);
-        test();
         return v;
     }
 
-    private void test() {
-//        AsyncTask task = new AsyncTask() {
-//            @Override
-//            protected Object doInBackground(Object[] params) {
-                try {
-                    MobileServiceClient client = AzureHelper.CreateClient(getActivity().getApplicationContext());
-                    List<Pair<String, String>> p = new ArrayList<>();
-                    Pair<String, String> pair = new Pair<>("id", DomainUser.CURRENT_USER.getId());
-                    p.add(pair);
-                    //Class<List<FriendPost>> clazz = (Class) List.class;
-                    ListenableFuture<FriendPost[]> posts =
-                            client.invokeApi("friendsposts", "GET", p, FriendPost[].class);
-                    Futures.addCallback(posts, new FutureCallback<FriendPost[]>() {
-                        @Override
-                        public void onSuccess(FriendPost[] apiResult) {
-                            Log.e("SALLEMAPP", "onSuccess: " + apiResult.length );
-                            FriendPost test = apiResult[0];
-                            String s = test.getSubject();
-                        }
 
-                        @Override
-                        public void onFailure(Throwable throwable) {
-                            Log.e("SALLEMAPP", "onFailure: " + throwable.getMessage());
-                        }
-                    });
-                    Boolean b =  posts.isDone();
-                    Log.e("fdsfs", b.toString());
-
-                }
-                catch (Exception e){
-                    e.printStackTrace();
-                    Log.e("SALLAPP", "doInBackground:" + e.getCause().getMessage());
-                }
-
-//                return null;
-//            }
-//        };
-//        task.execute();
-    }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {

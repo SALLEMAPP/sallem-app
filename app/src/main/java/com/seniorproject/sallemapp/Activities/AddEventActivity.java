@@ -31,7 +31,8 @@ import com.seniorproject.sallemapp.R;
 import com.seniorproject.sallemapp.entities.Activity;
 import com.seniorproject.sallemapp.entities.ActivityDetail;
 import com.seniorproject.sallemapp.entities.DomainUser;
-import com.seniorproject.sallemapp.helpers.AzureHelper;
+import com.seniorproject.sallemapp.helpers.MyApplication;
+import com.seniorproject.sallemapp.helpers.MyHelper;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDateTime;
@@ -50,6 +51,8 @@ public class AddEventActivity extends AppCompatActivity {
     private String selectedTime;
     private ArrayList<ActivityDetail> mActitityDetails;
     private ArrayList<DomainUser> mParticipants;
+    MobileServiceClient mClient;
+    private MyApplication mMyApp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +66,13 @@ public class AddEventActivity extends AppCompatActivity {
         attachSelectEventTime();
         attachAddPariticipants();
         attachSaveButton();
+        try {
+            mClient = MyHelper.getAzureClient(this);
+
+        }
+        catch (Exception e){
+            Log.e("Add Event Activity", "onCreate: "+e.getMessage() );
+        }
     }
 
     private void attachSaveButton() {
@@ -234,8 +244,8 @@ public class AddEventActivity extends AppCompatActivity {
         @Override
         protected Object doInBackground(Object[] params) {
             try{
-                MobileServiceClient client = AzureHelper.CreateClient(this.mContext);
-                MobileServiceTable<Activity> activityTable = client.getTable(Activity.class);
+                //MobileServiceClient client = AzureHelper.CreateClient(this.mContext);
+                MobileServiceTable<Activity> activityTable = mClient.getTable(Activity.class);
                     activityTable.insert(this.mActivity);
                 }
             catch (Exception e){
@@ -263,8 +273,8 @@ public class AddEventActivity extends AppCompatActivity {
         @Override
         protected Object doInBackground(Object[] params) {
             try{
-                MobileServiceClient client = AzureHelper.CreateClient(this.mContext);
-                MobileServiceTable<ActivityDetail> detailsTable = client.getTable(ActivityDetail.class);
+                //MobileServiceClient client = AzureHelper.CreateClient(this.mContext);
+                MobileServiceTable<ActivityDetail> detailsTable = mClient.getTable(ActivityDetail.class);
                 for(ActivityDetail detail:mActitityDetails){
                     detailsTable.insert(detail);
                 }

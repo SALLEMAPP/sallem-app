@@ -23,18 +23,17 @@ public class SaveFriendshipRequestAsync extends AsyncTask<Void, Void, Void> {
     private Context mContext;
     private String mUserId;
     private String mFriendId;
-    public SaveFriendshipRequestAsync(Context context, String userId, String friendId){
+    public SaveFriendshipRequestAsync(Context context, String userId, String friendId ){
         mContext = context;
         mUserId = userId;
         mFriendId = friendId;
-
 
     }
 
     @Override
     protected Void doInBackground(Void... params) {
         try{
-            MobileServiceClient client =AzureHelper.CreateClient(mContext);
+            MobileServiceClient client = MyHelper.getAzureClient(mContext);
             Friendship firstFriendship = creatFirstFriendship();
             Friendship secondFriendship = creatSecondFriendship();
             MobileServiceTable<Friendship> userTable = client.getTable(Friendship.class);

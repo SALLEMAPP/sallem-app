@@ -19,6 +19,7 @@ import com.seniorproject.sallemapp.R;
 import com.seniorproject.sallemapp.entities.DomainPost;
 import com.seniorproject.sallemapp.entities.DomainUser;
 import com.seniorproject.sallemapp.entities.User;
+import com.seniorproject.sallemapp.helpers.MyApplication;
 import com.seniorproject.sallemapp.helpers.SaveFriendshipRequestAsync;
 
 import java.util.ArrayList;
@@ -31,7 +32,6 @@ public class SearchUsersListAdapter extends ArrayAdapter<DomainUser> {
     private ArrayList<DomainUser> mItems;
     private Context mAdpaterContext;
     public Button mSendRequestButton;
-
     public SearchUsersListAdapter(@NonNull Context context, ArrayList<DomainUser> items) {
         super(context, R.layout.search_users_list, items);
         mAdpaterContext = context;
@@ -79,12 +79,8 @@ public class SearchUsersListAdapter extends ArrayAdapter<DomainUser> {
     private void bindUser(DomainUser user, View v){
         ImageView avatar = (ImageView) v.findViewById(R.id.searchUsers_imgAvatar);
         TextView userName = (TextView) v.findViewById(R.id.searchUsers_lblUserName);
-        if(user.getAvatar() == null){
-            avatar.setImageResource(R.drawable.ic_account_circle_black_24dp);
-        }
-        else{
-            avatar.setImageBitmap(user.getAvatar());
-        }
+        avatar.setImageBitmap(user.getAvatar());
+
         userName.setText(user.getFirstName() + " " + user.getLasttName());
     }
 }

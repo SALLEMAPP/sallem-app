@@ -15,6 +15,7 @@ public class UpdateFriendRequestAsync extends AsyncTask {
 
     private final Friendship mFriendship;
     private final Context mContext;
+
     public UpdateFriendRequestAsync(Context context, Friendship friendship){
         mContext = context;
        mFriendship = friendship;
@@ -22,7 +23,7 @@ public class UpdateFriendRequestAsync extends AsyncTask {
     @Override
     protected Object doInBackground(Object[] params) {
         try{
-            MobileServiceClient client = AzureHelper.CreateClient(mContext);
+            MobileServiceClient client = MyHelper.getAzureClient(mContext);
             MobileServiceTable<Friendship> friendsTable =
                     client.getTable(Friendship.class);
             friendsTable.update(mFriendship).get();

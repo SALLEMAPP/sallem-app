@@ -16,6 +16,7 @@ import com.seniorproject.sallemapp.entities.DomainFriendship;
 import com.seniorproject.sallemapp.entities.DomainUser;
 import com.seniorproject.sallemapp.entities.Friendship;
 import com.seniorproject.sallemapp.entities.User;
+import com.seniorproject.sallemapp.helpers.MyApplication;
 import com.seniorproject.sallemapp.helpers.SaveFriendshipRequestAsync;
 import com.seniorproject.sallemapp.helpers.UpdateFriendRequestAsync;
 
@@ -30,7 +31,6 @@ public class FriendRequestsListAdapter extends ArrayAdapter<DomainFriendship> {
     private Context mAdpaterContext;
     public Button mAcceptButton;
     public Button mDeclineButton;
-
     public FriendRequestsListAdapter(@NonNull Context context, ArrayList<DomainFriendship> items) {
         super(context, R.layout.friendship_requests_list, items);
         mAdpaterContext = context;
