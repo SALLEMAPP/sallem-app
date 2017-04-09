@@ -30,6 +30,8 @@ public class SearchFriendsFragment extends Fragment implements ListAsyncResult<D
     private int _page;
     private ArrayList<DomainUser> mUsers;
     private SearchUsersListAdapter mAdapter = null;
+    Button mSearchButton;
+
     private OnFragmentInteractionListener mListener;
     private View mCurrentView;
     private Context mContext;
@@ -74,6 +76,7 @@ public class SearchFriendsFragment extends Fragment implements ListAsyncResult<D
         mContext = getActivity().getApplicationContext();
         mResultList = (ListView) mCurrentView.findViewById(R.id.searchFriends_listUsers);
         mEmailText = (EditText) mCurrentView.findViewById(R.id.searchFriends_txtEmail);
+        mSearchButton =  (Button)mCurrentView.findViewById(R.id.searchFriends_btnSearch);
         wireResultList(new ArrayList<DomainUser>());
         wireSearchButton();
 
@@ -85,8 +88,7 @@ public class SearchFriendsFragment extends Fragment implements ListAsyncResult<D
         mResultList.setAdapter(mAdapter);
     }
     private void wireSearchButton() {
-        Button searchButton =  (Button)mCurrentView.findViewById(R.id.searchFriends_btnSearch);
-        searchButton.setOnClickListener(new View.OnClickListener() {
+        mSearchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String email = mEmailText.getText().toString();
@@ -94,6 +96,8 @@ public class SearchFriendsFragment extends Fragment implements ListAsyncResult<D
                 SearchUsersAsync search = new SearchUsersAsync
                         (email, mContext, SearchFriendsFragment.this);
                 search.execute();
+
+
             }
         });
     }

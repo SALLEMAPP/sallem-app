@@ -66,6 +66,10 @@ public class FriendRequestsListAdapter extends ArrayAdapter<DomainFriendship> {
 
                         );
                         updateFriendshi.execute();
+                        mAcceptButton.setEnabled(false);
+                        mAcceptButton.setAlpha(0.5f);
+                        mDeclineButton.setEnabled(false);
+                        mDeclineButton.setAlpha(0.5f);
 
 
                     }
@@ -84,6 +88,10 @@ public class FriendRequestsListAdapter extends ArrayAdapter<DomainFriendship> {
                                 v.getContext(),decline
                         );
                         updateFriendshi.execute();
+                        mAcceptButton.setEnabled(false);
+                        mAcceptButton.setAlpha(0.5f);
+                        mDeclineButton.setEnabled(false);
+                        mDeclineButton.setAlpha(0.5f);
 
                     }
                 });
