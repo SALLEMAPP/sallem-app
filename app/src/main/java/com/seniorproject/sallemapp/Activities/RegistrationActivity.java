@@ -14,6 +14,8 @@ import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
@@ -62,10 +64,9 @@ public class RegistrationActivity extends AppCompatActivity {
    public static MobileServiceClient _client;
     MobileServiceTable<User> _userTable;
     ProgressBar _savingProgressBar;
-    public static final String storageConnectionString =
-                    "DefaultEndpointsProtocol=http;" +
-                    "AccountName=sallemappphotos;" +
-                    "AccountKey=0ROm5ARwztUrPMEWcVuZYb4EgOS7/rB5v0y0kuaNPgRkoTnjBhHFXqaT82ydmgIIV+GeUqpCR5Mq/gI7WVcYyA==";
+    Button mRegistrationButton;
+
+
     Bitmap bm;
     public static final  String SENDER_ID ="1091231496982";
     private static final int REQUEST_CODE = 1000;
@@ -90,45 +91,46 @@ public class RegistrationActivity extends AppCompatActivity {
         mTextPassword = ((EditText) findViewById(R.id.registeration_txtPassword));
         mButtoneAvatar = ((ImageButton) findViewById(R.id.registration_btnAvatar));
         mTextRePassword = (EditText) findViewById(R.id.registeration_txtConfirmPassword);
-
+        mRegistrationButton = (Button)findViewById(R.id.Btn_resgisteration);
+        mRegistrationButton.setEnabled(false);
         attachRegisterButton();
         attachOpenAvatar();
+        attachAgreeCheckbox();
 
 
         try {
-            _client = new MobileServiceClient(
-                    "https://sallem.azurewebsites.net",
-                    this).withFilter(new ProgressFilter());
-
-
-            _client.setAndroidHttpClientFactory(new OkHttpClientFactory() {
-                @Override
-                public OkHttpClient createOkHttpClient() {
-                    OkHttpClient okHttpClient =new OkHttpClient();
-                    okHttpClient.setReadTimeout(20, TimeUnit.SECONDS);
-                    okHttpClient.setWriteTimeout(20, TimeUnit.SECONDS);
-                    return okHttpClient;
-                }
-            });
-
-
+            _client = MyHelper.getAzureClient(this);
         }
         catch (MalformedURLException e){
             Log.d("SALLEMAPP", e.getCause().getMessage());
-
         }
+
+    }
+
+    private void attachAgreeCheckbox() {
+        CheckBox cb = (CheckBox)findViewById(R.id.registeration_cbAgree);
+        cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    mRegistrationButton.setEnabled(true);
+                }
+                else{
+                    mRegistrationButton.setEnabled(false);
+                }
+            }
+        });
 
     }
 
 
     private void attachRegisterButton() {
-        Button signinButton = (Button)findViewById(R.id.Btn_resgisteration);
-        signinButton.setOnClickListener(new View.OnClickListener() {
+        mRegistrationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                _savingProgressBar.setVisibility(View.VISIBLE);
+                mRegistrationButton.setEnabled(false);
                 registerUser();
-
             }
         });
 
@@ -215,44 +217,43 @@ public class RegistrationActivity extends AppCompatActivity {
 //
 //        return task.execute();
 //    }
-    private void uploadUserImage(String avatarName){
-        try {
-            CloudStorageAccount account = CloudStorageAccount.parse(storageConnectionString);
-            CloudBlobClient serviceClient = account.createCloudBlobClient();
-
-            // Container name must be lower case.
-            CloudBlobContainer container = serviceClient.getContainerReference("sallemphotos");
-            //container.createIfNotExists();
-
-            // Upload an image file.
-
-            String name = avatarName + ".jpg";
-            CloudBlockBlob blob = container.getBlockBlobReference(name);
-
-            File outputDir = getBaseContext().getCacheDir();
-            File sourceFile = File.createTempFile("101", "jpg", outputDir);
-            OutputStream outputStream = new FileOutputStream(sourceFile);
-            bm.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
-            outputStream.close();
-            blob.upload(new FileInputStream(sourceFile), sourceFile.length());
-
-            // Download the image file.
-            //File destinationFile = new File(sourceFile.getParentFile(), "image1Download.tmp");
-            //blob.downloadToFile(destinationFile.getAbsolutePath());
-
-
-
-        } catch (FileNotFoundException fileNotFoundException) {
-            createAndShowDialogFromTask(fileNotFoundException, "Error");
-        } catch (StorageException storageException) {
-            createAndShowDialogFromTask(storageException, "Error");
-        } catch (Exception e) {
-            createAndShowDialogFromTask(e, "Error");
-        }
-    }
+//    private void uploadUserImage(String avatarName){
+//        try {
+//            CloudStorageAccount account = CloudStorageAccount.parse(storageConnectionString);
+//            CloudBlobClient serviceClient = account.createCloudBlobClient();
+//
+//            // Container name must be lower case.
+//            CloudBlobContainer container = serviceClient.getContainerReference("sallemphotos");
+//            //container.createIfNotExists();
+//
+//            // Upload an image file.
+//
+//            String name = avatarName + ".jpg";
+//            CloudBlockBlob blob = container.getBlockBlobReference(name);
+//
+//            File outputDir = getBaseContext().getCacheDir();
+//            File sourceFile = File.createTempFile("101", "jpg", outputDir);
+//            OutputStream outputStream = new FileOutputStream(sourceFile);
+//            bm.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+//            outputStream.close();
+//            blob.upload(new FileInputStream(sourceFile), sourceFile.length());
+//
+//            // Download the image file.
+//            //File destinationFile = new File(sourceFile.getParentFile(), "image1Download.tmp");
+//            //blob.downloadToFile(destinationFile.getAbsolutePath());
+//
+//
+//
+//        } catch (FileNotFoundException fileNotFoundException) {
+//            createAndShowDialogFromTask(fileNotFoundException, "Error");
+//        } catch (StorageException storageException) {
+//            createAndShowDialogFromTask(storageException, "Error");
+//        } catch (Exception e) {
+//            createAndShowDialogFromTask(e, "Error");
+//        }
+//    }
 
     private void addUserToDb(final User user) {
-
 
         AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
             @Override
@@ -270,10 +271,16 @@ public class RegistrationActivity extends AppCompatActivity {
                 return null;
             }
 
+            @Override
+            protected void onPostExecute(Void aVoid) {
+               _savingProgressBar.setVisibility(View.GONE);
+                mRegistrationButton.setEnabled(true);
+                Intent signinIntent = new Intent(RegistrationActivity.this.getApplicationContext(), SignInActivity.class);
+                startActivity(signinIntent);
+                finish();
+            }
         };
        task.execute();
-
-
     }
 
     public boolean isValidUser() {
@@ -379,61 +386,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
     }
 
-    private class ProgressFilter implements ServiceFilter {
 
-        @Override
-        public ListenableFuture<ServiceFilterResponse> handleRequest(ServiceFilterRequest request, NextServiceFilterCallback nextServiceFilterCallback) {
-
-            final SettableFuture<ServiceFilterResponse> resultFuture = SettableFuture.create();
-
-
-            runOnUiThread(new Runnable() {
-
-                @Override
-                public void run() {
-                    if (_savingProgressBar != null) _savingProgressBar.setVisibility(ProgressBar.VISIBLE);
-                }
-            });
-
-            ListenableFuture<ServiceFilterResponse> future = nextServiceFilterCallback.onNext(request);
-
-            Futures.addCallback(future, new FutureCallback<ServiceFilterResponse>() {
-                @Override
-                public void onFailure(Throwable e) {
-
-                    resultFuture.setException(e);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (_savingProgressBar != null) _savingProgressBar.setVisibility(ProgressBar.GONE);
-                        }
-                    });
-                }
-
-                @Override
-                public void onSuccess(ServiceFilterResponse response) {
-                    runOnUiThread(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            if (_savingProgressBar != null) _savingProgressBar.setVisibility(ProgressBar.GONE);
-
-                        }
-
-
-                    });
-
-
-                    resultFuture.set(response);
-                    Intent signinIntent = new Intent(RegistrationActivity.this, SignInActivity.class);
-                    startActivity(signinIntent);
-                    finish();
-                }
-            });
-
-            return resultFuture;
-        }
-    }
 
     private void createAndShowDialogFromTask(final Exception exception, String title) {
         runOnUiThread(new Runnable() {

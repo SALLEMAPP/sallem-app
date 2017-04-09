@@ -11,6 +11,8 @@ import com.seniorproject.sallemapp.entities.Notify;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.microsoft.windowsazure.mobileservices.table.query.QueryOperations.val;
+
 /**
  * Created by abdul on 07-Apr-2017.
  */
@@ -30,7 +32,7 @@ public class LoadNotifiesAsync extends AsyncTask<Void, Void, List<Notify>> {
             MobileServiceClient client =  MyHelper.getAzureClient(mContext);
             MobileServiceTable<Notify> notifyTable = client.getTable(Notify.class);
             List<Notify> notifies = notifyTable.where().field("destUser").eq(mUserId)
-                    .add().field("delivered").eq(false)
+                    .and().field("delivered").eq(val(false))
                     .execute().get();
             if(notifies != null && notifies.size() > 0){
                 for(Notify n: notifies){

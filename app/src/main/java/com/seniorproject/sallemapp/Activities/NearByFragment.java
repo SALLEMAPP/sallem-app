@@ -417,13 +417,16 @@ public class NearByFragment extends Fragment implements PopupMenu.OnMenuItemClic
                 if(friends.size() > 0){
                     for(Friendship friend :friends) {
                         String lastSeen = new LocalDateTime().minusMinutes(5).toString();
+//                        List<UserLocation> locations = locationTable.where().field("userId").eq(friend.getFriendId())
+//                                .and().field("seenAt").ge(lastSeen).execute().get();
                         List<UserLocation> locations = locationTable.where().field("userId").eq(friend.getFriendId())
-                                .and().field("seenAt").ge(lastSeen).execute().get();
+                                .execute().get();
                         String tempUserId = null;
                         if (locations != null && locations.size() > 0) {
                             for (UserLocation friendLocation : locations) {
                                 //Check to take the user once, in case has has more than one location
-                                if(friendLocation.getUserId() == tempUserId){continue;}
+                                if(friendLocation.getUserId().equals(tempUserId)){continue;}
+
                                 tempUserId = friendLocation.getUserId();
                                 Location userCurrentLocation = LocationService.LAST_LOCATION;
                                 double startLati = userCurrentLocation.getLatitude();
@@ -436,21 +439,18 @@ public class NearByFragment extends Fragment implements PopupMenu.OnMenuItemClic
                                         endLati, endLongi, result
                                 );
                                 float distance = result[0];
-                                if (distance <= 1000) {
+                                if (distance <= 3000) {
                                     User user = usersTable.where().field("id").eq(friend.getFriendId()).execute().get().get(0);
                                     if (user != null) {
                                         Bitmap avatar = null;
+                                        String imageTitle = user.getImageTitle();
+                                        if(!imageTitle.equals(MyHelper.DEFAULT_AVATAR_TITLE)) {
 
-                                        try {
-                                            //In case no avatar, just fail gracefully.
-                                            String title = user.getImageTitle() + ".jpg";
-                                            avatar = AzureBlob.getImage(mContext, title);
-                                        } catch (StorageException e) {
-                                            //e.printStackTrace();
-                                            //Log.e("SALLEM APP", "doInBackground: " + e.getCause().getMessage());
+                                            avatar = MyHelper.decodeImage(imageTitle);
                                         }
-                                        //DomainUser domainUser = new DomainUser(user);
-                                        //domainUser.setAvatar(avatar);
+                                        else{
+                                            avatar =  MyHelper.getDefaultAvatar(mContext);
+                                        }
                                         UserOnMap userOnMap = new UserOnMap();
                                         userOnMap.setUserId(user.getId());
                                         userOnMap.setUserName(user.getFirstName() + " "+ user.getLastName());

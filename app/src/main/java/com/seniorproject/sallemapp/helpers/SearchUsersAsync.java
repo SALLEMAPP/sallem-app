@@ -37,14 +37,12 @@ public class SearchUsersAsync extends AsyncTask<Void,Void,List<DomainUser>> {
             if(users.size() > 0){
                 for(User user :users) {
                     Bitmap avatar = null;
-                    if (user.getImageTitle().equals(MyHelper.DEFAULT_AVATAR_TITLE)) {
-                        avatar = MyHelper.getDefaultAvatar(mContext);
-                    } else {
-                        String imageTitle = user.getImageTitle() + ".jpg";
-                        try {
-                            avatar = AzureBlob.getImage(mContext, imageTitle);
-                        } catch (Exception e) {
-                        }
+                    String imageTitle = user.getImageTitle();
+                    if(!imageTitle.equals(MyHelper.DEFAULT_AVATAR_TITLE)) {
+                        avatar = MyHelper.decodeImage(imageTitle);
+                    }
+                    else{
+                        avatar =  MyHelper.getDefaultAvatar(mContext);
                     }
                     DomainUser domainUser = new DomainUser(
                             user.getId(), user.getFirstName(), user.getLastName(),

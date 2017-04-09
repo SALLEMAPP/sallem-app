@@ -4,7 +4,7 @@
     <string name="loading_msg">LOADING…</string>
     <string name="signin_label">Sign in</string>
     <string name="register_label">Register</string>
-    <string name="user_name_label">User Name </string>
+    <string name="user_name_label">Email </string>
     <string name="password_label">Password </string>
     <string name="confirm_password_label">Confirm Password </string>
 

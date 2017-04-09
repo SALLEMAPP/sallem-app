@@ -290,18 +290,7 @@ public class ShowPostActivity extends AppCompatActivity implements EntityAsyncRe
             mContext = context;
             mComment = comment;
             try {
-                mClient = new MobileServiceClient(
-                        "https://sallem.azurewebsites.net",
-                        context);
-                mClient.setAndroidHttpClientFactory(new OkHttpClientFactory() {
-                    @Override
-                    public OkHttpClient createOkHttpClient() {
-                        OkHttpClient okHttpClient =new OkHttpClient();
-                        okHttpClient.setReadTimeout(20, TimeUnit.SECONDS);
-                        okHttpClient.setWriteTimeout(20, TimeUnit.SECONDS);
-                        return okHttpClient;
-                    }
-                });
+                mClient = MyHelper.getAzureClient(mContext);
             }
             catch (MalformedURLException e){
                 Log.d("SALLEMAPP", e.getCause().getMessage());

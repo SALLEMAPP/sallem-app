@@ -35,16 +35,13 @@ public class MyHelper {
     public static final String SHARED_PREFERENCE_NAME = "sallemappsettings";
     public static Bitmap getDefaultAvatar(Context context){
         Bitmap avatar = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_user_avatar);
-
         return avatar;
-
     }
     public static byte[] encodeBitmap(Bitmap image){
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         image.compress(Bitmap.CompressFormat.PNG,100, stream);
         byte[] bytes = stream.toByteArray();
         return bytes;
-
     }
     public static String ImageAsString(Bitmap image){
         byte[] imageInbytes = encodeBitmap(image);
@@ -55,7 +52,6 @@ public class MyHelper {
 
         Bitmap bm = BitmapFactory.decodeByteArray(stream, 0, stream.length);
         return bm;
-
     }
     public static Bitmap decodeImage(String imageAsString){
         byte[] imageAsBytes = Base64.decode(imageAsString, Base64.DEFAULT);

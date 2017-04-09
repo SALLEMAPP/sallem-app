@@ -9,7 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -30,15 +32,25 @@ import java.util.List;
 
 public class PostsListAdapter  extends ArrayAdapter<DomainPost> {
     private ArrayList<DomainPost> _items;
-    private Context _adpaterContext;
-    private String mSelectedId;
-
+    private Context mContext;
     public PostsListAdapter(Context context, ArrayList<DomainPost> items) {
-        super(context, R.layout.post_layout, items);
-        _adpaterContext = context;
+       super(context, R.layout.post_layout, items);
+        mContext = context;
         _items = items;
 
     }
+
+    @Override
+    public int getCount() {
+        return _items.size();
+    }
+
+    @Override
+    public DomainPost getItem(int position) {
+        return _items.get(position);
+    }
+
+
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent){
@@ -48,14 +60,11 @@ public class PostsListAdapter  extends ArrayAdapter<DomainPost> {
             final DomainPost post = _items.get(position);
             if(v == null){
                 LayoutInflater vi =
-                        (LayoutInflater) _adpaterContext.getSystemService(
-                                Context.LAYOUT_INFLATER_SERVICE
-                        );
+                        (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 v = vi.inflate(R.layout.post_layout, null);
 
             }
             //Bind the UI elements to entity
-            mSelectedId = post.get_id();
            bindPost(post, v);
 
         }
@@ -99,12 +108,11 @@ public class PostsListAdapter  extends ArrayAdapter<DomainPost> {
                 if(i > 1){break;}
                 topComments.add(postCommments.get(i));
 
-                CommentsListAdapter commentsAdapter = new CommentsListAdapter(_adpaterContext, topComments);
+                CommentsListAdapter commentsAdapter = new CommentsListAdapter(mContext, topComments);
                 commentsList.setAdapter(commentsAdapter);
             }
         }
     }
-
 
 
 }

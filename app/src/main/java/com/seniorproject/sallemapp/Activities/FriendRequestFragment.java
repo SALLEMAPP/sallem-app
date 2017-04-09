@@ -162,15 +162,12 @@ public class FriendRequestFragment extends ListFragment {
                         User user = users.get(0);
                         if(user != null){
                             Bitmap avatar = null;
-
-                            try {
-                                //In case no avatar, just fail gracefully.
-                                String title = user.getImageTitle() + ".jpg";
-                                avatar = AzureBlob.getImage(mContext, title);
-                            } catch (StorageException e) {
-                                //e.printStackTrace();
-                                //Log.e("SALLEM APP", "doInBackground: " + e.getCause().getMessage());
-
+                            String imageTitle = user.getImageTitle();
+                            if(!imageTitle.equals(MyHelper.DEFAULT_AVATAR_TITLE)) {
+                                avatar = MyHelper.decodeImage(imageTitle);
+                            }
+                            else{
+                                avatar =  MyHelper.getDefaultAvatar(mContext);
                             }
                             DomainUser domainUser = new DomainUser(
                                    user.getId(), user.getFirstName(), user.getLastName(),

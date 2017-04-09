@@ -144,16 +144,18 @@ public class AddPostActivity extends AppCompatActivity {
         //
         SavePostAsync savePostAsync = new SavePostAsync(post, bm, this);
         savePostAsync.execute();
-        if(bm != null) {
-            MyHelper.saveImageToDisk(getApplicationContext(), post.get_imagePath(), bm);
-        }
+        //Don not remove, while this is not used any more, it useful reference for a trick on
+        // how to pass images between different activities to overcome Android limitation for passing
+        //objects as parcel that are more than 1mb. Android will throw run time exception if parcel is too big, e.g. > 1mb.
+        // if(bm != null) {
+           // MyHelper.saveImageToDisk(getApplicationContext(), post.get_imagePath(), bm);
+        //}
         DomainPost domainPost = createDomainPost(post);
         Intent i = new Intent();
         i.putExtra("newPost", domainPost);
         i.setAction(CommonMethods.ACTION_NOTIFY_ADD_POST);
         sendBroadcast(i);
         finish();
-
     }
     private DomainPost createDomainPost(Post post){
         DomainPost domainPost = new DomainPost();
@@ -161,9 +163,10 @@ public class AddPostActivity extends AppCompatActivity {
         domainPost.set_userId(DomainUser.CURRENT_USER.getId());
         domainPost.set_user(DomainUser.CURRENT_USER);
         domainPost.set_subject(post.getSubject());
-        domainPost.setImagePath(post.get_imagePath());
+        domainPost.setImagePath(post.getPostImage());
         domainPost.set_activityId(post.getActivityId());
         domainPost.set_postedAt(post.getPostedAt());
+
         return domainPost;
     }
 

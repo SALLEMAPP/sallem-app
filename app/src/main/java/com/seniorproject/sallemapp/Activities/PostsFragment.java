@@ -12,6 +12,7 @@ import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
@@ -34,13 +35,14 @@ import java.util.List;
  * Use the {@link PostsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PostsFragment extends ListFragment implements ListAsyncResult<DomainPost>
+public class PostsFragment extends Fragment implements ListAsyncResult<DomainPost>, ListView.OnItemClickListener
 {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private ListView mPostsListView;
     private PostsListAdapter _adpater= null;
-    private ArrayList<DomainPost> mPostsList;
+    private ArrayList<DomainPost> mPostsList = new ArrayList<>();
     private View _currentView;
     private int _page;
     private String _title;
@@ -98,11 +100,13 @@ public class PostsFragment extends ListFragment implements ListAsyncResult<Domai
         // Inflate the layout for this fragment
         _currentView  = inflater.inflate(R.layout.fragment_posts, container, false);
         mLoadinggProgressBar = (ProgressBar) _currentView.findViewById(R.id.postFrag_progressBar);
+        mPostsListView = (ListView)_currentView.findViewById(R.id.postFrag_postsList);
         mLoadinggProgressBar.setVisibility(View.VISIBLE);
+
         mContext = getActivity().getApplicationContext();
-        mPostsList = new ArrayList<>();
         _adpater = new PostsListAdapter(mContext, mPostsList);
-        setListAdapter(_adpater);
+        mPostsListView.setAdapter(_adpater);
+        mPostsListView.setOnItemClickListener(this);
 
         mEventsReciever = new EventsReceiver();
         mIntentFilter = new IntentFilter(CommonMethods.ACTION_NOTIFY_REFRESH);
@@ -117,14 +121,14 @@ public class PostsFragment extends ListFragment implements ListAsyncResult<Domai
 
     }
 
-    @Override
-    public void onListItemClick(ListView l, View v, int position, long id) {
-        //super.onListItemClick(l, v, position, id);
-       DomainPost post =  _adpater.getItem(position);
-        Intent i = new Intent(v.getContext(), ShowPostActivity.class);
-        i.putExtra("postId", post.get_id());
-        v.getContext().startActivity(i);
-    }
+//    @Override
+//    public void onListItemClick(ListView l, View v, int position, long id) {
+//        //super.onListItemClick(l, v, position, id);
+//       DomainPost post =  _adpater.getItem(position);
+//        Intent i = new Intent(v.getContext(), ShowPostActivity.class);
+//        i.putExtra("postId", post.get_id());
+//        v.getContext().startActivity(i);
+//    }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -153,21 +157,13 @@ public class PostsFragment extends ListFragment implements ListAsyncResult<Domai
     @Override
     public void processFinish(List<DomainPost> result) {
         if(result != null) {
-            _adpater.addAll(result);
-            _adpater.notifyDataSetChanged();
-
+            mPostsList.clear();
+           mPostsList.addAll(result);
+           _adpater.notifyDataSetChanged();
             mLoadinggProgressBar.setVisibility(View.GONE);
         }
 
    }
-   private void addNewPost(DomainPost post){
-       _adpater.insert(post, 0);
-       _adpater.notifyDataSetChanged();
-
-
-   }
-
-
     @Override
     public void onResume() {
         super.onResume();
@@ -177,6 +173,13 @@ public class PostsFragment extends ListFragment implements ListAsyncResult<Domai
 
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        DomainPost post = (DomainPost) _adpater.getItem(position);
+        Intent i = new Intent(view.getContext(), ShowPostActivity.class);
+        i.putExtra("postId", post.get_id());
+        view.getContext().startActivity(i);
+    }
 
 
     /**
@@ -207,14 +210,20 @@ public class PostsFragment extends ListFragment implements ListAsyncResult<Domai
                     DomainPost post = intent.getExtras().getParcelable("newPost");
                     Bitmap image = null;
                     if(post != null){
-                        if(post.getImagePath() != null) {
-                            image = MyHelper.readImageFromDisk(getActivity().getApplicationContext(), post.getImagePath());
+                        //Don not remove, while this is not used any more, it useful reference for a trick on
+                        // how to pass images between different activities to overcome Android limitation for passing
+                        //objects as parcel that are more than 1mb. Android will throw run time exception if parcel is too big, e.g. > 1mb.
+//                        if(post.getImagePath() != null) {
+//                            image = MyHelper.readImageFromDisk(getActivity().getApplicationContext(), post.getImagePath());
+//                        }
+                        if(post.getImagePath() != null){
+                            image = MyHelper.decodeImage(post.getImagePath());
                         }
                         if(image != null){
                             post.set_image(image);
                         }
 
-                        addNewPost(post);
+                        mMyApp.Posts_Cach.add(0, post);
                     }
                     return;
                 }

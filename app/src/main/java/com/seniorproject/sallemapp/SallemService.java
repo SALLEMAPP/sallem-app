@@ -271,7 +271,9 @@ public class SallemService extends Service implements LocationListener, Refreshe
             for (Notify n : result){
                 String title = n.getTitle();
                 String content = n.getSubject();
+                sendNotification(title, content);
             }
+
         }
 
     }

@@ -8,15 +8,17 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
         <com.google.android.gms.maps.MapView
             android:id="@+id/newFriends_mapView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -28,45 +30,53 @@
             style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
-            android:layout_marginTop="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginStart="8dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintHorizontal_bias="0.465"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintVertical_bias="0.44" />
 
     </android.support.constraint.ConstraintLayout>
 
     <LinearLayout
         android:id="@+id/bottom_sheet"
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:behavior_hideable="false"
-        app:behavior_peekHeight="20dp"
-        app:layout_behavior="android.support.design.widget.BottomSheetBehavior"
         android:background="@color/sallemBlue"
-        >
+        android:orientation="vertical"
+        app:behavior_hideable="false"
+        app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
 
         <TextView
             android:id="@+id/bottom_lblCaption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Near Friend"
-            />
+
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="50dp" />
+
         <TextView
             android:id="@+id/bottom_lblInfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Near Friend"
-            />
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="75dp" />
+
         <Button
             android:id="@+id/bottom_btnNotify"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Notify"
-            />
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="75dp" />
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>
