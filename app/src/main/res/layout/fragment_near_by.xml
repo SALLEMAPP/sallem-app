@@ -45,7 +45,6 @@
             app:layout_constraintVertical_bias="0.44" />
 
     </android.support.constraint.ConstraintLayout>
-
     <LinearLayout
         android:id="@+id/bottom_sheet"
         android:layout_width="match_parent"
@@ -55,7 +54,6 @@
         app:behavior_hideable="false"
         app:behavior_peekHeight="25dp"
         app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
-
         <TextView
             android:id="@+id/bottom_lblCaption"
             android:layout_width="wrap_content"
