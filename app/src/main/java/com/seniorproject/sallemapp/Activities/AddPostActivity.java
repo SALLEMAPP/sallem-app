@@ -151,8 +151,9 @@ public class AddPostActivity extends AppCompatActivity {
            // MyHelper.saveImageToDisk(getApplicationContext(), post.get_imagePath(), bm);
         //}
         DomainPost domainPost = createDomainPost(post);
+        PostsFragment.NewlyAddedPost = domainPost;
         Intent i = new Intent();
-        i.putExtra("newPost", domainPost);
+       // i.putExtra("newPost", domainPost);
         i.setAction(CommonMethods.ACTION_NOTIFY_ADD_POST);
         sendBroadcast(i);
         finish();

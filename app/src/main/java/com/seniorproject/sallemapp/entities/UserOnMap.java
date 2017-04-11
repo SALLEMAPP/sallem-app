@@ -46,7 +46,8 @@ public class UserOnMap {
     }
 
     public Bitmap getAvatar() {
-        return avatar;
+        Bitmap scaledUp = Bitmap.createScaledBitmap(avatar, 185,185,false);
+        return scaledUp;
     }
 
     public void setAvatar(Bitmap avatar) {

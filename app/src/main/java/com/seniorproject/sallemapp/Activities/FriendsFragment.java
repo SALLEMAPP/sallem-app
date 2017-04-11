@@ -83,7 +83,7 @@ public class FriendsFragment extends ListFragment implements ListAsyncResult<Dom
     }
 
     private void loadFriends() {
-        if(mMyApplication.Friends_Cach != null){
+        if(mMyApplication.Friends_Cach != null && mMyApplication.Friends_Cach.size() > 0){
             processFinish(mMyApplication.Friends_Cach);
         }
         else

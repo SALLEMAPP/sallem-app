@@ -17,6 +17,7 @@ import com.squareup.okhttp.OkHttpClient;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -25,8 +26,8 @@ import java.util.concurrent.TimeUnit;
  */
 
 public class MyApplication extends Application {
-    public List<DomainUser> Friends_Cach;
-    public List<DomainPost> Posts_Cach;
+    public List<DomainUser> Friends_Cach =new ArrayList<>();
+    public List<DomainPost> Posts_Cach = new ArrayList<>();
 
 
 

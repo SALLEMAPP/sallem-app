@@ -55,6 +55,7 @@ public class PostsFragment extends Fragment implements ListAsyncResult<DomainPos
     IntentFilter mAddNewPostFiler;
     EventsReceiver mAddNewPostReceiver;
     private MyApplication mMyApp;
+    public static DomainPost NewlyAddedPost;
     public PostsFragment() {
         // Required empty public constructor
     }
@@ -91,6 +92,7 @@ public class PostsFragment extends Fragment implements ListAsyncResult<DomainPos
     @Override
     public void onDestroyView() {
         getActivity().unregisterReceiver(mEventsReciever);
+        getActivity().unregisterReceiver(mAddNewPostReceiver);
         super.onDestroyView();
     }
 
@@ -207,7 +209,8 @@ public class PostsFragment extends Fragment implements ListAsyncResult<DomainPos
                     return;
                 }
                 if(intent.getAction() == CommonMethods.ACTION_NOTIFY_ADD_POST){
-                    DomainPost post = intent.getExtras().getParcelable("newPost");
+                    //DomainPost post = intent.getExtras().getParcelable("newPost");
+                    DomainPost post = NewlyAddedPost;
                     Bitmap image = null;
                     if(post != null){
                         //Don not remove, while this is not used any more, it useful reference for a trick on
