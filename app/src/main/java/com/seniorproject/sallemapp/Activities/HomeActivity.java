@@ -179,17 +179,25 @@ public class HomeActivity extends AppCompatActivity
             adapterViewPager = new HomePageAdater(getSupportFragmentManager());
             myViewPager.setAdapter(adapterViewPager);
             _currnetMenu = CurrentMenu.HOME;
+            this.setTitle("Posts");
+            fab.setVisibility(View.VISIBLE);
+
 
         } else if (id == R.id.nav_friends) {
 
             adapterViewPager = new FriendsPageAdapter(getSupportFragmentManager());
             myViewPager.setAdapter(adapterViewPager);
             _currnetMenu = CurrentMenu.FIRENDS;
+            this.setTitle("Friends");
+            fab.setVisibility(View.GONE);
+
 
 
         } else if (id == R.id.nav_near_friends) {
             adapterViewPager = new NearbyPageAdapter(getSupportFragmentManager());
             myViewPager.setAdapter(adapterViewPager);
+            this.setTitle("Near Friends");
+            fab.setVisibility(View.GONE);
 
 
         } else if (id == R.id.nav_activities) {
@@ -207,12 +215,17 @@ public class HomeActivity extends AppCompatActivity
 
             adapterViewPager = new NotificationPageAdapter(getSupportFragmentManager());
             myViewPager.setAdapter(adapterViewPager);
+            this.setTitle("Notifications");
+            fab.setVisibility(View.GONE);
 
         } else if (id == R.id.nav_settings) {
 
             adapterViewPager = new SettingsPageAdapter(getSupportFragmentManager());
             myViewPager.setAdapter(adapterViewPager);
-           }
+            this.setTitle("Settings");
+            fab.setVisibility(View.GONE);
+
+        }
            else if(id == R.id.nav_logout){
             new AlertDialog.Builder(this)
                     .setTitle("SALLEM")

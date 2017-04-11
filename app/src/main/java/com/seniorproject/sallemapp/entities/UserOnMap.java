@@ -12,6 +12,7 @@ public class UserOnMap {
     private double longitude;
     private double latitude;
     private Bitmap avatar;
+    private int distance;
 
     public String getUserId() {
         return userId;
@@ -46,11 +47,19 @@ public class UserOnMap {
     }
 
     public Bitmap getAvatar() {
-        Bitmap scaledUp = Bitmap.createScaledBitmap(avatar, 185,185,false);
+        Bitmap scaledUp = Bitmap.createScaledBitmap(avatar, 90,90,false);
         return scaledUp;
     }
 
     public void setAvatar(Bitmap avatar) {
         this.avatar = avatar;
+    }
+
+    public int getDistance() {
+        return distance;
+    }
+
+    public void setDistance(int distance) {
+        this.distance = distance;
     }
 }

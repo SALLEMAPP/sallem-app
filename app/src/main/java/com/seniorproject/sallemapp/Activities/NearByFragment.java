@@ -24,6 +24,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -45,6 +46,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.microsoft.azure.storage.StorageException;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
+import com.microsoft.windowsazure.mobileservices.table.query.QueryOrder;
 import com.seniorproject.sallemapp.R;
 import com.seniorproject.sallemapp.entities.DomainUser;
 import com.seniorproject.sallemapp.entities.Friendship;
@@ -61,6 +63,8 @@ import org.joda.time.LocalDateTime;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -84,7 +88,9 @@ public class NearByFragment extends Fragment implements PopupMenu.OnMenuItemClic
     private BottomSheetBehavior mBottomSheetBehavior;
     List<Pair<LatLng, UserOnMap>> mUsersOnMarkers;
     private TextView mUserInfo;
+    private ImageView mUserAvatar;
     private Button mNotifyBotton;
+    private Button mNotifyAllButton;
     private String mNotifyReceiverId;
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState){
@@ -98,7 +104,9 @@ public class NearByFragment extends Fragment implements PopupMenu.OnMenuItemClic
         mBottomSheetBehavior.setBottomSheetCallback(mBottomSheetCallback);
         mUsersOnMarkers = new ArrayList<>();
         mUserInfo = (TextView) mCurrentView.findViewById(R.id.bottom_lblInfo);
+        mUserAvatar =(ImageView) mCurrentView.findViewById(R.id.bottom_imgAvatar);
         attachButtomNotify();
+        attachButtomNotifyAll();
         mMapView.onCreate(savedInstanceState);
 
         mMapView.onResume();
@@ -148,21 +156,49 @@ public class NearByFragment extends Fragment implements PopupMenu.OnMenuItemClic
                     String currentUserId = DomainUser.CURRENT_USER.getId();
                     if(mNotifyReceiverId != null && !mNotifyReceiverId.isEmpty() && !mNotifyReceiverId.equals(currentUserId)) {
                         List<Notify> notifies = new ArrayList<Notify>();
-                        Notify notify = new Notify();
-                        notify.setId(UUID.randomUUID().toString());
-                        notify.setSourceUser(currentUserId);
-                        notify.setDestUser(mNotifyReceiverId);
-                        notify.setTitle(DomainUser.CURRENT_USER.getFirstName() + " " + DomainUser.CURRENT_USER.getLasttName());
-                        notify.setSubject("Invited you for a meeting");
-                        notify.setDelivered(false);
-                        notify.setPublishedAt(new LocalDateTime().toString());
+                        Notify notify = createNotify(mNotifyReceiverId);
                         notifies.add(notify);
-                        SendNotifyAsync sendNotify = new SendNotifyAsync(notifies, mContext);
-                        sendNotify.execute();
+                        sendNotify(notifies);
                     }
                 }
             });
         }
+        private void sendNotify(List<Notify> notifies){
+            SendNotifyAsync sendNotify = new SendNotifyAsync(notifies, mContext);
+            sendNotify.execute();
+        }
+    private void attachButtomNotifyAll(){
+        mNotifyAllButton = (Button)mCurrentView.findViewById(R.id.bottom_btnNotifyAll);
+        mNotifyAllButton.setEnabled(false);
+        mNotifyAllButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mUsersOnMarkers.size() > 0){
+                    List<Notify> notifies = new ArrayList<Notify>();
+                    for(Pair<LatLng, UserOnMap> u: mUsersOnMarkers){
+                        String receiverId = u.second.getUserId();
+                        Notify notify = createNotify(receiverId);
+                        notifies.add(notify);
+                    }
+                sendNotify(notifies);
+                }
+
+            }
+        });
+    }
+    private Notify createNotify(String recieverId){
+
+            String currentUserId = DomainUser.CURRENT_USER.getId();
+            Notify notify = new Notify();
+            notify.setId(UUID.randomUUID().toString());
+            notify.setSourceUser(currentUserId);
+            notify.setDestUser(recieverId);
+            notify.setTitle(DomainUser.CURRENT_USER.getFirstName() + " " + DomainUser.CURRENT_USER.getLasttName());
+            notify.setSubject("Invited you for a meeting");
+            notify.setDelivered(false);
+            notify.setPublishedAt(new LocalDateTime().toString());
+            return notify;
+    }
 
     @Override
     public void onStart() {
@@ -239,13 +275,13 @@ public class NearByFragment extends Fragment implements PopupMenu.OnMenuItemClic
         String userName = DomainUser.CURRENT_USER.getFirstName() + " " + DomainUser.CURRENT_USER.getLasttName();
         mGooglMap.addMarker(new MarkerOptions().position(point).title(userName)); //.snippet("Marker Description"));
         // For zooming automatically to the location of the marker
-        CameraPosition cameraPosition = new CameraPosition.Builder().target(point).zoom(12).build();
+        CameraPosition cameraPosition = new CameraPosition.Builder().target(point).zoom(16).build();
         mGooglMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
     private void updateMap(List<UserOnMap> result){
         for(UserOnMap user:result){
-            LatLngBounds.Builder builder = new LatLngBounds.Builder();
-          List<Address> addresses = null;
+           LatLngBounds.Builder builder = new LatLngBounds.Builder();
+           List<Address> addresses = null;
             Geocoder geocoder = new Geocoder(mContext);
             List<Address> list = null;
             try {
@@ -255,9 +291,6 @@ public class NearByFragment extends Fragment implements PopupMenu.OnMenuItemClic
 
             }
             Address address = list.get(0);
-//            if (marker != null) {
-//                marker.remove();
-//            }
             LatLng point = new LatLng(user.getLatitude(),user.getLongitude());
             BitmapDescriptor icon = null;
             if(user.getAvatar() != null){
@@ -303,8 +336,10 @@ public class NearByFragment extends Fragment implements PopupMenu.OnMenuItemClic
         }
         if(userOnMap != null) {
             mNotifyBotton.setEnabled(true);
+            mNotifyAllButton.setEnabled(true);
             mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-            mUserInfo.setText(userOnMap.getUserName());
+            mUserInfo.setText(userOnMap.getUserName() + " is about " + userOnMap.getDistance() + " meters from you.");
+            mUserAvatar.setImageBitmap(userOnMap.getAvatar());
             mNotifyReceiverId = userOnMap.getUserId();
         }
         return true;
@@ -416,18 +451,21 @@ public class NearByFragment extends Fragment implements PopupMenu.OnMenuItemClic
                         .execute().get();
                 if(friends.size() > 0){
                     for(Friendship friend :friends) {
-                        String lastSeen = new LocalDateTime().minusMinutes(5).toString();
+                        //String lastSeen = new LocalDateTime().minusMinutes(5).toString();
 //                        List<UserLocation> locations = locationTable.where().field("userId").eq(friend.getFriendId())
 //                                .and().field("seenAt").ge(lastSeen).execute().get();
                         List<UserLocation> locations = locationTable.where().field("userId").eq(friend.getFriendId())
+                                .orderBy("seenAt", QueryOrder.Descending)
+                                .top(1)
                                 .execute().get();
                         String tempUserId = null;
                         if (locations != null && locations.size() > 0) {
+
                             for (UserLocation friendLocation : locations) {
                                 //Check to take the user once, in case has has more than one location
-                                if(friendLocation.getUserId().equals(tempUserId)){continue;}
+                               // if(friendLocation.getUserId().equals(tempUserId)){continue;}
 
-                                tempUserId = friendLocation.getUserId();
+                                //tempUserId = friendLocation.getUserId();
                                 Location userCurrentLocation = LocationService.LAST_LOCATION;
                                 double startLati = userCurrentLocation.getLatitude();
                                 double startLongi = userCurrentLocation.getLongitude();
@@ -439,7 +477,7 @@ public class NearByFragment extends Fragment implements PopupMenu.OnMenuItemClic
                                         endLati, endLongi, result
                                 );
                                 float distance = result[0];
-                                if (distance <= 3000) {
+                                if (distance <= 300) {
                                     User user = usersTable.where().field("id").eq(friend.getFriendId()).execute().get().get(0);
                                     if (user != null) {
                                         Bitmap avatar = null;
@@ -457,6 +495,7 @@ public class NearByFragment extends Fragment implements PopupMenu.OnMenuItemClic
                                         userOnMap.setLatitude(friendLocation.getLatitude());
                                         userOnMap.setLongitude(friendLocation.getLongitude());
                                         userOnMap.setAvatar(avatar);
+                                        userOnMap.setDistance((int)distance);
                                         resultUsers.add(userOnMap);
 
                                     }
