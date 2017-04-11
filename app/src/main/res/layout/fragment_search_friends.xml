@@ -29,7 +29,7 @@
 
         <LinearLayout
             android:id="@+id/linearLayout"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
@@ -62,7 +62,8 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.034" />
+                app:layout_constraintVertical_bias="0.034"
+                tools:ignore="LabelFor" />
 
             <Button
                 android:id="@+id/searchFriends_btnSearch"
@@ -80,7 +81,8 @@
                 app:layout_constraintLeft_toRightOf="@+id/searchFriends_txtEmail"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.015" />
+                app:layout_constraintVertical_bias="0.015"
+                tools:ignore="HardcodedText" />
 
         </LinearLayout>
 
