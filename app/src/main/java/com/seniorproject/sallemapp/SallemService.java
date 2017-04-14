@@ -40,6 +40,8 @@ import com.seniorproject.sallemapp.helpers.RefreshedPostsResult;
 
 import org.joda.time.LocalDateTime;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -226,8 +228,18 @@ public class SallemService extends Service implements LocationListener, Refreshe
 
         //LoadPostsAsync loadPosts = new LoadPostsAsync(getApplicationContext(), date, this);
         //loadPosts.execute();
+        String lastUpdate = "";
+        if(mMyApp.Posts_Cach != null && mMyApp.Posts_Cach.size() > 0){
+            DomainPost max = Collections.max(mMyApp.Posts_Cach, new Comparator<DomainPost>() {
+                @Override
+                public int compare(DomainPost o1, DomainPost o2) {
+                    return o1.get_postedAt().compareTo(o2.get_postedAt());
+                }
+            });
+            lastUpdate = max.get_postedAt();
+        }
         LoadFriendsPostsAsync loadFriends = new LoadFriendsPostsAsync(getApplicationContext(),  this);
-        loadFriends.LoadAsync(DomainUser.CURRENT_USER.getId());
+        loadFriends.LoadAsync(DomainUser.CURRENT_USER.getId(), lastUpdate);
 
     }
     private void refreshNotifies(){
