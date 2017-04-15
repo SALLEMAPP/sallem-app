@@ -21,6 +21,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.seniorproject.sallemapp.R;
+import com.seniorproject.sallemapp.entities.DomainComment;
 import com.seniorproject.sallemapp.entities.DomainPost;
 import com.seniorproject.sallemapp.entities.DomainUser;
 import com.seniorproject.sallemapp.entities.Post;
@@ -42,6 +43,7 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
+import java.util.ArrayList;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -167,7 +169,7 @@ public class AddPostActivity extends AppCompatActivity {
         domainPost.setImagePath(post.getPostImage());
         domainPost.set_activityId(post.getActivityId());
         domainPost.set_postedAt(post.getPostedAt());
-
+        domainPost.set_comments(new ArrayList<DomainComment>());
         return domainPost;
     }
 

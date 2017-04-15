@@ -57,17 +57,19 @@ import java.util.concurrent.TimeUnit;
 
 public class ShowPostActivity extends AppCompatActivity implements EntityAsyncResult<DomainPost>, EntityAsyncResultTwo<DomainComment> {
 
-    ImageView mUserAvatart;
-    TextView mPosDate;
-    TextView mPoster;
-    TextView mPostSubject;
-    EditText mPostComment;
-    ImageView mPostImage;
-    ListView mCommentsList;
-    ImageButton mSendCommentButton;
-    CommentsListAdapter mCommentsAdapter;
-    DomainPost mCurrentPost;
-    MyApplication myApp;
+   private ImageView mUserAvatart;
+   private TextView mPosDate;
+   private TextView mPoster;
+   private TextView mPostSubject;
+   private EditText mPostComment;
+   private ImageView mPostImage;
+   private ListView mCommentsList;
+   private ImageButton mSendCommentButton;
+   private CommentsListAdapter mCommentsAdapter;
+   private DomainPost mCurrentPost;
+   private MyApplication myApp;
+   private DomainPost mShownPost;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,8 +117,7 @@ public class ShowPostActivity extends AppCompatActivity implements EntityAsyncRe
                         SaveCommentAsync(ShowPostActivity.this, domainComment);
                 savePostAsync.Delegate = ShowPostActivity.this  ;
                 savePostAsync.execute();
-
-
+                mPostComment.setText("");
             }
         });
 
@@ -126,21 +127,20 @@ public class ShowPostActivity extends AppCompatActivity implements EntityAsyncRe
 //        LoadPost asyncLoading = new LoadPost(this, postId);
 //        asyncLoading.Delegate = this;
 //        asyncLoading.execute();
-        DomainPost showedPost = null;
          for(DomainPost p: myApp.Posts_Cach){
              if(p.get_id().equals(postId)){
-                 showedPost = p;
+                 mShownPost = p;
                  break;
              }
          }
-        processFinish(showedPost);
+        processFinish(mShownPost);
 
     }
 
     @Override
     public void processFinish(DomainPost result) {
         if(result != null){
-         mPostImage.setImageBitmap(result.get_image());
+            mPostImage.setImageBitmap(result.get_image());
             mPoster.setText(result.get_user().getFirstName() + " " + result.get_user().getLasttName());;
             mUserAvatart.setImageBitmap(result.get_user().getAvatar());;
             mPosDate.setText(result.get_postedAt());
@@ -154,6 +154,7 @@ public class ShowPostActivity extends AppCompatActivity implements EntityAsyncRe
     @Override
     public void processFinishTwo(DomainComment result) {
         mCommentsAdapter.add(result);
+        mShownPost.get_comments().add(0, result);
     }
 
 

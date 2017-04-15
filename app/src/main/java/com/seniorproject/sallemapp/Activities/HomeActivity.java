@@ -40,6 +40,7 @@ import com.seniorproject.sallemapp.R;
 import com.seniorproject.sallemapp.SallemService;
 import com.seniorproject.sallemapp.entities.DomainUser;
 import com.seniorproject.sallemapp.helpers.LocationService;
+import com.seniorproject.sallemapp.helpers.MyApplication;
 import com.seniorproject.sallemapp.helpers.MyHelper;
 
 
@@ -235,6 +236,11 @@ public class HomeActivity extends AppCompatActivity
                         public void onClick(DialogInterface dialog, int whichButton) {
                             SharedPreferences shared = getSharedPreferences(MyHelper.SHARED_PREFERENCE_NAME, MODE_PRIVATE);
                             shared.edit().putString("userid", null).apply();
+                            MyApplication myApp = (MyApplication)getApplication();
+                            myApp.Posts_Cach.clear();
+                            myApp.Posts_Cach = null;
+                            myApp.Friends_Cach.clear();
+                            myApp.Friends_Cach = null;
                             finish();
                         }})
                     .setNegativeButton(android.R.string.no, null).show();

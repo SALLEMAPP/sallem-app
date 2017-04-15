@@ -16,6 +16,8 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -114,7 +116,9 @@ public class SallemService extends Service implements LocationListener, Refreshe
                 );
         builder.setTicker("SALLEM");
         builder.setSmallIcon(
-                android.R.drawable.stat_notify_more);
+                R.drawable.ic_sallem_notify);
+        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        builder.setSound(alarmSound);
         builder.setWhen(System.currentTimeMillis());
         builder.setContentTitle(title);
         builder.setContentText(content );
@@ -214,30 +218,18 @@ public class SallemService extends Service implements LocationListener, Refreshe
     }
     private void refreshPosts(){
 
-//        if(cachedPost != null && cachedPost.size() > 0){
-//          DomainPost p = Collections.max(cachedPost,
-//                  new Comparator<DomainPost>() {
-//                      @Override
-//                      public int compare(DomainPost o1, DomainPost o2) {
-//                          return o1.get_postedAt().compareTo(o2.get_postedAt()) ;
-//                      }
-//                  }
-//          );
-//            date = p.get_postedAt();
-//        }
 
-        //LoadPostsAsync loadPosts = new LoadPostsAsync(getApplicationContext(), date, this);
-        //loadPosts.execute();
         String lastUpdate = "";
-        if(mMyApp.Posts_Cach != null && mMyApp.Posts_Cach.size() > 0){
-            DomainPost max = Collections.max(mMyApp.Posts_Cach, new Comparator<DomainPost>() {
-                @Override
-                public int compare(DomainPost o1, DomainPost o2) {
-                    return o1.get_postedAt().compareTo(o2.get_postedAt());
-                }
-            });
-            lastUpdate = max.get_postedAt();
-        }
+        //Note if we assign the last update argument, local cach will go out of sync.
+//        if(mMyApp.Posts_Cach != null && mMyApp.Posts_Cach.size() > 0){
+//            DomainPost max = Collections.max(mMyApp.Posts_Cach, new Comparator<DomainPost>() {
+//                @Override
+//                public int compare(DomainPost o1, DomainPost o2) {
+//                    return o1.get_postedAt().compareTo(o2.get_postedAt());
+//                }
+//            });
+//            lastUpdate = max.get_postedAt();
+//        }
         LoadFriendsPostsAsync loadFriends = new LoadFriendsPostsAsync(getApplicationContext(),  this);
         loadFriends.LoadAsync(DomainUser.CURRENT_USER.getId(), lastUpdate);
 
@@ -253,30 +245,14 @@ public class SallemService extends Service implements LocationListener, Refreshe
 
     @Override
     public void onGotResult(List<DomainPost> result) {
-        if(result != null && result.size() > 0){
-//            PostDataSource postDs = new PostDataSource(getApplicationContext());
-//            postDs.open();
-//            for(DomainPost post: result){
-//                if(postDs.getPost(post.get_id()) != null)continue; //already there.
-//                Post newPost = new Post();
-//                newPost.setId(post.get_id());
-//                newPost.setPostedAt(post.get_postedAt());
-//                newPost.setSubject(post.get_subject());
-//                newPost.setUserId(post.get_userId());
-//                newPost.set_imagePath(post.getImagePath());
-//                newPost.setActivityId(post.get_activityId());
-//                postDs.insert(newPost);
-//            }
-            if(mMyApp.Posts_Cach != null && mMyApp.Posts_Cach.size() == result.size()){return;}
-            mMyApp.Posts_Cach = result;
+        if(result == null){
+            return;
+        }
+            mMyApp.Posts_Cach.addAll(0, result);
             Intent i = new Intent();
             i.setAction(CommonMethods.ACTION_NOTIFY_REFRESH);
             sendBroadcast(i);
         }
-
-
-    }
-
     @Override
     public void processFinish(List<Notify> result) {
         if(result != null) {

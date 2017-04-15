@@ -97,7 +97,7 @@ public class LoadFriendsPostsAsync {
                 userAvatar = MyHelper.getDefaultAvatar(mContext);
             }
             DomainUser poster = new DomainUser(friendPost.getPosterId(),
-                            friendPost.getPosterFirstName(), friendPost.getPosterFirstName(),
+                            friendPost.getPosterFirstName(), friendPost.getPosterLastName(),
                             null, null, null,null, -1, userAvatar,0,0,false);
             post.set_user(poster);
             List<DomainComment> postComments = new ArrayList<>();
