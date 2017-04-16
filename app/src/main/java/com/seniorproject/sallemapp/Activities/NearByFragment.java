@@ -283,7 +283,7 @@ public class NearByFragment extends Fragment implements PopupMenu.OnMenuItemClic
         String userName = DomainUser.CURRENT_USER.getFirstName() + " " + DomainUser.CURRENT_USER.getLasttName();
         mGooglMap.addMarker(new MarkerOptions().position(point).title(userName)); //.snippet("Marker Description"));
         // For zooming automatically to the location of the marker
-        CameraPosition cameraPosition = new CameraPosition.Builder().target(point).zoom(16).build();
+        CameraPosition cameraPosition = new CameraPosition.Builder().target(point).zoom(19).build();
         mGooglMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
     private void updateMap(List<UserOnMap> result){
