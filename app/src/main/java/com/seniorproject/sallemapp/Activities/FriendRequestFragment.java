@@ -140,9 +140,10 @@ public class FriendRequestFragment extends ListFragment {
         void onFragmentInteraction(Uri uri);
     }
     public class LoadFriendsRequestAsync extends AsyncTask<Void,Void,List<DomainFriendship>> {
-        private final String mUserId;
+        private final String mMyUserId;
         public LoadFriendsRequestAsync(String userId){
-            mUserId = userId;
+
+            mMyUserId = userId;
         }
 
         @Override
@@ -151,14 +152,14 @@ public class FriendRequestFragment extends ListFragment {
             try {
                 MobileServiceClient client = MyHelper.getAzureClient(mContext);
                 MobileServiceTable<Friendship> friendsTable = client.getTable(Friendship.class);
-                List<Friendship> requests = friendsTable.where().field("id")
-                        .eq(mUserId).and().field("StatusId").eq(1).execute().get();
+                List<Friendship> requests = friendsTable.where().field("friendId")
+                        .eq(mMyUserId).and().field("StatusId").eq(1).execute().get();
                 MobileServiceTable<User> userTable = client.getTable(User.class);
 
                 if (requests != null && requests.size() > 0) {
                     for(Friendship friendship: requests){
-                       String friendId = friendship.getFriendId();
-                    List<User> users = userTable.where().field("id").eq(friendId).execute().get();
+                        String friendId = friendship.getFriendId();
+                        List<User> users = userTable.where().field("id").eq(friendId).execute().get();
                         User user = users.get(0);
                         if(user != null){
                             Bitmap avatar = null;
@@ -178,9 +179,6 @@ public class FriendRequestFragment extends ListFragment {
                             DomainFriendship domainFriendship = new DomainFriendship(friendship, domainUser);
                             result.add(domainFriendship);
                         }
-
-
-
                 }
             }
             }

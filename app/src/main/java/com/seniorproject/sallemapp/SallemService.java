@@ -248,7 +248,7 @@ public class SallemService extends Service implements LocationListener, Refreshe
         if(result == null){
             return;
         }
-            mMyApp.Posts_Cach.addAll(0, result);
+            mMyApp.Posts_Cach = result;
             Intent i = new Intent();
             i.setAction(CommonMethods.ACTION_NOTIFY_REFRESH);
             sendBroadcast(i);

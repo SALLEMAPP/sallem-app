@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -154,6 +155,21 @@ public class LocationService implements LocationListener {
     }
     public interface LocationChanged{
         void onLocationChanged(LatLng newLocation);
+    }
+
+    public  static Location getCurrentLocation(Context context){
+        Location currentLocation = null;
+        LocationManager locationManager = (LocationManager)context.getSystemService(Context.LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+        criteria.setAccuracy(Criteria.NO_REQUIREMENT);
+        criteria.setPowerRequirement(Criteria.POWER_LOW);
+        String best = locationManager.getBestProvider(criteria, true);
+        int permissionCheck = ContextCompat.checkSelfPermission(context.getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION);
+        if(permissionCheck == PackageManager.PERMISSION_GRANTED) {
+            //Get location updated every minute and after 100 distance
+            currentLocation = locationManager.getLastKnownLocation(best);
+        }
+        return currentLocation;
     }
 
 }

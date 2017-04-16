@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
@@ -35,18 +36,24 @@ public class SaveFriendshipRequestAsync extends AsyncTask<Void, Void, Void> {
         try{
             MobileServiceClient client = MyHelper.getAzureClient(mContext);
             Friendship firstFriendship = creatFirstFriendship();
-            Friendship secondFriendship = creatSecondFriendship();
+            //Friendship secondFriendship = creatSecondFriendship();
             MobileServiceTable<Friendship> userTable = client.getTable(Friendship.class);
             userTable.insert(firstFriendship).get();
-            userTable.insert(secondFriendship);
+            //userTable.insert(secondFriendship);
        }
          catch (Exception e){
              e.printStackTrace();
              Log.e("SALLEM AA", "doInBackground: " + e.getCause());
-
          }
 
         return null;
+    }
+
+    @Override
+    protected void onPostExecute(Void aVoid) {
+        String msg = "Your request has sent";
+        MyHelper.showToast(mContext, msg);
+
     }
 
     private Friendship creatFirstFriendship(){
@@ -57,12 +64,5 @@ public class SaveFriendshipRequestAsync extends AsyncTask<Void, Void, Void> {
         firstFriendship.setStatusId(1);
         return firstFriendship;
     }
-    private Friendship creatSecondFriendship(){
-        Friendship secondFriendship = new Friendship();
-        secondFriendship.setId(mFriendId);
-        secondFriendship.setFriendId(mUserId);
-        secondFriendship.setFriendsSince(new LocalDateTime().toString());
-        secondFriendship.setStatusId(1);
-        return secondFriendship;
-    }
+
 }

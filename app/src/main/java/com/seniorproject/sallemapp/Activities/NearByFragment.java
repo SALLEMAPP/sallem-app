@@ -77,7 +77,6 @@ import java.util.UUID;
  * create an instance of this fragment.
  */
 public class NearByFragment extends Fragment implements PopupMenu.OnMenuItemClickListener, GoogleMap.OnMarkerClickListener {
-    private static final int MY_PERMISSION_FOR_ACCESS_LOCATION = 2;
     MapView mMapView;
     private GoogleMap mGooglMap;
     Context mContext;
@@ -92,16 +91,23 @@ public class NearByFragment extends Fragment implements PopupMenu.OnMenuItemClic
     private Button mNotifyBotton;
     private Button mNotifyAllButton;
     private String mNotifyReceiverId;
+
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState){
         mCurrentView =  inflater.inflate( R.layout.fragment_near_by, container, false);
         mContext = getActivity().getApplicationContext();
-        getPermissionToAccessLocation();
         mMapView = (MapView) mCurrentView.findViewById (R.id.newFriends_mapView);
         mProgressBar = (ProgressBar) mCurrentView.findViewById(R.id.nearFriends_progBar);
         View bottomSheet = mCurrentView.findViewById(R.id.bottom_sheet);
         mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         mBottomSheetBehavior.setBottomSheetCallback(mBottomSheetCallback);
+        if(LocationService.getCurrentLocation(getContext()) == null){
+            String msg = "Enable location service in your device";
+            String title = "SALLEM";
+            MyHelper.createAndShowDialog(getContext(), msg, title);
+            return mCurrentView;
+        }
+
         mUsersOnMarkers = new ArrayList<>();
         mUserInfo = (TextView) mCurrentView.findViewById(R.id.bottom_lblInfo);
         mUserAvatar =(ImageView) mCurrentView.findViewById(R.id.bottom_imgAvatar);
@@ -120,13 +126,15 @@ public class NearByFragment extends Fragment implements PopupMenu.OnMenuItemClic
                 new OnMapReadyCallback() {
                     @Override
                     public void onMapReady(GoogleMap googleMap) {
+
                         mGooglMap = googleMap;
                         int permissionCheck = ContextCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION);
                         if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
                             googleMap.setMyLocationEnabled(true);
                         }
                         googleMap.setOnMarkerClickListener(NearByFragment.this);
-                        Location lastLocation = LocationService.LAST_LOCATION;
+
+                        Location lastLocation = LocationService.getCurrentLocation(getContext());
                         updateLocation(lastLocation);
                         mProgressBar.setVisibility(View.VISIBLE);
 //                        mGooglMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
@@ -339,7 +347,8 @@ public class NearByFragment extends Fragment implements PopupMenu.OnMenuItemClic
             mNotifyAllButton.setEnabled(true);
             mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
             mUserInfo.setText(userOnMap.getUserName() + " is about " + userOnMap.getDistance() + " meters from you.");
-            mUserAvatar.setImageBitmap(userOnMap.getAvatar());
+            Bitmap scaledImage = Bitmap.createScaledBitmap(userOnMap.getAvatar(), 150, 150, false);
+            mUserAvatar.setImageBitmap(scaledImage);
             mNotifyReceiverId = userOnMap.getUserId();
         }
         return true;
@@ -386,51 +395,7 @@ public class NearByFragment extends Fragment implements PopupMenu.OnMenuItemClic
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
-    @TargetApi(23)
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        // Make sure it's our original READ_CONTACTS request
-        if (requestCode == MY_PERMISSION_FOR_ACCESS_LOCATION) {
-            if (grantResults.length == 1 &&
-                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(mContext, "Read Contacts permission granted", Toast.LENGTH_SHORT).show();
-            } else {
-                // showRationale = false if user clicks Never Ask Again, otherwise true
-                boolean showRationale = shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION);
 
-
-                if (showRationale) {
-                    // do something here to handle degraded mode
-                } else {
-                    Toast.makeText(mContext, "Read Contacts permission denied", Toast.LENGTH_SHORT).show();
-                }
-            }
-        } else {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
-
-    }
-
-    @TargetApi(23)
-    public void getPermissionToAccessLocation() {
-        if(ContextCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                ||
-                ContextCompat.checkSelfPermission( mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-
-            shouldShowRequestPermissionRationale(
-                    Manifest.permission.ACCESS_COARSE_LOCATION);
-            shouldShowRequestPermissionRationale(
-                    Manifest.permission.ACCESS_FINE_LOCATION);
-            requestPermissions(
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.ACCESS_COARSE_LOCATION
-                    }, MY_PERMISSION_FOR_ACCESS_LOCATION
-            );
-
-        }
-
-    }
 
     public class SearchNearFriendsAsycn extends AsyncTask<Void,Void,List<UserOnMap>> {
         private final String mUserId;
@@ -479,7 +444,7 @@ public class NearByFragment extends Fragment implements PopupMenu.OnMenuItemClic
                                 float distance = result[0];
                                 if (distance <= 300) {
                                     User user = usersTable.where().field("id").eq(friend.getFriendId()).execute().get().get(0);
-                                    if (user != null) {
+                                    if (user != null && user.getStatus() == MyHelper.USER_STATUS_ONLINE) {
                                         Bitmap avatar = null;
                                         String imageTitle = user.getImageTitle();
                                         if(!imageTitle.equals(MyHelper.DEFAULT_AVATAR_TITLE)) {

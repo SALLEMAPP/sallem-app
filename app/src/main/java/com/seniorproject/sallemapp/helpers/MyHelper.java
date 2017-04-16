@@ -1,9 +1,11 @@
 package com.seniorproject.sallemapp.helpers;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
+import android.widget.Toast;
 
 import com.microsoft.azure.storage.CloudStorageAccount;
 import com.microsoft.azure.storage.StorageException;
@@ -33,6 +35,8 @@ public class MyHelper {
 
     public static final String DEFAULT_AVATAR_TITLE= "3d788b86-4313-40aa-8a4f-172344ed139d";
     public static final String SHARED_PREFERENCE_NAME = "sallemappsettings";
+    public static final int USER_STATUS_OFFLINE = 1;
+    public static final int USER_STATUS_ONLINE = 0;
     public static Bitmap getDefaultAvatar(Context context){
         Bitmap avatar = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_user_avatar);
         return avatar;
@@ -117,6 +121,15 @@ public class MyHelper {
         }
         return null;
 
+    }
+    public static void createAndShowDialog(Context context, final String message, final String title) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage(message);
+        builder.setTitle(title);
+        builder.create().show();
+    }
+    public static void showToast(Context context, String msg){
+        Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
     }
 
 }

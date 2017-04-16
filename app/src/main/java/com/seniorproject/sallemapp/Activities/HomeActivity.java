@@ -1,17 +1,22 @@
 package com.seniorproject.sallemapp.Activities;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
@@ -53,6 +58,7 @@ public class HomeActivity extends AppCompatActivity
         PastActivitiesFragment.OnFragmentInteractionListener,
         LocationService.LocationChanged, ServiceConnection
 {
+    private static final int MY_PERMISSION_FOR_ACCESS_LOCATION = 2;
     FragmentStatePagerAdapter adapterViewPager;
     ViewPager myViewPager;
     Intent sallemService;
@@ -75,6 +81,7 @@ public class HomeActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        getPermissionToAccessLocation();
         myViewPager = (ViewPager)findViewById(R.id.viewPager);
         TabLayout  tableLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tableLayout.setupWithViewPager(myViewPager);
@@ -282,6 +289,52 @@ public class HomeActivity extends AppCompatActivity
 
     @Override
     public void onServiceDisconnected(ComponentName name) {
+
+    }
+
+    @TargetApi(23)
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        // Make sure it's our original READ_LOCATION request
+        if (requestCode == MY_PERMISSION_FOR_ACCESS_LOCATION) {
+            if (grantResults.length == 1 &&
+                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(getApplicationContext(), "Read Locatoin permission granted", Toast.LENGTH_SHORT).show();
+            } else {
+                // showRationale = false if user clicks Never Ask Again, otherwise true
+                boolean showRationale = shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION);
+
+
+                if (showRationale) {
+                    // do something here to handle degraded mode
+                } else {
+                    Toast.makeText(getApplicationContext(), "Read Location permission denied", Toast.LENGTH_SHORT).show();
+                }
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+
+    }
+
+    @TargetApi(23)
+    public void getPermissionToAccessLocation() {
+        if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                ||
+                ContextCompat.checkSelfPermission( getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+
+            shouldShowRequestPermissionRationale(
+                    Manifest.permission.ACCESS_COARSE_LOCATION);
+            shouldShowRequestPermissionRationale(
+                    Manifest.permission.ACCESS_FINE_LOCATION);
+            requestPermissions(
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION
+                    }, MY_PERMISSION_FOR_ACCESS_LOCATION
+            );
+
+        }
 
     }
 }

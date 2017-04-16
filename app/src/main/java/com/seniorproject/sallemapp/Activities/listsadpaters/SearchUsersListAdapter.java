@@ -62,7 +62,6 @@ public class SearchUsersListAdapter extends ArrayAdapter<DomainUser> {
                         saveRequest.execute();
                         mSendRequestButton.setEnabled(false);
                         mSendRequestButton.setAlpha(0.5f);
-
                     }
                 });
 

@@ -3,6 +3,7 @@ package com.seniorproject.sallemapp.Activities.pagesadapters;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.util.Log;
 
 import com.seniorproject.sallemapp.Activities.FriendRequestFragment;
 import com.seniorproject.sallemapp.Activities.FriendsFragment;
@@ -23,7 +24,6 @@ public  class FriendsPageAdapter extends FragmentStatePagerAdapter {
       //  this._fm = fm;
     }
 
-    private Fragment _currentFragment = null;
     private static int NUM_ITEMS =4;
     @Override
     public int getCount(){
@@ -31,33 +31,23 @@ public  class FriendsPageAdapter extends FragmentStatePagerAdapter {
     }
     @Override
     public Fragment getItem(int position){
-
-
         switch (position){
             case 0:
-
-                _currentFragment = FriendsFragment.newInstance(0, "Friends");
-                break;
+                return FriendsFragment.newInstance(0, "Friends");
             case 1:
-                _currentFragment= SearchFriendsFragment.newInstance(1, "Search");
-                break;
+                return SearchFriendsFragment.newInstance(1, "Search");
             case 2:
-                _currentFragment=  FriendRequestFragment.newInstance(2, "Requests");
-                break;
+                return FriendRequestFragment.newInstance(2, "Requests");
             case 3:
-                _currentFragment = NearByFragment.newInstance(3, "NearBy");
-                break;
+                return NearByFragment.newInstance(3, "NearBy");
             default:
-                _currentFragment = null ;
-                break;
+                return null ;
         }
-        return _currentFragment;
     }
     @Override
     public CharSequence getPageTitle(int position) {
         CharSequence title = null;
         switch (position){
-
             case   0:
                 title = "Friends";
                 break;
