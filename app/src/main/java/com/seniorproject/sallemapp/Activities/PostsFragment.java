@@ -105,7 +105,7 @@ public class PostsFragment extends Fragment implements ListAsyncResult<DomainPos
         mPostsListView = (ListView)_currentView.findViewById(R.id.postFrag_postsList);
         mLoadinggProgressBar.setVisibility(View.VISIBLE);
 
-        mContext = getActivity().getApplicationContext();
+        mContext = getContext();
         _adpater = new PostsListAdapter(mContext, mPostsList);
         mPostsListView.setAdapter(_adpater);
         mPostsListView.setOnItemClickListener(this);
@@ -178,9 +178,9 @@ public class PostsFragment extends Fragment implements ListAsyncResult<DomainPos
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         DomainPost post = (DomainPost) _adpater.getItem(position);
-        Intent i = new Intent(view.getContext(), ShowPostActivity.class);
+        Intent i = new Intent(mContext, ShowPostActivity.class);
         i.putExtra("postId", post.get_id());
-        view.getContext().startActivity(i);
+        startActivity(i);
     }
 
 
