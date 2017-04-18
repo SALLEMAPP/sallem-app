@@ -8,7 +8,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -179,6 +178,7 @@ public class PostsFragment extends Fragment implements ListAsyncResult<DomainPos
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         DomainPost post = (DomainPost) _adpater.getItem(position);
         Intent i = new Intent(view.getContext(), ShowPostActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // comments on post issue has been solved by this line - added by Fisal
         i.putExtra("postId", post.get_id());
         view.getContext().startActivity(i);
     }
