@@ -79,6 +79,7 @@ public class SettingsFragment extends Fragment {
         //below line added by Fisal to start loading Sallem Settings from SharedPreferences and view it to layout
         initSettings();
 
+
         //below line added by Fisal to start saving Sallem Settings to SharedPreferences
        initSaveSettings();
 
@@ -90,53 +91,64 @@ public class SettingsFragment extends Fragment {
     }
 
     //below initSettings() added by Fisal to start loading Sallem Settings from SharedPreferences and view it to layout
-    private void initSettings() {
+    public void initSettings() {
         String allow_user_location = getActivity().getSharedPreferences(MyHelper.SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE).getString("allow_location", "true");
         Integer search_distance = getActivity().getSharedPreferences(MyHelper.SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE).getInt("search_distance", 1);
         String status = getActivity().getSharedPreferences(MyHelper.SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE).getString("status", "Online");
 
         Switch allowLocationSW = (Switch) getActivity().findViewById(R.id.btn_allow_user_location);
 
-        if (allow_user_location.equalsIgnoreCase("true")) {
-            allowLocationSW.setChecked(true);
-        }
-        else if (allow_user_location.equalsIgnoreCase("false")) {
-            allowLocationSW.setChecked(false);
-        }
+
+        if (allow_user_location.isEmpty())
+            {
+                allowLocationSW.setChecked(false);
+            }
+
+//          else
+//
+//              allowLocationSW.setChecked(true);
+
 
 
         Spinner distanceSpinner = (Spinner) getActivity().findViewById(R.id.spinner2);
 
-        if (search_distance == 1) {
-            distanceSpinner.setSelection(1);
+        for(int i=0;i<10;i++) {
+            if (search_distance.equals(distanceSpinner.getItemAtPosition(i))) {
+                distanceSpinner.setSelection(i);
+                break;
+            }
         }
-        else if (search_distance == 2) {
-            distanceSpinner.setSelection(2);
-        }
-        else if (search_distance == 3) {
-            distanceSpinner.setSelection(3);
-        }
-        else if (search_distance == 4) {
-            distanceSpinner.setSelection(4);
-        }
-        else if (search_distance == 5) {
-            distanceSpinner.setSelection(5);
-        }
-        else if (search_distance == 6) {
-            distanceSpinner.setSelection(6);
-        }
-        else if (search_distance == 7) {
-            distanceSpinner.setSelection(7);
-        }
-        else if (search_distance == 8) {
-            distanceSpinner.setSelection(8);
-        }
-        else if (search_distance == 9) {
-            distanceSpinner.setSelection(9);
-        }
-        else {
-            distanceSpinner.setSelection(10);
-        }
+
+//        if (search_distance == 1) {
+//            distanceSpinner.setSelection(1);
+//        }
+//        else if (search_distance == 2) {
+//            distanceSpinner.setSelection(2);
+//        }
+//        else if (search_distance == 3) {
+//            distanceSpinner.setSelection(3);
+//        }
+//        else if (search_distance == 4) {
+//            distanceSpinner.setSelection(4);
+//        }
+//        else if (search_distance == 5) {
+//            distanceSpinner.setSelection(5);
+//        }
+//        else if (search_distance == 6) {
+//            distanceSpinner.setSelection(6);
+//        }
+//        else if (search_distance == 7) {
+//            distanceSpinner.setSelection(7);
+//        }
+//        else if (search_distance == 8) {
+//            distanceSpinner.setSelection(8);
+//        }
+//        else if (search_distance == 9) {
+//            distanceSpinner.setSelection(9);
+//        }
+//        else {
+//            distanceSpinner.setSelection(10);
+//        }
 
 
         Spinner statusSpinner = (Spinner) getActivity().findViewById(R.id.spinner3);

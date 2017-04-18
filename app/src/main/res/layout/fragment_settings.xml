@@ -7,10 +7,10 @@
 
     <RelativeLayout
         android:id="@+id/rlyout_settings"
-        android:clickable="true"
-        android:filterTouchesWhenObscured="true"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:filterTouchesWhenObscured="true">
 
         <ImageButton
             android:id="@+id/img_add_photo"
@@ -37,15 +37,13 @@
             android:id="@+id/spinner2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/txt_username"
-            android:layout_alignStart="@+id/txt_username"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="13dp"
-            android:layout_marginStart="13dp"
             android:background="@color/sallemBlue"
             android:entries="@array/pref_search_distance"
-            android:spinnerMode="dropdown"
-            android:scrollbars="vertical"/>
+            android:scrollbars="vertical"
+            android:spinnerMode="dropdown" />
 
         <TextView
             android:id="@+id/txt_search_distance"
@@ -65,7 +63,7 @@
             android:layout_alignLeft="@+id/txt_search_distance"
             android:layout_alignStart="@+id/txt_search_distance"
             android:layout_marginBottom="51dp"
-            android:checked="true"
+            android:checked="false"
             android:text="@string/allow_location_setting_label" />
 
         <TextView
