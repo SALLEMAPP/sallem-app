@@ -151,6 +151,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
             addUserToDb(user);
         }
+
     }
     private String encrypt(String password){
         String encryptedPassword = null;
@@ -178,10 +179,17 @@ public class RegistrationActivity extends AppCompatActivity {
     private void addUserToDb(final User user) {
 
         AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
+            private boolean isEmailRegistered = false;
             @Override
             protected Void doInBackground(Void... params) {
                try {
                    _userTable = _client.getTable(User.class);
+                   List<User> emails = _userTable.where()
+                           .field("email").eq(val(user.getEmail())).select("email").execute().get();
+                   if(emails != null && emails.size() != 0){
+                       isEmailRegistered = true;
+                       return null;
+                   }
                    _userTable.insert(user).get();
                }
                catch (Exception e){
@@ -191,11 +199,20 @@ public class RegistrationActivity extends AppCompatActivity {
             }
             @Override
             protected void onPostExecute(Void aVoid) {
-               _savingProgressBar.setVisibility(View.GONE);
-                mRegistrationButton.setEnabled(true);
-                Intent signinIntent = new Intent(RegistrationActivity.this.getApplicationContext(), SignInActivity.class);
-                startActivity(signinIntent);
-                finish();
+                if(isEmailRegistered){
+                    mTextEmail.setError("Email already used");
+                    _savingProgressBar.setVisibility(View.GONE);
+                    mRegistrationButton.setEnabled(true);
+
+                }
+                else{
+                    _savingProgressBar.setVisibility(View.GONE);
+                    mRegistrationButton.setEnabled(true);
+                    Intent signinIntent = new Intent(RegistrationActivity.this.getApplicationContext(), SignInActivity.class);
+                    startActivity(signinIntent);
+                    finish();
+                }
+
             }
         };
        task.execute();
@@ -237,17 +254,24 @@ public class RegistrationActivity extends AppCompatActivity {
             mTextRePassword.setError("Password is not matched");
             valid = false;
         }
+
         return valid;
     }
 
-    private boolean registeredEmail(final String email)throws InterruptedException, ExecutionException {
-        _userTable = _client.getTable(User.class);
-        List<User> user = _userTable.where()
-                            .field("email").eq(val(email)).select("email").execute().get();
-        if(user.size() > 0){
-            return false;
+    private boolean registeredEmail(final String email) {
+        boolean isRegistered = true;
+        try {
+            _userTable = _client.getTable(User.class);
+            List<User> user = _userTable.where()
+                    .field("email").eq(val(email)).select("email").execute().get();
+            if (user.size() == 0) {
+                isRegistered =  false;
+            }
         }
-        return true;
+        catch ( Exception e ){
+            Log.e("Registration Activity", "registeredEmail: "+ e.getMessage() );
+        }
+        return isRegistered;
     }
     private void openImageFromGalary(){
         Intent gallaryIntent = new Intent();
