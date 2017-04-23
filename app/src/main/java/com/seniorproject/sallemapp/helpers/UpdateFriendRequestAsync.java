@@ -27,14 +27,7 @@ public class UpdateFriendRequestAsync extends AsyncTask {
             MobileServiceClient client = MyHelper.getAzureClient(mContext);
             MobileServiceTable<Friendship> friendsTable =
                     client.getTable(Friendship.class);
-            Friendship updatable = friendsTable.where().field("id").eq(mFriendship.getId())
-                    .and().field("friendId").eq(mFriendship.getFriendId()).execute().get().get(0);
-            if(updatable != null){
-                updatable.setStatusId(mFriendship.getStatusId());
-            }
-            friendsTable.update(updatable).get();
-            //When i response to frienship request,  create second second part of friendship by
-            // swap the first friendship in that friendid in the first part will be id of the second part.
+            friendsTable.update(mFriendship).get();
 
         }
         catch (Exception e){
@@ -46,34 +39,4 @@ public class UpdateFriendRequestAsync extends AsyncTask {
 
     }
 
-    @Override
-    protected void onPostExecute(Object o) {
-        AsyncTask task = new AsyncTask() {
-            @Override
-            protected Object doInBackground(Object[] params) {
-               try {
-                   MobileServiceClient client = MyHelper.getAzureClient(mContext);
-                   MobileServiceTable<Friendship> friendsTable =
-                           client.getTable(Friendship.class);
-                   Friendship secondPart = creatSecondFriendship(mFriendship.getFriendId(), mFriendship.getId(), mFriendship.getStatusId());
-                   friendsTable.insert(secondPart).get();
-               }
-               catch (Exception e){
-                   e.printStackTrace();
-               }
-
-                return null;
-            }
-        };
-        task.execute();
-    }
-
-    private Friendship creatSecondFriendship(String userId, String friendId, int status){
-        Friendship secondFriendship = new Friendship();
-        secondFriendship.setId(userId);
-        secondFriendship.setFriendId(friendId);
-        secondFriendship.setFriendsSince(MyHelper.getCurrentDateTime());
-        secondFriendship.setStatusId(status);
-        return secondFriendship;
-    }
 }

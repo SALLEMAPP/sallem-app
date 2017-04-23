@@ -84,7 +84,7 @@ public class FriendRequestFragment extends ListFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mCurrentView = inflater.inflate(R.layout.fragment_friend_request, container, false);
-        mContext = getActivity().getApplicationContext();
+        mContext = getContext();
         loadFriendRequest();
         return mCurrentView;
     }
@@ -158,7 +158,7 @@ public class FriendRequestFragment extends ListFragment {
 
                 if (requests != null && requests.size() > 0) {
                     for(Friendship friendship: requests){
-                        String friendId = friendship.getFriendId();
+                        String friendId = friendship.getId();
                         List<User> users = userTable.where().field("id").eq(friendId).execute().get();
                         User user = users.get(0);
                         if(user != null){

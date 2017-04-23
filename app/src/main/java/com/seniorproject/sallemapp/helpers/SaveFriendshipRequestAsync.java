@@ -20,7 +20,7 @@ import java.util.UUID;
  * Created by abdul on 31-Mar-2017.
  */
 
-public class SaveFriendshipRequestAsync extends AsyncTask<Void, Void, Void> {
+public class SaveFriendshipRequestAsync extends AsyncTask<Void, Void, BackgroundOperationResult> {
     private Context mContext;
     private String mUserId;
     private String mFriendId;
@@ -32,29 +32,39 @@ public class SaveFriendshipRequestAsync extends AsyncTask<Void, Void, Void> {
     }
 
     @Override
-    protected Void doInBackground(Void... params) {
+    protected BackgroundOperationResult doInBackground(Void... params) {
+        boolean succeed = false;
         try{
             MobileServiceClient client = MyHelper.getAzureClient(mContext);
             Friendship firstFriendship = creatFirstFriendship();
             MobileServiceTable<Friendship> userTable = client.getTable(Friendship.class);
             userTable.insert(firstFriendship).get();
+            succeed = true;
        }
          catch (Exception e){
              e.printStackTrace();
              Log.e("SALLEM AA", "doInBackground: " + e.getCause());
+             succeed = false;
          }
-
-        return null;
+        return new BackgroundOperationResult(succeed);
     }
 
     @Override
-    protected void onPostExecute(Void aVoid) {
-        Notify notify = createNotify();
-        List<Notify> notifies = new ArrayList<>();
-        notifies.add(notify);
-        sendNotify(notifies);
-        String msg = "Your request has sent";
-        MyHelper.showToast(mContext, msg);
+    protected void onPostExecute(BackgroundOperationResult result) {
+        if(result.getSucceed()){
+            Notify notify = createNotify();
+            List<Notify> notifies = new ArrayList<>();
+            notifies.add(notify);
+            sendNotify(notifies);
+            String msg = "Your request has sent";
+            MyHelper.showToast(mContext, msg);
+        }
+        else {
+            String msg = "You already sent him a request";
+            MyHelper.showToast(mContext, msg);
+
+        }
+
 
     }
     private void sendNotify(List<Notify> notifies){
