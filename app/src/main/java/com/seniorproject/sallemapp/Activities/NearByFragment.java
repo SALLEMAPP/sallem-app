@@ -59,7 +59,6 @@ import com.seniorproject.sallemapp.helpers.LocationService;
 import com.seniorproject.sallemapp.helpers.MyHelper;
 import com.seniorproject.sallemapp.helpers.SendNotifyAsync;
 
-import org.joda.time.LocalDateTime;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -204,7 +203,7 @@ public class NearByFragment extends Fragment implements PopupMenu.OnMenuItemClic
             notify.setTitle(DomainUser.CURRENT_USER.getFirstName() + " " + DomainUser.CURRENT_USER.getLasttName());
             notify.setSubject("Invited you for a meeting");
             notify.setDelivered(false);
-            notify.setPublishedAt(new LocalDateTime().toString());
+            notify.setPublishedAt(MyHelper.getCurrentDateTime());
             return notify;
     }
 
@@ -416,9 +415,6 @@ public class NearByFragment extends Fragment implements PopupMenu.OnMenuItemClic
                         .execute().get();
                 if(friends.size() > 0){
                     for(Friendship friend :friends) {
-                        //String lastSeen = new LocalDateTime().minusMinutes(5).toString();
-//                        List<UserLocation> locations = locationTable.where().field("userId").eq(friend.getFriendId())
-//                                .and().field("seenAt").ge(lastSeen).execute().get();
                         List<UserLocation> locations = locationTable.where().field("userId").eq(friend.getFriendId())
                                 .orderBy("seenAt", QueryOrder.Descending)
                                 .top(1)

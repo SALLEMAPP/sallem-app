@@ -32,7 +32,6 @@ import com.seniorproject.sallemapp.helpers.MyHelper;
 import com.seniorproject.sallemapp.helpers.SavePostAsync;
 import com.squareup.okhttp.OkHttpClient;
 
-import org.joda.time.LocalDateTime;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -129,7 +128,7 @@ public class AddPostActivity extends AppCompatActivity {
     private void addPost() {
         String subject = ((EditText) findViewById(R.id.addPost_txtPostSubject)).getText().toString();
         ImageView image = (ImageView) findViewById(R.id.addPost_imgPostImage);
-        String postedAt = new LocalDateTime().toString();
+        String postedAt = MyHelper.getCurrentDateTime();
         String userId = DomainUser.CURRENT_USER.getId();
         Post post = new Post();
 

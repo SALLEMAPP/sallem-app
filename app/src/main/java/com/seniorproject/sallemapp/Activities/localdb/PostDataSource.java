@@ -14,7 +14,6 @@ import com.seniorproject.sallemapp.entities.Post;
 import com.seniorproject.sallemapp.entities.User;
 import com.seniorproject.sallemapp.helpers.MyHelper;
 
-import org.joda.time.LocalDateTime;
 
 import java.util.ArrayList;
 
@@ -46,7 +45,7 @@ public class PostDataSource {
             values.put("UserId", post.getUserId());
             values.put("ImagePath", post.get_imagePath());
             values.put("ActivityId", post.getActivityId());
-            values.put("UpdatedAt", new LocalDateTime().toString());
+            values.put("UpdatedAt", MyHelper.getCurrentDateTime());
             ok =db.insert("post",null, values) > 0;
 
         }

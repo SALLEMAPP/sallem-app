@@ -3,12 +3,10 @@ package com.seniorproject.sallemapp.helpers;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.google.firebase.FirebaseApiNotAvailableException;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 import com.seniorproject.sallemapp.entities.Friendship;
 
-import org.joda.time.LocalDateTime;
 
 /**
  * Created by abdullahbamusa on 4/1/17.
@@ -74,7 +72,7 @@ public class UpdateFriendRequestAsync extends AsyncTask {
         Friendship secondFriendship = new Friendship();
         secondFriendship.setId(userId);
         secondFriendship.setFriendId(friendId);
-        secondFriendship.setFriendsSince(new LocalDateTime().toString());
+        secondFriendship.setFriendsSince(MyHelper.getCurrentDateTime());
         secondFriendship.setStatusId(status);
         return secondFriendship;
     }

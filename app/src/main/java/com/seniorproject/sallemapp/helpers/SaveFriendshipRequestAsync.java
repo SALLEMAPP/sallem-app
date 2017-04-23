@@ -10,11 +10,6 @@ import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 import com.seniorproject.sallemapp.entities.DomainUser;
 import com.seniorproject.sallemapp.entities.Friendship;
-import com.seniorproject.sallemapp.entities.User;
-
-import org.joda.time.LocalDateTime;
-
-import java.util.UUID;
 
 /**
  * Created by abdul on 31-Mar-2017.
@@ -60,7 +55,7 @@ public class SaveFriendshipRequestAsync extends AsyncTask<Void, Void, Void> {
         Friendship firstFriendship = new Friendship();
         firstFriendship.setId(mUserId);
         firstFriendship.setFriendId(mFriendId);
-        firstFriendship.setFriendsSince(new LocalDateTime().toString());
+        firstFriendship.setFriendsSince(MyHelper.getCurrentDateTime());
         firstFriendship.setStatusId(1);
         return firstFriendship;
     }

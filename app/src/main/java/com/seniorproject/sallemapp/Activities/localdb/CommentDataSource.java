@@ -11,8 +11,8 @@ import com.seniorproject.sallemapp.entities.DomainComment;
 import com.seniorproject.sallemapp.entities.DomainPost;
 import com.seniorproject.sallemapp.entities.DomainUser;
 import com.seniorproject.sallemapp.entities.Post;
+import com.seniorproject.sallemapp.helpers.MyHelper;
 
-import org.joda.time.LocalDateTime;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +44,7 @@ public class CommentDataSource {
             values.put("UserId" , comment.get_userId());
             values.put("Subject", comment.get_subject());
             values.put("PostId", comment.get_postId());
-            values.put("UpdatedAt", new LocalDateTime().toString());
+            values.put("UpdatedAt", MyHelper.getCurrentDateTime());
             ok =db.insert("comment",null, values) > 0;
 
         }

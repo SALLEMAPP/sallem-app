@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -19,8 +20,10 @@ import com.seniorproject.sallemapp.Activities.ShowPostActivity;
 import com.seniorproject.sallemapp.entities.DomainComment;
 import com.seniorproject.sallemapp.entities.DomainPost;
 import com.seniorproject.sallemapp.R;
+import com.seniorproject.sallemapp.helpers.MyHelper;
 
 import org.joda.time.DateTime;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -54,64 +57,84 @@ public class PostsListAdapter  extends ArrayAdapter<DomainPost> {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent){
-        View v = convertView;
-
+            ViewHolder viewHolder;
         try {
-            final DomainPost post = _items.get(position);
-            if(v == null){
-                LayoutInflater vi =
+            if(convertView == null){
+                LayoutInflater inflater =
                         (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                v = vi.inflate(R.layout.post_layout, null);
-
+                convertView = inflater.inflate(R.layout.post_layout, null);
+                viewHolder = new ViewHolder();
+                viewHolder.userAvatart = (ImageView) convertView.findViewById(R.id.postLayout_imgUserAvatar);
+                viewHolder.posDateTextView = (TextView) convertView.findViewById(R.id.postLayout_lblPostDate);
+                viewHolder.posterNameTextView = (TextView) convertView.findViewById(R.id.postLayout_lblUserName);
+                viewHolder.postImage = (ImageView) convertView.findViewById(R.id.postLayout_imgPostImage);
+                viewHolder.subjectTextView = (TextView) convertView.findViewById(R.id.postLayout_txtPosSubject);
+                viewHolder.commenterNameTextView = (TextView)convertView.findViewById(R.id.commentLayout_lblUserName);
+                viewHolder.commenterAvatar =(ImageView)convertView.findViewById(R.id.commentLayout_imgUserAvatar);
+                viewHolder.commentTextView=(TextView)convertView.findViewById(R.id.commentLayout_lblComment);
+                viewHolder.commentDateTextView = (TextView)convertView.findViewById(R.id.commentLayout_commentDate);
+                viewHolder.commentsContainer =(LinearLayout)convertView.findViewById(R.id.postLayout_commentContainer);
+                convertView.setTag(viewHolder);
             }
+            else{
+                viewHolder = (ViewHolder)convertView.getTag();
+            }
+            DomainPost post = getItem(position);
             //Bind the UI elements to entity
-           bindPost(post, v);
-
+           bindPost(post, viewHolder);
         }
         catch (Exception e){
             //Log the exception so it can be reviewed.
             //Log.d("SALLEM APP", e.getStackTrace().toString());
             throw e;
         }
-        return v;
+        return convertView;
     }
 
-    private void bindPost(DomainPost post, View v) {
-        ImageView userAvatart = (ImageView) v.findViewById(R.id.postLayout_imgUserAvatar);
-        TextView posDate = (TextView)
-                v.findViewById(R.id.postLayout_lblPostDate);
-        TextView poster = (TextView)
-                v.findViewById(R.id.postLayout_lblUserName);
-
-        ImageView postImage = (ImageView)
-                v.findViewById(R.id.postLayout_imgPostImage);
-        TextView subject = (TextView)
-                v.findViewById(R.id.postLayout_txtPosSubject);
-        ListView commentsList = (ListView) v.findViewById(R.id.postLayout_commentsList);
-
-        poster.setText(post.get_user().getFirstName() + " " + post.get_user().getLasttName());
-        userAvatart.setImageBitmap(post.get_user().getAvatar());
-        DateTime postedAt = new DateTime(post.get_postedAt());
-        posDate.setText(postedAt.toString("MMMM dd, yyyy HH:mm"));
-        subject.setText(post.get_subject());
+    private void bindPost(DomainPost post,ViewHolder holder) {
+        holder.posterNameTextView.setText(post.get_user().getFirstName() + " " + post.get_user().getLasttName());
+        holder.userAvatart.setImageBitmap(post.get_user().getAvatar());
+        holder.posDateTextView.setText(MyHelper.formatDateString(post.get_postedAt()));
+        holder.subjectTextView.setText(post.get_subject());
         if(post.get_image() != null){
             //postImage.setVisibility(View.GONE);
-            postImage.setImageBitmap(post.get_image());
+           holder.postImage.setImageBitmap(post.get_image());
         }
         else{
-            postImage.setImageBitmap(null);
+          holder.postImage.setImageBitmap(null);
         }
-        List<DomainComment> postCommments = post.get_comments();
-        if(postCommments != null && postCommments.size() > 0){
-            ArrayList<DomainComment> topComments = new ArrayList<>();
-            for(int i = 0; i < postCommments.size(); i++){
-                if(i > 1){break;}
-                topComments.add(postCommments.get(i));
+        if(post.get_comments()!= null && post.get_comments().size() > 0){
+            holder.commenterNameTextView.setVisibility(View.VISIBLE);
+            holder.commenterAvatar.setVisibility(View.VISIBLE);
+            holder.commentDateTextView.setVisibility(View.VISIBLE);
+            holder.commentTextView.setVisibility(View.VISIBLE);
 
-                CommentsListAdapter commentsAdapter = new CommentsListAdapter(mContext, topComments);
-                commentsList.setAdapter(commentsAdapter);
-            }
+            DomainComment comment = post.get_comments().get(0);
+            holder.commenterNameTextView.setText(comment.get_user().getFirstName() + " " +comment.get_user().getLasttName());
+            holder.commenterAvatar.setImageBitmap(comment.get_user().getAvatar());
+            holder.commentDateTextView.setText(MyHelper.formatDateString(comment.get_commentedAt()));
+            holder.commentTextView.setText(comment.get_subject());
         }
+        else{
+            holder.commenterNameTextView.setVisibility(View.GONE);
+            holder.commenterAvatar.setVisibility(View.GONE);
+            holder.commentDateTextView.setVisibility(View.GONE);
+            holder.commentTextView.setVisibility(View.GONE);
+        }
+    }
+
+    private static class ViewHolder{
+        ImageView userAvatart ;
+        TextView posDateTextView ;
+        TextView posterNameTextView ;
+        ImageView postImage;
+        TextView subjectTextView ;
+        TextView commenterNameTextView;
+        ImageView commenterAvatar;
+        TextView commentTextView;
+        TextView commentDateTextView;
+        LinearLayout commentsContainer;
+
     }
 
 

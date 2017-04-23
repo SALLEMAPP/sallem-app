@@ -2,21 +2,21 @@ package com.seniorproject.sallemapp.Activities;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.ListFragment;
 import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
-import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
+import com.seniorproject.sallemapp.Activities.listsadpaters.NotifiesListAdapter;
+import com.seniorproject.sallemapp.Activities.localdb.NotifyDataSource;
 import com.seniorproject.sallemapp.R;
-import com.seniorproject.sallemapp.entities.DomainUser;
-import com.seniorproject.sallemapp.entities.FriendPost;
+import com.seniorproject.sallemapp.entities.Notify;
+import com.seniorproject.sallemapp.helpers.LoadNotifiesAsync;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,20 +29,29 @@ import java.util.List;
  * Use the {@link NotificationFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class NotificationFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+public class NotificationFragment extends ListFragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private int _page;
-    private String _title;
+    private int mPage;
+    private String mTitle;
+    private ArrayList<Notify> mNotifiesList;
+    private NotifiesListAdapter mAdapter;
+    private Context mContext;
+    private Button mMarkAllButton;
+
+
 
     private OnFragmentInteractionListener mListener;
 
     public NotificationFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadNotifies();
     }
 
     /**
@@ -67,8 +76,8 @@ public class NotificationFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            _page = getArguments().getInt(ARG_PARAM1);
-            _title = getArguments().getString(ARG_PARAM2);
+            mPage = getArguments().getInt(ARG_PARAM1);
+            mTitle = getArguments().getString(ARG_PARAM2);
         }
     }
 
@@ -77,9 +86,33 @@ public class NotificationFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v =  inflater.inflate(R.layout.fragment_notification, container, false);
+        mContext = getContext();
+        attachNotifiesList(v);
+        attachMarkAllButton(v);
+
         return v;
     }
 
+    private void attachMarkAllButton(View v) {
+        mMarkAllButton = (Button) v.findViewById(R.id.notify_btnMarkRead);
+        mMarkAllButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NotifyDataSource notifyDataSource = new NotifyDataSource(mContext);
+                notifyDataSource.open();
+                for (Notify notify:mNotifiesList){
+                    notifyDataSource.markAsRead(notify.getId());
+                }
+                notifyDataSource.close();
+            }
+        });
+    }
+
+    private void attachNotifiesList(View v) {
+        mNotifiesList = new ArrayList<>();
+        mAdapter = new NotifiesListAdapter(mContext, mNotifiesList);
+        setListAdapter(mAdapter);
+    }
 
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -119,5 +152,41 @@ public class NotificationFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+    private void loadNotifies(){
+        LocalNotifiesAsync localNotifies = new LocalNotifiesAsync();
+        localNotifies.execute();
+
+    }
+    private void refreshList(List<Notify> notifies){
+        if(notifies != null) {
+            mNotifiesList.clear();
+            mNotifiesList = (ArrayList<Notify>) notifies;
+            mAdapter.addAll(mNotifiesList);
+            mAdapter.notifyDataSetChanged();
+        }
+    }
+    private class LocalNotifiesAsync extends AsyncTask<Void, Void, List<Notify>>{
+
+        @Override
+        protected List<Notify> doInBackground(Void... params) {
+            List<Notify> notifies = null;
+            try {
+                NotifyDataSource notifyDataSource = new NotifyDataSource(mContext);
+                notifyDataSource.open();
+                notifies = notifyDataSource.getNonReadNotifies();
+                notifyDataSource.close();
+
+            }
+            catch (Exception e){
+                Log.e("Load Notify Async", "doInBackground: " +e.getMessage() );
+            }
+            return notifies;
+        }
+
+        @Override
+        protected void onPostExecute(List<Notify> notifies) {
+            refreshList(notifies);
+        }
     }
 }

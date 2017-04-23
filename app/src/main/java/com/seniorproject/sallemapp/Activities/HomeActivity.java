@@ -58,10 +58,12 @@ public class HomeActivity extends AppCompatActivity
         PastActivitiesFragment.OnFragmentInteractionListener,
         LocationService.LocationChanged, ServiceConnection
 {
-    private static final int MY_PERMISSION_FOR_ACCESS_LOCATION = 2;
     FragmentStatePagerAdapter adapterViewPager;
     ViewPager myViewPager;
     Intent sallemService;
+    private static final int REQUEST_SALLEM_PERMISSIONS = 123;
+    private static NavigationView navigationView;
+
     @Override
     public void onLocationChanged(LatLng newLocation) {
 
@@ -81,13 +83,11 @@ public class HomeActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        getPermissionToAccessLocation();
+        getPermissions();
         myViewPager = (ViewPager)findViewById(R.id.viewPager);
         TabLayout  tableLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tableLayout.setupWithViewPager(myViewPager);
         LocationService service = LocationService.getLocationManager(this);
-
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -119,7 +119,7 @@ public class HomeActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         //Simulate click on home menu item to make the one that loaded when the activity first loaded.
         MenuItem m =  navigationView.getMenu().getItem(0);
@@ -132,7 +132,7 @@ public class HomeActivity extends AppCompatActivity
         userName.setText(DomainUser.CURRENT_USER.getFirstName() + " " + DomainUser.CURRENT_USER.getLasttName());
         email.setText(DomainUser.CURRENT_USER.getEmail());
         ImageView avatar =(ImageView) v.findViewById(R.id.navHeader_avatr);
-        Bitmap scaledPhoto = Bitmap.createScaledBitmap(DomainUser.CURRENT_USER.getAvatar(), 90, 90, false);
+        Bitmap scaledPhoto = Bitmap.createScaledBitmap(DomainUser.CURRENT_USER.getAvatar(), 185, 185, false);
         avatar.setImageBitmap(scaledPhoto);
         _currnetMenu = CurrentMenu.HOME;
         sallemService = new Intent(getApplicationContext(), SallemService.class);
@@ -291,27 +291,15 @@ public class HomeActivity extends AppCompatActivity
     public void onServiceDisconnected(ComponentName name) {
 
     }
-
     @TargetApi(23)
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         // Make sure it's our original READ_LOCATION request
-        if (requestCode == MY_PERMISSION_FOR_ACCESS_LOCATION) {
-            if (grantResults.length == 1 &&
-                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(getApplicationContext(), "Read Locatoin permission granted", Toast.LENGTH_SHORT).show();
-            } else {
-                // showRationale = false if user clicks Never Ask Again, otherwise true
-                boolean showRationale = shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION);
+        if (requestCode == REQUEST_SALLEM_PERMISSIONS) {
 
+            Toast.makeText(getApplicationContext(), "Needed Permissions Granted", Toast.LENGTH_SHORT).show();
 
-                if (showRationale) {
-                    // do something here to handle degraded mode
-                } else {
-                    Toast.makeText(getApplicationContext(), "Read Location permission denied", Toast.LENGTH_SHORT).show();
-                }
-            }
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
@@ -319,22 +307,39 @@ public class HomeActivity extends AppCompatActivity
     }
 
     @TargetApi(23)
-    public void getPermissionToAccessLocation() {
+    public void getPermissions() {
         if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 ||
-                ContextCompat.checkSelfPermission( getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+                ContextCompat.checkSelfPermission( getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                ||
+                ContextCompat.checkSelfPermission( getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                )
+        {
 
             shouldShowRequestPermissionRationale(
-                    Manifest.permission.ACCESS_COARSE_LOCATION);
+                    Manifest.permission_group.LOCATION);
             shouldShowRequestPermissionRationale(
-                    Manifest.permission.ACCESS_FINE_LOCATION);
+                    Manifest.permission_group.STORAGE);
             requestPermissions(
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.ACCESS_COARSE_LOCATION
-                    }, MY_PERMISSION_FOR_ACCESS_LOCATION
+                    new String[]{
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION,
+                            Manifest.permission.READ_EXTERNAL_STORAGE
+                    }, REQUEST_SALLEM_PERMISSIONS
             );
 
         }
 
     }
+    public static void refreshAvatar(Bitmap image){
+       if(navigationView != null) {
+           View v = navigationView.getHeaderView(0);
+           ImageView avatar = (ImageView) v.findViewById(R.id.navHeader_avatr);
+           Bitmap scaledPhoto = Bitmap.createScaledBitmap(image, 185, 185, false);
+           avatar.setImageBitmap(scaledPhoto);
+       }
+
+    }
+
+
 }

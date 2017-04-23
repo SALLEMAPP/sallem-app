@@ -17,6 +17,7 @@ import com.seniorproject.sallemapp.Activities.ShowPostActivity;
 import com.seniorproject.sallemapp.R;
 import com.seniorproject.sallemapp.entities.DomainComment;
 import com.seniorproject.sallemapp.entities.DomainPost;
+import com.seniorproject.sallemapp.helpers.MyHelper;
 
 import org.joda.time.DateTime;
 
@@ -60,11 +61,10 @@ public class CommentsListAdapter extends ArrayAdapter<DomainComment> {
         }
         return v;
     }
-
     private void bindComment(DomainComment comment, View v) {
         ImageView userAvatart = (ImageView) v.findViewById(R.id.commentLayout_imgUserAvatar);
         TextView commentDate = (TextView)
-                v.findViewById(R.id.commentLayout_postDate);
+                v.findViewById(R.id.commentLayout_commentDate);
         TextView commenter = (TextView)
                 v.findViewById(R.id.commentLayout_lblUserName);
         TextView commentSubject = (TextView)
@@ -72,13 +72,8 @@ public class CommentsListAdapter extends ArrayAdapter<DomainComment> {
 
         commenter.setText(comment.get_user().getFirstName() + " " + comment.get_user().getLasttName());
         userAvatart.setImageBitmap(comment.get_user().getAvatar());
-        DateTime postedAt = new DateTime(comment.get_commentedAt());
-        commentDate.setText(postedAt.toString("MMMM dd, yyyy HH:mm"));
+        commentDate.setText(MyHelper.formatDateString(comment.get_commentedAt()));
         commentSubject.setText(comment.get_subject());
-
-
-
-
     }
 
     @Override

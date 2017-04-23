@@ -8,5 +8,6 @@
     <color name="sallemGray">#ecebeb</color>
     <color name="sallemBlack">#000000</color>
     <color name="borderColor">#E7E7E7</color>
+    <color name="sallemComments">#f5f5f5f5</color>
 
 </resources>

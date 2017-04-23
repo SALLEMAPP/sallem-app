@@ -66,6 +66,13 @@ public class DomainUser implements Parcelable  {
     public int getStatus(){
         return status;
     }
+
+    public void setStatus(int status){
+        this.status = status;
+    }
+    public void setImageTitle(String imageTitle){
+        this.imageTitle = imageTitle;
+    }
     public Bitmap getAvatar(){
         if(avatar == null){
             return null;

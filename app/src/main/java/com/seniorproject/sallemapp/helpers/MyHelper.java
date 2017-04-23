@@ -17,6 +17,11 @@ import com.seniorproject.sallemapp.R;
 import com.seniorproject.sallemapp.entities.DomainUser;
 import com.squareup.okhttp.OkHttpClient;
 
+import org.joda.time.DateTime;
+import org.joda.time.LocalDateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
@@ -130,6 +135,15 @@ public class MyHelper {
     }
     public static void showToast(Context context, String msg){
         Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
+    }
+    public static String getCurrentDateTime(){
+        return new LocalDateTime().toString("yyyy-MM-dd HH:mm:ss.SSS");
+    }
+    public static String formatDateString(String dateString){
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS");
+        DateTime parsedDate = DateTime.parse(dateString,formatter);
+        return parsedDate.toString("MMMM dd, yyyy HH:mm");
+
     }
 
 }

@@ -23,6 +23,7 @@ import com.seniorproject.sallemapp.entities.DomainUser;
 import com.seniorproject.sallemapp.entities.User;
 import com.seniorproject.sallemapp.helpers.CommonMethods;
 import com.seniorproject.sallemapp.helpers.AzureBlob;
+import com.seniorproject.sallemapp.helpers.EncryptionHelper;
 import com.seniorproject.sallemapp.helpers.EntityAsyncResult;
 import com.seniorproject.sallemapp.helpers.MyHelper;
 
@@ -47,24 +48,26 @@ public class SignInActivity extends AppCompatActivity implements EntityAsyncResu
         _savingProgressBar.setVisibility(ProgressBar.GONE);
         attachResetButton();
         attachSigninButton();
-
-
     }
-
-
-
 
     private void attachSigninButton() {
         Button signinButton = (Button) findViewById(R.id.Btn_Sign_in);
         signinButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String email = ((EditText)findViewById(R.id.sign_in_txt_user_name)).getText().toString();
-                String password = ((EditText)findViewById(R.id.txt_password)).getText().toString();
+               try {
+                   String email = ((EditText)findViewById(R.id.sign_in_txt_user_name)).getText().toString();
+                   String password = ((EditText)findViewById(R.id.txt_password)).getText().toString();
+                   String encryptedPassword = EncryptionHelper.Encrypt(password);
 
-                LoadUserAsync loadUserAsync = new LoadUserAsync(SignInActivity.this, email, password, SignInActivity.this);
-                loadUserAsync.execute();
-                _savingProgressBar.setVisibility(View.VISIBLE);
+                   LoadUserAsync loadUserAsync = new LoadUserAsync(SignInActivity.this, email, encryptedPassword, SignInActivity.this);
+                   loadUserAsync.execute();
+                   _savingProgressBar.setVisibility(View.VISIBLE);
+
+               }
+                catch (Exception e){
+                    Log.e("Sign in", "onClick: " + e.getMessage());
+                }
             }
         });
 
@@ -76,44 +79,6 @@ public class SignInActivity extends AppCompatActivity implements EntityAsyncResu
         finish();
 
     }
-
-
-//    private void fetchUserName(){
-//        // Create a new item
-//    if(mToDoTable == null){return;}
-//
-//        // Insert the new item
-//        AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>(){
-//            @Override
-//            protected Void doInBackground(Void... params) {
-//                try {
-//                    final User entity = mToDoTable.where().execute().get().get(0);
-//
-//                    runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            userNameText.setText(entity.getEmail());
-//                            //userNameText.postInvalidate();
-//
-//                        }
-//                    });
-//                } catch (final InterruptedException e) {
-//                    createAndShowDialogFromTask(e, "Error");
-//                }
-//                catch (final ExecutionException e) {
-//
-//                    createAndShowDialogFromTask(e, "Error");
-//
-//                }
-//                return null;
-//            }
-//        };
-//
-//        runAsyncTask(task);
-//
-//
-//    }
-
 
     private void attachResetButton() {
 
@@ -152,8 +117,7 @@ public class SignInActivity extends AppCompatActivity implements EntityAsyncResu
         private EntityAsyncResult<DomainUser> mCallback;
         private Context mContext;
 
-
-        public LoadUserAsync(Context context, String email, String passowrd, EntityAsyncResult<DomainUser> callback){
+    public LoadUserAsync(Context context, String email, String passowrd, EntityAsyncResult<DomainUser> callback){
             mEmail = email;
             mPassword = passowrd;
             mContext = context;
@@ -170,15 +134,6 @@ public class SignInActivity extends AppCompatActivity implements EntityAsyncResu
                     String imageTitle = user.getImageTitle();
                     Bitmap avatar = null;
                     if(!imageTitle.equals(MyHelper.DEFAULT_AVATAR_TITLE)) {
-                       // try {
-                            //In case no avatar, just fail gracefully.
-                           // imageTitle = user.getImageTitle() + ".jpg";
-                            //avatar = AzureBlob.getImage(mContext, imageTitle);
-                       // } catch (StorageException e) {
-                            //e.printStackTrace();
-                            //Log.e("SALLEM APP", "doInBackground: " + e.getCause().getMessage());
-
-                        //}
                         avatar = MyHelper.decodeImage(imageTitle);
                     }
                     else{
@@ -207,11 +162,6 @@ public class SignInActivity extends AppCompatActivity implements EntityAsyncResu
             } catch (IOException e) {
                 e.printStackTrace();
             }
-//            catch (URISyntaxException e) {
-//                e.printStackTrace();
-//            } catch (InvalidKeyException e) {
-//                e.printStackTrace();
-//            }
             return domainUser;
         }
         private List<User> getUserByEmail(String email, String password) throws ExecutionException, InterruptedException, MalformedURLException{
@@ -228,9 +178,5 @@ public class SignInActivity extends AppCompatActivity implements EntityAsyncResu
                 mCallback.processFinish(user);
             }
         }
-
-
     }
-
-
 }

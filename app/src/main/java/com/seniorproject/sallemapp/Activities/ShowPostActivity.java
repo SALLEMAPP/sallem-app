@@ -39,7 +39,6 @@ import com.seniorproject.sallemapp.helpers.MyApplication;
 import com.seniorproject.sallemapp.helpers.MyHelper;
 import com.squareup.okhttp.OkHttpClient;
 
-import org.joda.time.LocalDateTime;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -106,7 +105,7 @@ public class ShowPostActivity extends AppCompatActivity implements EntityAsyncRe
             public void onClick(View v) {
                 DomainComment domainComment = new DomainComment();
                 domainComment.set_id(UUID.randomUUID().toString());
-                String commentedAt = new LocalDateTime().toString();
+                String commentedAt = MyHelper.getCurrentDateTime();
                 domainComment.set_commentedAt(commentedAt);
                 domainComment.set_subject(mPostComment.getText().toString());
                 domainComment.set_user(DomainUser.CURRENT_USER);
@@ -158,126 +157,7 @@ public class ShowPostActivity extends AppCompatActivity implements EntityAsyncRe
     }
 
 
-    private class LoadPost extends AsyncTask<Void, Void, DomainPost>{
 
-        public EntityAsyncResult<DomainPost> Delegate;
-        private MobileServiceClient mClient;
-        private MobileServiceTable<User> mUserTable;
-        private MobileServiceTable<Post> mPostTable;
-        private MobileServiceTable<Comment> mCommentTable;
-        private String mId;
-        private Context mContext;
-
-        public LoadPost( Context context, String id){
-            mContext = context;
-            mId = id;
-            try {
-                mClient = MyHelper.getAzureClient(mContext);
-            }
-            catch (MalformedURLException e){
-                Log.d("SALLEMAPP", e.getCause().getMessage());
-
-            }
-
-
-        }
-        @Override
-        protected DomainPost doInBackground(Void... params){
-            mPostTable = mClient.getTable(Post.class);
-            //MobileServiceTable<PostImage> imageTable = mClient.getTable(PostImage.class);
-            mUserTable = mClient.getTable(User.class);
-            mCommentTable = mClient.getTable(Comment.class);
-            DomainPost p = null;
-            try {
-                Post post = mPostTable.where().field("id").eq(mId).execute().get().get(0);
-                User user = mUserTable.where().field("id").eq(post.getUserId()).execute().get().get(0);
-                List<Comment> comments = mCommentTable.where().field("postId").eq(post.getId()).execute().get();
-                p = new DomainPost();
-                p.set_id(post.getId());
-                p.set_subject(post.getSubject());
-                p.set_postedAt(post.getPostedAt());
-                if (user != null) {
-                    String imageTitle = user.getImageTitle() + ".jpg";
-                    Bitmap avatar = AzureBlob.getImage(mContext, imageTitle );
-                    DomainUser domainUser = new DomainUser(
-                            user.getId(), user.getFirstName(), user.getLastName(),
-                            user.getPassword(), user.getEmail(), user.getJoinedAt(),
-                            user.getImageTitle(), user.getStatus(),
-                            avatar, 0, 0, false
-                    );
-                        p.set_user(domainUser);
-                    }
-                    String imagePath = post.get_imagePath();
-                    if (imagePath != null ) {
-                        p.set_image(AzureBlob.getImage(mContext, imagePath));
-                    }
-                    if(comments != null){
-                        ArrayList<DomainComment> doaminComments = new ArrayList<>();
-
-                        for (Comment comment : comments){
-                            DomainComment domainComment = new DomainComment();
-                            domainComment.set_id(comment.get_id());
-                            domainComment.set_commentedAt(comment.get_commentedAt());
-                            domainComment.set_subject(comment.get_subject());
-                            User userCommented = mUserTable.where().field("id").eq(comment.get_userId()).execute().get().get(0);
-                            if (userCommented != null) {
-                                String imageTitle = userCommented.getImageTitle() + ".jpg";
-                                Bitmap avatar = AzureBlob.getImage(mContext, imageTitle);
-
-                                DomainUser commentedDomainUser = new DomainUser(
-                                        user.getId(), user.getFirstName(), user.getLastName(),
-                                        user.getPassword(), user.getEmail(), user.getJoinedAt(),
-                                        user.getImageTitle(), user.getStatus(),
-                                        avatar, 0, 0, false
-                                );
-                                domainComment.set_user(commentedDomainUser);
-                            }
-                            doaminComments.add(domainComment);
-
-                        }
-                        p.set_comments( doaminComments);
-                    }
-
-
-            }
-            catch (ExecutionException e) {
-                Log.e(CommonMethods.APP_TAG, e.getCause().getMessage());
-                e.printStackTrace();
-
-            } catch (InterruptedException e) {
-                Log.e(CommonMethods.APP_TAG, e.getCause().getMessage());
-
-
-            } catch (URISyntaxException e) {
-                Log.e(CommonMethods.APP_TAG, e.getCause().getMessage());
-
-
-            } catch (StorageException e) {
-                Log.e(CommonMethods.APP_TAG, e.getCause().getMessage());
-
-
-            } catch (InvalidKeyException e) {
-                Log.e(CommonMethods.APP_TAG, e.getCause().getMessage());
-
-
-            }
-            catch (IOException e){
-                Log.e(CommonMethods.APP_TAG, e.getCause().getMessage());
-
-            }
-
-            return p;
-        }
-
-
-
-
-
-        @Override
-        protected void onPostExecute(DomainPost domainPost) {
-            Delegate.processFinish(domainPost);
-        }
-    }
 
     private class SaveCommentAsync extends AsyncTask<Void, Void, DomainComment>{
 

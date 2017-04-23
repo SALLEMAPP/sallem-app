@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
@@ -21,54 +19,32 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.common.util.concurrent.SettableFuture;
-import com.microsoft.azure.storage.CloudStorageAccount;
-import com.microsoft.azure.storage.StorageException;
-import com.microsoft.azure.storage.blob.CloudBlobClient;
-import com.microsoft.azure.storage.blob.CloudBlobContainer;
-import com.microsoft.azure.storage.blob.CloudBlockBlob;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
-import com.microsoft.windowsazure.mobileservices.http.NextServiceFilterCallback;
-import com.microsoft.windowsazure.mobileservices.http.OkHttpClientFactory;
-import com.microsoft.windowsazure.mobileservices.http.ServiceFilter;
-import com.microsoft.windowsazure.mobileservices.http.ServiceFilterRequest;
-import com.microsoft.windowsazure.mobileservices.http.ServiceFilterResponse;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 import com.seniorproject.sallemapp.R;
 import com.seniorproject.sallemapp.entities.User;
-import com.seniorproject.sallemapp.helpers.CommonMethods;
+import com.seniorproject.sallemapp.helpers.EncryptionHelper;
 import com.seniorproject.sallemapp.helpers.MyHelper;
-import com.squareup.okhttp.OkHttpClient;
 
-import org.joda.time.LocalDateTime;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.MalformedURLException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 import static com.microsoft.windowsazure.mobileservices.table.query.QueryOperations.val;
 
 public class RegistrationActivity extends AppCompatActivity {
 
-   public static MobileServiceClient _client;
+    private  MobileServiceClient _client;
     MobileServiceTable<User> _userTable;
     ProgressBar _savingProgressBar;
     Button mRegistrationButton;
 
 
     Bitmap bm;
-    public static final  String SENDER_ID ="1091231496982";
     private static final int REQUEST_CODE = 1000;
     private EditText mTextFirstName =null;
     private EditText mTextLastName = null;
@@ -93,6 +69,7 @@ public class RegistrationActivity extends AppCompatActivity {
         mTextRePassword = (EditText) findViewById(R.id.registeration_txtConfirmPassword);
         mRegistrationButton = (Button)findViewById(R.id.Btn_resgisteration);
         mRegistrationButton.setEnabled(false);
+        mRegistrationButton.setAlpha(0.5f);
         attachRegisterButton();
         attachOpenAvatar();
         attachAgreeCheckbox();
@@ -114,9 +91,13 @@ public class RegistrationActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
                     mRegistrationButton.setEnabled(true);
+                    mRegistrationButton.setAlpha(1.0f);
+
                 }
                 else{
                     mRegistrationButton.setEnabled(false);
+                    mRegistrationButton.setAlpha(0.5f);
+
                 }
             }
         });
@@ -142,10 +123,8 @@ public class RegistrationActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 openImageFromGalary();
-
             }
         });
-
     }
 
     private void registerUser() {
@@ -154,12 +133,12 @@ public class RegistrationActivity extends AppCompatActivity {
             String lastName = mTextLastName.getText().toString();
             String email = mTextEmail.getText().toString();
             String password = mTextPassword.getText().toString();
-            String joinedAt = new LocalDateTime().toString();
+            String joinedAt = MyHelper.getCurrentDateTime();
             User user = new User();
             user.setId(UUID.randomUUID().toString());
             user.setFirstName(firstName);
             user.setLastName(lastName);
-            user.setPassword(password);
+            user.setPassword(encrypt(password));
             user.setEmail(email);
             user.setJoinedAt(joinedAt);
             if(bm == null){
@@ -172,86 +151,29 @@ public class RegistrationActivity extends AppCompatActivity {
 
             addUserToDb(user);
         }
-
-
     }
-//    private AsyncTask<Void, Void, Void> uploadUserImage() {
-//
-//        AsyncTask<Void, Void,Void> task =new AsyncTask<Void, Void, Void>() {
-//            @Override
-//            protected Void doInBackground(Void... voids) {
-//
-//                try {
-//                    CloudStorageAccount account = CloudStorageAccount.parse(storageConnectionString);
-//                    CloudBlobClient serviceClient = account.createCloudBlobClient();
-//
-//                    // Container name must be lower case.
-//                    CloudBlobContainer container = serviceClient.getContainerReference("sallemphotos");
-//                    //container.createIfNotExists();
-//
-//                    // Upload an image file.
-//                    imageName = UUID.randomUUID().toString();
-//                    CloudBlockBlob blob = container.getBlockBlobReference(imageName);
-//
-//                    File outputDir = getBaseContext().getCacheDir();
-//                    File sourceFile = File.createTempFile("101", "jpg", outputDir);
-//                    OutputStream outputStream = new FileOutputStream(sourceFile);
-//                    bm.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
-//                    outputStream.close();
-//                    blob.upload(new FileInputStream(sourceFile), sourceFile.length());
-//
-//                    // Download the image file.
-//                    //File destinationFile = new File(sourceFile.getParentFile(), "image1Download.tmp");
-//                    //blob.downloadToFile(destinationFile.getAbsolutePath());
-//
-//                } catch (FileNotFoundException fileNotFoundException) {
-//                    createAndShowDialogFromTask(fileNotFoundException, "Error");
-//                } catch (StorageException storageException) {
-//                    createAndShowDialogFromTask(storageException, "Error");
-//                } catch (Exception e) {
-//                    createAndShowDialogFromTask(e, "Error");
-//                }
-//                return null;
-//            }
-//        };
-//
-//        return task.execute();
-//    }
-//    private void uploadUserImage(String avatarName){
-//        try {
-//            CloudStorageAccount account = CloudStorageAccount.parse(storageConnectionString);
-//            CloudBlobClient serviceClient = account.createCloudBlobClient();
-//
-//            // Container name must be lower case.
-//            CloudBlobContainer container = serviceClient.getContainerReference("sallemphotos");
-//            //container.createIfNotExists();
-//
-//            // Upload an image file.
-//
-//            String name = avatarName + ".jpg";
-//            CloudBlockBlob blob = container.getBlockBlobReference(name);
-//
-//            File outputDir = getBaseContext().getCacheDir();
-//            File sourceFile = File.createTempFile("101", "jpg", outputDir);
-//            OutputStream outputStream = new FileOutputStream(sourceFile);
-//            bm.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
-//            outputStream.close();
-//            blob.upload(new FileInputStream(sourceFile), sourceFile.length());
-//
-//            // Download the image file.
-//            //File destinationFile = new File(sourceFile.getParentFile(), "image1Download.tmp");
-//            //blob.downloadToFile(destinationFile.getAbsolutePath());
-//
-//
-//
-//        } catch (FileNotFoundException fileNotFoundException) {
-//            createAndShowDialogFromTask(fileNotFoundException, "Error");
-//        } catch (StorageException storageException) {
-//            createAndShowDialogFromTask(storageException, "Error");
-//        } catch (Exception e) {
-//            createAndShowDialogFromTask(e, "Error");
-//        }
-//    }
+    private String encrypt(String password){
+        String encryptedPassword = null;
+        try{
+           encryptedPassword = EncryptionHelper.Encrypt(password);
+        }
+        catch (Exception e){
+            Log.e("encrypt", "encrypt: " + e.getMessage() );
+
+        }
+       return encryptedPassword;
+    }
+    private String decrypt(String encrypted){
+        String decrypted = null;
+        try{
+            decrypted = EncryptionHelper.decrypt(encrypted);
+        }
+        catch (Exception e){
+            Log.e("encrypt", "encrypt: " + e.getMessage() );
+
+        }
+        return decrypted;
+    }
 
     private void addUserToDb(final User user) {
 
@@ -259,9 +181,6 @@ public class RegistrationActivity extends AppCompatActivity {
             @Override
             protected Void doInBackground(Void... params) {
                try {
-                   // if(bm !=null) {
-                     //   uploadUserImage(user.getImageTitle());
-                    //}
                    _userTable = _client.getTable(User.class);
                    _userTable.insert(user).get();
                }
@@ -270,7 +189,6 @@ public class RegistrationActivity extends AppCompatActivity {
                }
                 return null;
             }
-
             @Override
             protected void onPostExecute(Void aVoid) {
                _savingProgressBar.setVisibility(View.GONE);
@@ -319,18 +237,6 @@ public class RegistrationActivity extends AppCompatActivity {
             mTextRePassword.setError("Password is not matched");
             valid = false;
         }
-//        try {
-//            if (registeredEmail(email)) {
-//                mTextEmail.setError("This email has already registered");
-//                valid = false;
-//            }
-//        }
-//        catch (Exception e){
-//            Log.e(CommonMethods.APP_TAG, e.getCause().getMessage());
-//            valid = false;
-//            createAndShowDialog("Cannot verify your email right, try again later", "Error");
-//
-//        }
         return valid;
     }
 
@@ -342,11 +248,8 @@ public class RegistrationActivity extends AppCompatActivity {
             return false;
         }
         return true;
-
     }
-
     private void openImageFromGalary(){
-
         Intent gallaryIntent = new Intent();
         gallaryIntent.setType("image/*");
         gallaryIntent.setAction(Intent.ACTION_GET_CONTENT);
@@ -383,7 +286,6 @@ public class RegistrationActivity extends AppCompatActivity {
         mTextPassword.setError(null);
         mTextEmail.setError(null);
         mTextRePassword.setError(null);
-
     }
 
 
@@ -413,10 +315,10 @@ public class RegistrationActivity extends AppCompatActivity {
      */
     private void createAndShowDialog(final String message, final String title) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
         builder.setMessage(message);
         builder.setTitle(title);
         builder.create().show();
     }
+
 
 }

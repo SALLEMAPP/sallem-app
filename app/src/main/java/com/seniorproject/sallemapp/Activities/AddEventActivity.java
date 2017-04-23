@@ -35,7 +35,6 @@ import com.seniorproject.sallemapp.helpers.MyApplication;
 import com.seniorproject.sallemapp.helpers.MyHelper;
 
 import org.joda.time.DateTime;
-import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -97,7 +96,7 @@ public class AddEventActivity extends AppCompatActivity {
             DateTime onDate = formatter.parseDateTime(selectedDate + " "+ selectedTime);
 
             String onDateString = onDate.toLocalDateTime().toString();
-            String joinedAt = new LocalDateTime().toString();
+            String joinedAt = MyHelper.getCurrentDateTime();;
             activity.setHelodOn(onDateString);
 
             activity.setLongitude(mSelectedLocation.longitude);

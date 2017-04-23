@@ -1,20 +1,37 @@
 package com.seniorproject.sallemapp.Activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
-import android.widget.Spinner;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Switch;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
+import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
+import com.seniorproject.sallemapp.Activities.localdb.UserDataSource;
 import com.seniorproject.sallemapp.R;
+import com.seniorproject.sallemapp.entities.DomainUser;
+import com.seniorproject.sallemapp.entities.User;
 import com.seniorproject.sallemapp.helpers.MyHelper;
+
+import java.io.IOException;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,16 +46,20 @@ public class SettingsFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private static final int REQUEST_CODE = 1000;
-
-
-
+    private View mCurrentView;
+    private Context mContext;
+    ImageView mUserImageView;
+    TextView mUserNameTextView;
+    ProgressBar mSaveProgress;
+    Switch mLocationSwitchButton;
+    Button mSaveButton;
+    int mStatus;
+    Bitmap mUserAvatar;
+    String mImageAsString;
     private int _page;
     private String _title;
 
     private OnFragmentInteractionListener mListener;
-
-
-
     public SettingsFragment() {
         // Required empty public constructor
     }
@@ -51,7 +72,6 @@ public class SettingsFragment extends Fragment {
      * @param title Parameter 2.
      * @return A new instance of fragment SettingsFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static SettingsFragment newInstance(int page, String title) {
         SettingsFragment fragment = new SettingsFragment();
         Bundle args = new Bundle();
@@ -75,89 +95,53 @@ public class SettingsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_settings, container, false);  //Reorder onCreateView by Fisal
-
-        //below line added by Fisal to start loading Sallem Settings from SharedPreferences and view it to layout
+        mCurrentView =view;
+        mContext =getContext();
+        mUserImageView = (ImageView) mCurrentView.findViewById(R.id.settings_imageAvatar);
+        mUserNameTextView = (TextView)mCurrentView.findViewById(R.id.settings_lblUserName);
+        mSaveProgress =(ProgressBar)mCurrentView.findViewById(R.id.settings_progress);
+        mSaveProgress.setVisibility(View.GONE);
+        mLocationSwitchButton = (Switch)mCurrentView.findViewById(R.id.settings_switchLocationDiscrovery);
+        mSaveButton = (Button) mCurrentView.findViewById(R.id.settings_btnSave);
+        mStatus = DomainUser.CURRENT_USER.getStatus();
+        mUserAvatar = DomainUser.CURRENT_USER.getAvatar();
         initSettings();
-
-        //below line added by Fisal to start saving Sallem Settings to SharedPreferences
-       initSaveSettings();
-
-        // Below added by Fisal for change image button
+        initSaveSettings();
         attachOpenAvatar();
+        attachSwitchButton();
+        return view;
 
-        return view;   //Reorder onCreateView by Fisal
+    }
+
+    private void attachSwitchButton() {
+        mLocationSwitchButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    mStatus = 0;
+                }
+                else{
+                  mStatus = 1;
+                }
+
+            }
+        });
+
 
     }
 
     //below initSettings() added by Fisal to start loading Sallem Settings from SharedPreferences and view it to layout
     private void initSettings() {
-        String allow_user_location = getActivity().getSharedPreferences(MyHelper.SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE).getString("allow_location", "true");
-        Integer search_distance = getActivity().getSharedPreferences(MyHelper.SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE).getInt("search_distance", 1);
-        String status = getActivity().getSharedPreferences(MyHelper.SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE).getString("status", "Online");
-
-        Switch allowLocationSW = (Switch) getActivity().findViewById(R.id.btn_allow_user_location);
-
-        if (allow_user_location.equalsIgnoreCase("true")) {
-            allowLocationSW.setChecked(true);
-        }
-        else if (allow_user_location.equalsIgnoreCase("false")) {
-            allowLocationSW.setChecked(false);
-        }
-
-
-        Spinner distanceSpinner = (Spinner) getActivity().findViewById(R.id.spinner2);
-
-        if (search_distance == 1) {
-            distanceSpinner.setSelection(1);
-        }
-        else if (search_distance == 2) {
-            distanceSpinner.setSelection(2);
-        }
-        else if (search_distance == 3) {
-            distanceSpinner.setSelection(3);
-        }
-        else if (search_distance == 4) {
-            distanceSpinner.setSelection(4);
-        }
-        else if (search_distance == 5) {
-            distanceSpinner.setSelection(5);
-        }
-        else if (search_distance == 6) {
-            distanceSpinner.setSelection(6);
-        }
-        else if (search_distance == 7) {
-            distanceSpinner.setSelection(7);
-        }
-        else if (search_distance == 8) {
-            distanceSpinner.setSelection(8);
-        }
-        else if (search_distance == 9) {
-            distanceSpinner.setSelection(9);
-        }
-        else {
-            distanceSpinner.setSelection(10);
-        }
-
-
-        Spinner statusSpinner = (Spinner) getActivity().findViewById(R.id.spinner3);
-
-        for(int i=0;i<3;i++) {
-            if (status.equals(statusSpinner.getItemAtPosition(i).toString())) {
-                statusSpinner.setSelection(i);
+        Bitmap scaledForProfilePhoto = Bitmap.createScaledBitmap(DomainUser.CURRENT_USER.getAvatar(), 400, 400, false);
+        mUserImageView.setImageBitmap(scaledForProfilePhoto);
+        mUserNameTextView.setText(DomainUser.CURRENT_USER.getFirstName() + " " + DomainUser.CURRENT_USER.getLasttName());
+        switch (mStatus){
+            case 0:
+                mLocationSwitchButton.setChecked(true);
                 break;
-            }
+            case 1:
+                mLocationSwitchButton.setChecked(false);
         }
-    /*
-        if (status.equalsIgnoreCase("Online")) {
-            statusSpinner.setSelection("Online");
-        }
-        else if (status.equalsIgnoreCase("Busy")) {
-            statusSpinner.equals("Busy");
-        }
-        else {
-            statusSpinner.equals("Offline");
-        }
-    */
 
     }
 
@@ -165,75 +149,26 @@ public class SettingsFragment extends Fragment {
 
     //below initSettings() added by Fisal to start saving Sallem Settings to SharedPreferences
     private void initSaveSettings() {
-        /*
-        RelativeLayout rlyout = (RelativeLayout) getActivity().findViewById(R.id.rlyout_settings);
-        rlyout.setOnClickListener(new View.OnClickListener()
-        */
-        Button b = (Button) getActivity().findViewById(R.id.btn_save_settings);
-        b.setOnClickListener(new View.OnClickListener() {
-
+        mSaveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
-                    Switch allowLocationSW = (Switch) getActivity().findViewById(R.id.btn_allow_user_location);
-                    Spinner distanceSpinner = (Spinner) getActivity().findViewById(R.id.spinner2);
-                    Spinner statusSpinner = (Spinner) getActivity().findViewById(R.id.spinner3);
-
-
-                    if (allowLocationSW.isChecked()) {
-                        getActivity().getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putString("allow_location", "true").apply();
-                    } else {
-                        getActivity().getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putString("allow_location", "false").apply();
-                    }
-
-
-                getActivity().getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putInt("search_distance", distanceSpinner.getId()).apply();
-
-/*
-
-                    if (distanceSpinner.getSelectedItem() == 1) {
-                        getActivity().getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putInt("search_distance", 1).apply();
-                    } else if (distanceSpinner.getSelectedItem() == 2) {
-                        getActivity().getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putInt("search_distance", 2).apply();
-                    } else if (distanceSpinner.getSelectedItem() == 3) {
-                        getActivity().getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putInt("search_distance", 3).apply();
-                    } else if (distanceSpinner.getSelectedItem() == 4) {
-                        getActivity().getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putInt("search_distance", 4).apply();
-                    } else if (distanceSpinner.getSelectedItem() == 5) {
-                        getActivity().getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putInt("search_distance", 5).apply();
-                    } else if (distanceSpinner.getSelectedItem() == 6) {
-                        getActivity().getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putInt("search_distance", 6).apply();
-                    } else if (distanceSpinner.getSelectedItem() == 7) {
-                        getActivity().getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putInt("search_distance", 7).apply();
-                    } else if (distanceSpinner.getSelectedItem() == 8) {
-                        getActivity().getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putInt("search_distance", 8).apply();
-                    } else if (distanceSpinner.getSelectedItem() == 9) {
-                        getActivity().getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putInt("search_distance", 9).apply();
-                    } else {
-                        getActivity().getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putInt("search_distance", 10).apply();
-                    }
-
-*/
-
-                    if (statusSpinner.getSelectedItem() == "Online") {
-                        getActivity().getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putString("status", "Online").apply();
-                    } else if (statusSpinner.getSelectedItem() == "Busy") {
-                        getActivity().getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putString("status", "Busy").apply();
-                    } else {
-                        getActivity().getSharedPreferences("SallemSettings", Context.MODE_PRIVATE).edit().putString("status", "Offline").apply();
-                    }
+                mSaveButton.setEnabled(true);
+                mSaveButton.setAlpha(0.5f);
+                mSaveProgress.setVisibility(View.VISIBLE);
+                saveSettings(DomainUser.CURRENT_USER.getId(), mStatus, mUserAvatar, mImageAsString);
 
             }
         });
+
     }
 
 
     private void attachOpenAvatar() {
-        ImageButton openAvatarButton = (ImageButton) getActivity().findViewById(R.id.img_add_photo);
+        ImageButton openAvatarButton = (ImageButton) mCurrentView.findViewById(R.id.settings_btnOpenImage);
         openAvatarButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 openImageFromGalary();
-
             }
         });
 
@@ -241,7 +176,6 @@ public class SettingsFragment extends Fragment {
 
 
     private void openImageFromGalary(){
-
         Intent gallaryIntent = new Intent();
         gallaryIntent.setType("image/*");
         gallaryIntent.setAction(Intent.ACTION_GET_CONTENT);
@@ -286,5 +220,75 @@ public class SettingsFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE) {
+
+            if (data != null) {
+                try {
+                    Bitmap photo = MediaStore.Images.Media.getBitmap(
+                            mContext.getContentResolver(), data.getData()
+                    );
+                    //Scale down for database iamge
+                    mUserAvatar = Bitmap.createScaledBitmap(photo, 90, 90, false);
+                    mImageAsString = MyHelper.ImageAsString(mUserAvatar);
+                    //scale up for profile showing
+                    Bitmap profileImage = Bitmap.createScaledBitmap(photo, 400,400,false);
+                    mUserImageView.setImageBitmap(profileImage);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                Toast.makeText(mContext, "Cancelled", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+    private void saveSettings(final String id, final  int status, final Bitmap avatar, final String imageAsString){
+        AsyncTask task = new AsyncTask() {
+            @Override
+            protected Object doInBackground(Object[] params) {
+                try {
+                    UserDataSource userDS = new UserDataSource(mContext);
+                    userDS.open();
+                    userDS.update(id, status, avatar);
+                    userDS.close();
+                    MobileServiceClient client = MyHelper.getAzureClient(mContext);
+                    MobileServiceTable<User> userTable = client.getTable(User.class);
+                    List<User> users =  userTable.where().field("id")
+                            .eq(id).execute().get();
+                    if(users != null){
+                        User user = users.get(0);
+                        user.setStatus(status);
+                        user.setImageTitle(imageAsString);
+                        userTable.update(user).get();
+                    }
+
+                }
+                catch (Exception e){
+                    Log.e("Save Settings ", "doInBackground: " + e.getMessage() );
+                }
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Object o) {
+                HomeActivity.refreshAvatar(mUserAvatar);
+                DomainUser.CURRENT_USER.setAvatar(mUserAvatar);
+                DomainUser.CURRENT_USER.setStatus(mStatus);
+                DomainUser.CURRENT_USER.setImageTitle(mImageAsString);
+                mSaveButton.setEnabled(true);
+                mSaveButton.setAlpha(1.0f);
+                mSaveProgress.setVisibility(View.GONE);
+
+
+            }
+        };
+        task.execute();
+
+
     }
 }

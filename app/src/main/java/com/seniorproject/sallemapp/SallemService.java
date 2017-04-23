@@ -28,6 +28,7 @@ import android.util.Log;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 import com.seniorproject.sallemapp.Activities.HomeActivity;
+import com.seniorproject.sallemapp.Activities.localdb.NotifyDataSource;
 import com.seniorproject.sallemapp.entities.DomainPost;
 import com.seniorproject.sallemapp.entities.DomainUser;
 import com.seniorproject.sallemapp.entities.Notify;
@@ -40,7 +41,6 @@ import com.seniorproject.sallemapp.helpers.MyApplication;
 import com.seniorproject.sallemapp.helpers.MyHelper;
 import com.seniorproject.sallemapp.helpers.RefreshedPostsResult;
 
-import org.joda.time.LocalDateTime;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -89,10 +89,10 @@ public class SallemService extends Service implements LocationListener, Refreshe
         String best = location.getBestProvider(criteria, true);
         int permissionCheck = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION);
         if(permissionCheck == PackageManager.PERMISSION_GRANTED) {
-            //Get location updated every minute and after 100 distance
+            //Get location updated every minute and after 100 meters distance
             location.requestLocationUpdates(best, 60000, 100,  this);
         }
-        sendNotification("Service", "Service started");
+        //sendNotification("Service", "Service started");
         listenForDatabaseChanges();
 
 
@@ -156,7 +156,7 @@ public class SallemService extends Service implements LocationListener, Refreshe
             userLocation.setLongitude(location.getLongitude());
             userLocation.setLatitude(location.getLatitude());
             userLocation.setUserId(DomainUser.CURRENT_USER.getId());
-            String seenAt = new LocalDateTime().toString();
+            String seenAt = MyHelper.getCurrentDateTime();
             userLocation.setSeenAt(seenAt);
             userLocationTable = client.getTable(UserLocation.class);
             userLocationTable.insert(userLocation);
@@ -169,7 +169,7 @@ public class SallemService extends Service implements LocationListener, Refreshe
 
     @Override
     public void onLocationChanged(Location location) {
-        sendNotification("Service", "Location Changed");
+        //sendNotification("Service", "Location Changed");
         saveLocation(location);
     }
 
@@ -257,6 +257,10 @@ public class SallemService extends Service implements LocationListener, Refreshe
     public void processFinish(List<Notify> result) {
         if(result != null) {
             for (Notify n : result){
+                NotifyDataSource notifyDataSource =new NotifyDataSource(getApplicationContext());
+                notifyDataSource.open();
+                notifyDataSource.insert(n);
+                notifyDataSource.close();
                 String title = n.getTitle();
                 String content = n.getSubject();
                 sendNotification(title, content);

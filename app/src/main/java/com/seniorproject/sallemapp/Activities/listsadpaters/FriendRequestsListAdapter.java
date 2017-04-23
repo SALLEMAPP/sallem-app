@@ -17,10 +17,10 @@ import com.seniorproject.sallemapp.entities.DomainUser;
 import com.seniorproject.sallemapp.entities.Friendship;
 import com.seniorproject.sallemapp.entities.User;
 import com.seniorproject.sallemapp.helpers.MyApplication;
+import com.seniorproject.sallemapp.helpers.MyHelper;
 import com.seniorproject.sallemapp.helpers.SaveFriendshipRequestAsync;
 import com.seniorproject.sallemapp.helpers.UpdateFriendRequestAsync;
 
-import org.joda.time.LocalDateTime;
 
 import java.util.ArrayList;
 
@@ -60,7 +60,7 @@ public class FriendRequestsListAdapter extends ArrayAdapter<DomainFriendship> {
                         accept.setId(friendship.getId());
                         accept.setFriendId(friendship.getFriendId());
                         accept.setStatusId(2);
-                        accept.setFriendsSince(new LocalDateTime().toString());
+                        accept.setFriendsSince(MyHelper.getCurrentDateTime());
 
                         UpdateFriendRequestAsync updateFriendshi
                                 = new UpdateFriendRequestAsync(
@@ -83,7 +83,7 @@ public class FriendRequestsListAdapter extends ArrayAdapter<DomainFriendship> {
                         decline.setId(friendship.getId());
                         decline.setFriendId(friendship.getFriendId());
                         decline.setStatusId(3);
-                        decline.setFriendsSince(new LocalDateTime().toString());
+                        decline.setFriendsSince(MyHelper.getCurrentDateTime());
                         UpdateFriendRequestAsync updateFriendshi
                                 = new UpdateFriendRequestAsync(
                                 v.getContext(),decline

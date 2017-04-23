@@ -68,4 +68,10 @@ public class UserDataSource {
         }
         return null;
     }
+    public void update(String id, int status, Bitmap avatar){
+        ContentValues updateValue = new ContentValues();
+        updateValue.put("StatusId", status);
+        updateValue.put("Avatar", MyHelper.encodeBitmap(avatar));
+        db.update("user", updateValue, "id = " + "'" + id + "'", null );
+    }
 }
