@@ -10,6 +10,11 @@ import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 import com.seniorproject.sallemapp.entities.DomainUser;
 import com.seniorproject.sallemapp.entities.Friendship;
+import com.seniorproject.sallemapp.entities.Notify;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by abdul on 31-Mar-2017.
@@ -31,10 +36,8 @@ public class SaveFriendshipRequestAsync extends AsyncTask<Void, Void, Void> {
         try{
             MobileServiceClient client = MyHelper.getAzureClient(mContext);
             Friendship firstFriendship = creatFirstFriendship();
-            //Friendship secondFriendship = creatSecondFriendship();
             MobileServiceTable<Friendship> userTable = client.getTable(Friendship.class);
             userTable.insert(firstFriendship).get();
-            //userTable.insert(secondFriendship);
        }
          catch (Exception e){
              e.printStackTrace();
@@ -46,9 +49,29 @@ public class SaveFriendshipRequestAsync extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected void onPostExecute(Void aVoid) {
+        Notify notify = createNotify();
+        List<Notify> notifies = new ArrayList<>();
+        notifies.add(notify);
+        sendNotify(notifies);
         String msg = "Your request has sent";
         MyHelper.showToast(mContext, msg);
 
+    }
+    private void sendNotify(List<Notify> notifies){
+        SendNotifyAsync sendNotify = new SendNotifyAsync(notifies, mContext);
+        sendNotify.execute();
+    }
+    private Notify createNotify(){
+
+        Notify notify = new Notify();
+        notify.setId(UUID.randomUUID().toString());
+        notify.setSourceUser(mUserId);
+        notify.setDestUser(mFriendId);
+        notify.setTitle(DomainUser.CURRENT_USER.getFirstName() + " " + DomainUser.CURRENT_USER.getLasttName());
+        notify.setSubject("Sent you friendship request");
+        notify.setDelivered(false);
+        notify.setPublishedAt(MyHelper.getCurrentDateTime());
+        return notify;
     }
 
     private Friendship creatFirstFriendship(){

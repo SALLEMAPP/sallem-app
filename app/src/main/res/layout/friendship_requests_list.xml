@@ -9,19 +9,16 @@
         android:id="@+id/friendRequests_btnDecline"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:layout_marginBottom="0dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginRight="8dp"
         android:background="@drawable/ic_close_black_24dp"
         android:textColor="@color/sallemWhite"
-        app:layout_constraintBottom_toBottomOf="@+id/friendRequests_btnAccept"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/friendRequests_btnAccept"
-        app:layout_constraintVertical_bias="1.0"
         tools:ignore="HardcodedText,RtlHardcoded"
-        app:layout_constraintLeft_toRightOf="@+id/friendRequests_btnAccept"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintHorizontal_bias="0.222" />
+        app:layout_constraintTop_toTopOf="@+id/friendRequests_btnAccept"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/friendRequests_btnAccept"
+        android:layout_marginBottom="0dp"
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:id="@+id/friendRequests_lblUserName"
@@ -50,8 +47,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.015"
         tools:ignore="HardcodedText,RtlHardcoded"
-        app:layout_constraintLeft_toRightOf="@+id/friendRequests_lblUserName"
-        android:layout_marginLeft="155dp" />
+        app:layout_constraintRight_toLeftOf="@+id/friendRequests_btnDecline"
+        android:layout_marginRight="8dp" />
 
     <ImageView
         android:id="@+id/friendRequests_imgAvatar"

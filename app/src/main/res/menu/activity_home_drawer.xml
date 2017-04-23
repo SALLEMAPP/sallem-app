@@ -14,10 +14,10 @@
             android:id="@+id/nav_near_friends"
             android:icon="@drawable/ic_meeting_24px"
             android:title="Meet Friends" />
-        <item
-            android:id="@+id/nav_activities"
-            android:icon="@drawable/ic_activity_24px"
-            android:title="Activities" />
+        <!--<item-->
+            <!--android:id="@+id/nav_activities"-->
+            <!--android:icon="@drawable/ic_activity_24px"-->
+            <!--android:title="Activities" />-->
         <item
             android:id="@+id/nav_notifications"
             android:icon="@drawable/ic_notifi_24px"

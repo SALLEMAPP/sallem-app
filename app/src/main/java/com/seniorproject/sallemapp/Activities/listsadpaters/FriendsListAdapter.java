@@ -44,7 +44,7 @@ public class FriendsListAdapter extends ArrayAdapter<DomainUser> {
             friendAvatar.setImageBitmap(user.getAvatar());
             TextView friendName = (TextView)
                     v.findViewById(R.id.lbl_friend_name);
-            String name = user.getLasttName() + " " + user.getFirstName();
+            String name = user.getFirstName() + " " + user.getLasttName();
             friendName.setText(name);
         }
         catch (Exception e){

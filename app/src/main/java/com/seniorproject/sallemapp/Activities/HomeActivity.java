@@ -157,21 +157,21 @@ public class HomeActivity extends AppCompatActivity
         getMenuInflater().inflate(R.menu.home, menu);
         return true;
     }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
+    //No options menu
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        // Handle action bar item clicks here. The action bar will
+//        // automatically handle clicks on the Home/Up button, so long
+//        // as you specify a parent activity in AndroidManifest.xml.
+//        int id = item.getItemId();
+//
+//        //noinspection SimplifiableIfStatement
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
 
 
 
@@ -208,18 +208,20 @@ public class HomeActivity extends AppCompatActivity
             fab.setVisibility(View.GONE);
 
 
-        } else if (id == R.id.nav_activities) {
-
-            adapterViewPager = new ActivitiesPageAdapter(getSupportFragmentManager());
-            //myViewPager.setOffscreenPageLimit(3);
-
-
-            myViewPager.setAdapter(adapterViewPager);
-            _currnetMenu = CurrentMenu.ACTIVITIES;
-            updateFloatingActionBar(_currnetMenu);
-
-
-        } else if (id == R.id.nav_notifications) {
+        }
+//        else if (id == R.id.nav_activities) {
+//
+//            adapterViewPager = new ActivitiesPageAdapter(getSupportFragmentManager());
+//            //myViewPager.setOffscreenPageLimit(3);
+//
+//
+//            myViewPager.setAdapter(adapterViewPager);
+//            _currnetMenu = CurrentMenu.ACTIVITIES;
+//            updateFloatingActionBar(_currnetMenu);
+//
+//
+//        }
+        else if (id == R.id.nav_notifications) {
 
             adapterViewPager = new NotificationPageAdapter(getSupportFragmentManager());
             myViewPager.setAdapter(adapterViewPager);
