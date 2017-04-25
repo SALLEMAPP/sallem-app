@@ -15,6 +15,7 @@ import android.widget.Button;
 import com.seniorproject.sallemapp.Activities.listsadpaters.NotifiesListAdapter;
 import com.seniorproject.sallemapp.Activities.localdb.NotifyDataSource;
 import com.seniorproject.sallemapp.R;
+import com.seniorproject.sallemapp.entities.DomainUser;
 import com.seniorproject.sallemapp.entities.Notify;
 import com.seniorproject.sallemapp.helpers.LoadNotifiesAsync;
 
@@ -174,7 +175,7 @@ public class NotificationFragment extends ListFragment {
             try {
                 NotifyDataSource notifyDataSource = new NotifyDataSource(mContext);
                 notifyDataSource.open();
-                notifies = notifyDataSource.getNonReadNotifies();
+                notifies = notifyDataSource.getNonReadNotifies(DomainUser.CURRENT_USER.getId());
                 notifyDataSource.close();
 
             }

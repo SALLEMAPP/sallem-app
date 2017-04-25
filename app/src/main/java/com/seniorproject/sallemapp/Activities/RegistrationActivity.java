@@ -151,6 +151,10 @@ public class RegistrationActivity extends AppCompatActivity {
 
             addUserToDb(user);
         }
+        else{
+            _savingProgressBar.setVisibility(View.GONE);
+
+        }
 
     }
     private String encrypt(String password){

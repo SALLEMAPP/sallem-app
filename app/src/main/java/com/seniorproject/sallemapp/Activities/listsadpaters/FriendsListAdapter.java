@@ -1,6 +1,7 @@
 package com.seniorproject.sallemapp.Activities.listsadpaters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,7 +42,8 @@ public class FriendsListAdapter extends ArrayAdapter<DomainUser> {
             }
             ImageView friendAvatar = (ImageView)
                     v.findViewById(R.id.img_friend_avatar);
-            friendAvatar.setImageBitmap(user.getAvatar());
+            Bitmap scaledImage= Bitmap.createScaledBitmap(user.getAvatar(), 185, 185, false);
+            friendAvatar.setImageBitmap(scaledImage);
             TextView friendName = (TextView)
                     v.findViewById(R.id.lbl_friend_name);
             String name = user.getFirstName() + " " + user.getLasttName();
@@ -53,36 +55,5 @@ public class FriendsListAdapter extends ArrayAdapter<DomainUser> {
         }
         return v;
     }
-//    public void showDelete(final int postion, final View convertView, final Context context, final Contact contact){
-//        View v = convertView;
-//        final Button b = (Button) v.findViewById(R.id.buttonDeleteContact);
-//        if(b.getVisibility() == View.INVISIBLE){
-//            b.setVisibility(View.VISIBLE);
-//            b.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    hideDelete(postion, convertView, context);
-//                    items.remove(contact);
-//                    deleteOption(contact.getContactID(), context);
-//                }
-//            });
-//        }
-//        else {
-//            hideDelete(postion, convertView, context);
-//        }
-//
-//    }
-//    private void deleteOption(int contactToDelete, Context context){
-//        ContactDataSource db = new ContactDataSource(context);
-//        db.open();
-//        db.deleteContact(contactToDelete);
-//        db.close();
-//        this.notifyDataSetChanged();
-//    }
-//    private void hideDelete(int contactToDelete, View convertView, Context context){
-//        View v = convertView;
-//        final Button b = (Button)v.findViewById(R.id.buttonDeleteContact);
-//        b.setVisibility(View.INVISIBLE);
-//        b.setOnClickListener(null);
-//    }
+
 }

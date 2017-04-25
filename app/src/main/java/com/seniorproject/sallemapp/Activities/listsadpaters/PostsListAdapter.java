@@ -29,9 +29,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * Created by Centeral on 2/21/2017.
- */
 
 public class PostsListAdapter  extends ArrayAdapter<DomainPost> {
     private ArrayList<DomainPost> _items;

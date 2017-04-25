@@ -11,6 +11,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import com.microsoft.azure.storage.StorageException;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
@@ -23,6 +25,7 @@ import com.seniorproject.sallemapp.entities.Friendship;
 import com.seniorproject.sallemapp.entities.User;
 import com.seniorproject.sallemapp.helpers.AzureBlob;
 import com.seniorproject.sallemapp.helpers.MyHelper;
+import com.seniorproject.sallemapp.helpers.UpdateFriendRequestAsync;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +49,7 @@ public class FriendRequestFragment extends ListFragment {
     private FriendRequestsListAdapter mAdapter = null;
     private View mCurrentView;
     private Context mContext;
-
+    private ProgressBar mProgress;
     private OnFragmentInteractionListener mListener;
 
     public FriendRequestFragment() {
@@ -84,21 +87,58 @@ public class FriendRequestFragment extends ListFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mCurrentView = inflater.inflate(R.layout.fragment_friend_request, container, false);
+        mProgress = (ProgressBar) mCurrentView.findViewById(R.id.requesFrag_prog);
         mContext = getContext();
         loadFriendRequest();
         return mCurrentView;
     }
 
     private void loadFriendRequest() {
+        mProgress.setVisibility(View.VISIBLE);
         String userId = DomainUser.CURRENT_USER.getId();
         LoadFriendsRequestAsync requestAsync = new LoadFriendsRequestAsync(userId);
         requestAsync.execute();
     }
 
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        long viewId = v.getId();
+        if(viewId == R.id.friendRequests_btnAccept){
+            DomainFriendship friendship = mFriendsRequests.get(position);
+            Friendship accept = new Friendship();
+            accept.setId(friendship.getId());
+            accept.setFriendId(friendship.getFriendId());
+            accept.setStatusId(2);
+            accept.setFriendsSince(MyHelper.getCurrentDateTime());
+            UpdateFriendRequestAsync updateFriendshi = new UpdateFriendRequestAsync(mContext, accept );
+            updateFriendshi.execute();
+            mFriendsRequests.remove(position);
+            mAdapter.notifyDataSetChanged();
+        }
+        else if (viewId == R.id.friendRequests_btnDecline){
+            DomainFriendship friendship = mFriendsRequests.get(position);
+            Friendship decline = new Friendship();
+              decline.setId(friendship.getId());
+            decline.setFriendId(friendship.getFriendId());
+            decline.setStatusId(3);
+            decline.setFriendsSince(MyHelper.getCurrentDateTime());
+            UpdateFriendRequestAsync updateFriendshi = new UpdateFriendRequestAsync(getContext(),decline );
+             updateFriendshi.execute();
+             v.setEnabled(false);
+             v.setAlpha(0.5f);
+            mFriendsRequests.remove(position);
+            mAdapter.notifyDataSetChanged();
+       }
+    }
+
     private void wireResultList(ArrayList<DomainFriendship> result){
-        mFriendsRequests = result;
-        mAdapter = new FriendRequestsListAdapter(mContext, mFriendsRequests);
-        setListAdapter(mAdapter);
+        if(result != null) {
+            mFriendsRequests = result;
+            mAdapter = new FriendRequestsListAdapter(mContext, mFriendsRequests);
+            setListAdapter(mAdapter);
+        }
+        mProgress.setVisibility(View.GONE);
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -191,9 +231,7 @@ public class FriendRequestFragment extends ListFragment {
 
         @Override
         protected void onPostExecute(List<DomainFriendship> result) {
-            if(result != null && result.size() > 0){
-                wireResultList((ArrayList<DomainFriendship>) result);
-            }
+          wireResultList((ArrayList<DomainFriendship>) result);
         }
     }
 }

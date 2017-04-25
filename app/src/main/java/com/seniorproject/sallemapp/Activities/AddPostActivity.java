@@ -120,11 +120,23 @@ public class AddPostActivity extends AppCompatActivity {
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addPost();
+               if(isValid()){
+                   addPost();
+               }
             }
         });
     }
+    private boolean isValid(){
+        boolean isValid = true;
+        EditText subjectEditText = (EditText) findViewById(R.id.addPost_txtPostSubject);
+        String subject = subjectEditText.getText().toString();
+        if(subject == null || subject.isEmpty()){
+            subjectEditText.setError("You have to write something");
+            isValid =false;
+        }
+        return isValid;
 
+    }
     private void addPost() {
         String subject = ((EditText) findViewById(R.id.addPost_txtPostSubject)).getText().toString();
         ImageView image = (ImageView) findViewById(R.id.addPost_imgPostImage);

@@ -3,23 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:descendantFocusability="blocksDescendants"
-    android:orientation="vertical">
-
+    android:layout_height="match_parent">
 
     <ImageView
         android:id="@+id/searchUsers_imgAvatar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
+        android:adjustViewBounds="true"
+        android:cropToPadding="true"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.031"
         app:srcCompat="@drawable/ic_account_circle_black_24dp" />
@@ -28,35 +24,29 @@
         android:id="@+id/searchUsers_lblUserName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
+        android:layout_marginLeft="0dp"
         android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="0dp"
         android:text="User Name"
-        app:layout_constraintBottom_toBottomOf="@+id/searchUsers_imgAvatar"
-        app:layout_constraintHorizontal_bias="0.0"
+        android:textColor="@color/sallemBlack"
+        app:layout_constraintHorizontal_bias="0.059"
         app:layout_constraintLeft_toRightOf="@+id/searchUsers_imgAvatar"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/searchUsers_imgAvatar"
-        app:layout_constraintVertical_bias="0.6" />
+        app:layout_constraintTop_toTopOf="@+id/searchUsers_imgAvatar" />
 
     <Button
         android:id="@+id/searchUsers_btnRequest"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginTop="8dp"
-        android:background="@color/sallemBlue"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="0dp"
+        android:backgroundTint="@color/sallemBlue"
         android:text="Send Request"
         android:textColor="@color/sallemWhite"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.978"
-        app:layout_constraintLeft_toRightOf="@+id/searchUsers_lblUserName"
+        android:textSize="10sp"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="@+id/searchUsers_lblUserName"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.031" />
+        app:layout_constraintTop_toBottomOf="@+id/searchUsers_lblUserName" />
 </android.support.constraint.ConstraintLayout>

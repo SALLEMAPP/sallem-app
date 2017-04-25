@@ -74,7 +74,7 @@ public class FriendsFragment extends ListFragment implements ListAsyncResult<Dom
         mCurrentView = inflater.inflate(R.layout.fragment_friends, container, false);
         mProgress = (ProgressBar)mCurrentView.findViewById(R.id.friends_progressBar);
         mProgress.setVisibility(View.GONE);
-        mContext =getActivity();
+        mContext =getContext();
         mMyApplication = (MyApplication)getActivity().getApplication();
         attachSearchButton();
         loadFriends();
@@ -85,15 +85,15 @@ public class FriendsFragment extends ListFragment implements ListAsyncResult<Dom
     private void loadFriends() {
         if(mMyApplication.Friends_Cach != null && mMyApplication.Friends_Cach.size() > 0){
             processFinish(mMyApplication.Friends_Cach);
+            mProgress.setVisibility(View.GONE);
         }
-        else
-        {
-            LoadFriendsAsync loadFrinds = new LoadFriendsAsync
-                    (getActivity().getApplicationContext(), DomainUser.CURRENT_USER.getId());
-            loadFrinds.delegat = this;
-            loadFrinds.execute();
+        else{
             mProgress.setVisibility(View.VISIBLE);
         }
+            LoadFriendsAsync loadFrinds = new LoadFriendsAsync
+                    (mContext, DomainUser.CURRENT_USER.getId());
+            loadFrinds.delegat = this;
+            loadFrinds.execute();
     }
 
     private void attachSearchButton() {

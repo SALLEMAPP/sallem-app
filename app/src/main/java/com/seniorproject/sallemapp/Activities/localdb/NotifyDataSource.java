@@ -52,8 +52,8 @@ public class NotifyDataSource {
         return ok;
     }
 
-    public ArrayList<Notify> getNonReadNotifies(){
-        String q = "SELECT * FROM notify WHERE read = 0 ORDER BY publishedAt DESC";
+    public ArrayList<Notify> getNonReadNotifies(String userId){
+        String q = "SELECT * FROM notify WHERE read = 0 and destUser = " + "'" + userId + "'" + " ORDER BY publishedAt DESC";
 
         Cursor cursor = db.rawQuery( q, null);
         ArrayList<Notify> notifes = new ArrayList<>();

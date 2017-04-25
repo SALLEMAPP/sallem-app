@@ -46,7 +46,6 @@ public class SignInActivity extends AppCompatActivity implements EntityAsyncResu
         setContentView(R.layout.activity_sign_in);
         _savingProgressBar = (ProgressBar)findViewById(R.id.singin_progress_bar);
         _savingProgressBar.setVisibility(ProgressBar.GONE);
-        attachResetButton();
         attachSigninButton();
     }
 
@@ -80,18 +79,7 @@ public class SignInActivity extends AppCompatActivity implements EntityAsyncResu
 
     }
 
-    private void attachResetButton() {
 
-        TextView forget = (TextView)findViewById(R.id.lbl_forgot_password);
-        forget.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //frgt is the name of intent that will be used to link between sign in activity and reset password activity
-                Intent frgt = new Intent(SignInActivity.this, ResetPasswordActivity.class);
-                startActivity(frgt);
-            }
-        });
-    }
 
     @Override
     public void processFinish(DomainUser result) {

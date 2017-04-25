@@ -2,6 +2,7 @@ package com.seniorproject.sallemapp.Activities.listsadpaters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -80,7 +81,9 @@ public class SearchUsersListAdapter extends ArrayAdapter<DomainUser> {
     private void bindUser(DomainUser user, View v){
         ImageView avatar = (ImageView) v.findViewById(R.id.searchUsers_imgAvatar);
         TextView userName = (TextView) v.findViewById(R.id.searchUsers_lblUserName);
-        avatar.setImageBitmap(user.getAvatar());
+        Bitmap scaledImage= Bitmap.createScaledBitmap(user.getAvatar(), 185, 185, false);
+
+        avatar.setImageBitmap(scaledImage);
 
         userName.setText(user.getFirstName() + " " + user.getLasttName());
     }

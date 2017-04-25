@@ -1,6 +1,7 @@
 package com.seniorproject.sallemapp.Activities.listsadpaters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.seniorproject.sallemapp.R;
@@ -41,7 +43,7 @@ public class FriendRequestsListAdapter extends ArrayAdapter<DomainFriendship> {
 
     @NonNull
     @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+    public View getView(final int position, @Nullable View convertView, @NonNull final ViewGroup parent) {
         View v = convertView;
 
         try {
@@ -56,44 +58,14 @@ public class FriendRequestsListAdapter extends ArrayAdapter<DomainFriendship> {
                 mAcceptButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Friendship accept = new Friendship();
-                        accept.setId(friendship.getId());
-                        accept.setFriendId(friendship.getFriendId());
-                        accept.setStatusId(2);
-                        accept.setFriendsSince(MyHelper.getCurrentDateTime());
-
-                        UpdateFriendRequestAsync updateFriendshi
-                                = new UpdateFriendRequestAsync(
-                                        v.getContext(),accept
-                       );
-                        updateFriendshi.execute();
-                        mAcceptButton.setEnabled(false);
-                        mAcceptButton.setAlpha(0.5f);
-                        mDeclineButton.setEnabled(false);
-                        mDeclineButton.setAlpha(0.5f);
-
-
+                        ((ListView) parent).performItemClick(v, position,0);
                     }
                 });
                 mDeclineButton = (Button)v.findViewById(R.id.friendRequests_btnDecline);
                 mDeclineButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Friendship decline = new Friendship();
-                        decline.setId(friendship.getId());
-                        decline.setFriendId(friendship.getFriendId());
-                        decline.setStatusId(3);
-                        decline.setFriendsSince(MyHelper.getCurrentDateTime());
-                        UpdateFriendRequestAsync updateFriendshi
-                                = new UpdateFriendRequestAsync(
-                                v.getContext(),decline
-                        );
-                        updateFriendshi.execute();
-                        mAcceptButton.setEnabled(false);
-                        mAcceptButton.setAlpha(0.5f);
-                        mDeclineButton.setEnabled(false);
-                        mDeclineButton.setAlpha(0.5f);
-
+                        ((ListView) parent).performItemClick(v, position,0);
                     }
                 });
 
@@ -116,7 +88,8 @@ public class FriendRequestsListAdapter extends ArrayAdapter<DomainFriendship> {
             avatar.setImageResource(R.drawable.ic_account_circle_black_24dp);
         }
         else{
-            avatar.setImageBitmap(friendship.getmDomainUser().getAvatar());
+            Bitmap scaledImage= Bitmap.createScaledBitmap(friendship.getmDomainUser().getAvatar(), 185, 185, false);
+            avatar.setImageBitmap(scaledImage);
         }
         userName.setText(friendship.getmDomainUser().getFirstName() + " "
                 + friendship.getmDomainUser().getLasttName());
