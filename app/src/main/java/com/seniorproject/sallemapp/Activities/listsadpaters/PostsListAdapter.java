@@ -96,12 +96,13 @@ public class PostsListAdapter  extends ArrayAdapter<DomainPost> {
         holder.userAvatart.setImageBitmap(post.get_user().getAvatar());
         holder.posDateTextView.setText(MyHelper.formatDateString(post.get_postedAt()));
         holder.subjectTextView.setText(post.get_subject());
+        holder.postImage.setVisibility(View.VISIBLE);
         if(post.get_image() != null){
-            //postImage.setVisibility(View.GONE);
            holder.postImage.setImageBitmap(post.get_image());
         }
         else{
           holder.postImage.setImageBitmap(null);
+            holder.postImage.setVisibility(View.GONE);
         }
         if(post.get_comments()!= null && post.get_comments().size() > 0){
             holder.commenterNameTextView.setVisibility(View.VISIBLE);

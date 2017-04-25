@@ -162,10 +162,8 @@ public class PostsFragment extends Fragment implements ListAsyncResult<DomainPos
             mPostsList.clear();
            mPostsList.addAll(result);
            _adpater.notifyDataSetChanged();
-            mLoadinggProgressBar.setVisibility(View.GONE);
         }
-
-   }
+    }
     @Override
     public void onResume() {
         super.onResume();
@@ -204,6 +202,7 @@ public class PostsFragment extends Fragment implements ListAsyncResult<DomainPos
         public void onReceive(Context context, Intent intent) {
             if(intent != null){
                 if(intent.getAction() == CommonMethods.ACTION_NOTIFY_REFRESH){
+                    mLoadinggProgressBar.setVisibility(View.GONE);
                     List<DomainPost> posts = mMyApp.Posts_Cach;
                     processFinish(posts);
                     return;

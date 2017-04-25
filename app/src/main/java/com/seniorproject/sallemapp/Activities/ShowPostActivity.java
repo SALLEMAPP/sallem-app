@@ -142,7 +142,7 @@ public class ShowPostActivity extends AppCompatActivity implements EntityAsyncRe
             mPostImage.setImageBitmap(result.get_image());
             mPoster.setText(result.get_user().getFirstName() + " " + result.get_user().getLasttName());;
             mUserAvatart.setImageBitmap(result.get_user().getAvatar());;
-            mPosDate.setText(result.get_postedAt());
+            mPosDate.setText(MyHelper.formatDateString(result.get_postedAt()));
             mPostSubject.setText(result.get_subject());
             mCommentsAdapter.addAll(result.get_comments());
             mCurrentPost = result;

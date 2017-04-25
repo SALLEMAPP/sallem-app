@@ -245,9 +245,6 @@ public class SallemService extends Service implements LocationListener, Refreshe
 
     @Override
     public void onGotResult(List<DomainPost> result) {
-        if(result == null){
-            return;
-        }
             mMyApp.Posts_Cach = result;
             Intent i = new Intent();
             i.setAction(CommonMethods.ACTION_NOTIFY_REFRESH);
