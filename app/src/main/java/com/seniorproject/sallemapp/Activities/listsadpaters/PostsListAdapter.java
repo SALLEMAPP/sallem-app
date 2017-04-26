@@ -70,7 +70,6 @@ public class PostsListAdapter  extends ArrayAdapter<DomainPost> {
                 viewHolder.commenterAvatar =(ImageView)convertView.findViewById(R.id.commentLayout_imgUserAvatar);
                 viewHolder.commentTextView=(TextView)convertView.findViewById(R.id.commentLayout_lblComment);
                 viewHolder.commentDateTextView = (TextView)convertView.findViewById(R.id.commentLayout_commentDate);
-                viewHolder.commentsContainer =(LinearLayout)convertView.findViewById(R.id.postLayout_commentContainer);
                 convertView.setTag(viewHolder);
             }
             else{
@@ -131,7 +130,6 @@ public class PostsListAdapter  extends ArrayAdapter<DomainPost> {
         ImageView commenterAvatar;
         TextView commentTextView;
         TextView commentDateTextView;
-        LinearLayout commentsContainer;
 
     }
 

@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -81,6 +82,7 @@ public class ShowPostActivity extends AppCompatActivity implements EntityAsyncRe
                 findViewById(R.id.showPost_lblUserName);
         mPostSubject = (TextView)
                 findViewById(R.id.showPost_txtPosSubject);
+        mPostSubject.setMovementMethod(new ScrollingMovementMethod());
         mPostComment = (EditText)
                 findViewById(R.id.showPost_txtComment);
         mPostImage = (ImageView)
@@ -100,9 +102,14 @@ public class ShowPostActivity extends AppCompatActivity implements EntityAsyncRe
     }
 
     private void attachSendCommentButton() {
+
         mSendCommentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(mPostComment.getText().toString() == null ||
+                        mPostComment.getText().toString().isEmpty()){
+                    return;
+                }
                 DomainComment domainComment = new DomainComment();
                 domainComment.set_id(UUID.randomUUID().toString());
                 String commentedAt = MyHelper.getCurrentDateTime();
@@ -139,7 +146,12 @@ public class ShowPostActivity extends AppCompatActivity implements EntityAsyncRe
     @Override
     public void processFinish(DomainPost result) {
         if(result != null){
-            mPostImage.setImageBitmap(result.get_image());
+            if(result.get_image() != null) {
+                mPostImage.setImageBitmap(result.get_image());
+            }
+            else{
+                mPostImage.setVisibility(View.GONE);
+            }
             mPoster.setText(result.get_user().getFirstName() + " " + result.get_user().getLasttName());;
             mUserAvatart.setImageBitmap(result.get_user().getAvatar());;
             mPosDate.setText(MyHelper.formatDateString(result.get_postedAt()));

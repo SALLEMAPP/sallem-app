@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/showPost_imgUserAvatar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:minHeight="55dp"
+        android:minWidth="55dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/ic_user_avatar" />
+
+    <TextView
+        android:id="@+id/showPost_lblUserName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/showPost_lblPostDate"
+        android:layout_alignStart="@+id/showPost_lblPostDate"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="8dp"
+        android:text="TextView"
+        android:textColor="@color/sallemBlack"
+        android:textSize="16sp"
+        app:layout_constraintLeft_toRightOf="@+id/showPost_imgUserAvatar"
+        app:layout_constraintTop_toTopOf="@+id/showPost_imgUserAvatar" />
+
+    <TextView
+        android:id="@+id/showPost_lblPostDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_toEndOf="@+id/postLayout_imgUserAvatar"
+        android:layout_toRightOf="@+id/postLayout_imgUserAvatar"
+        android:text="TextView"
+        android:textColor="@color/sallemBlack"
+        android:textSize="10sp"
+        app:layout_constraintLeft_toLeftOf="@+id/showPost_lblUserName"
+        app:layout_constraintTop_toBottomOf="@+id/showPost_lblUserName" />
+
+</android.support.constraint.ConstraintLayout>
