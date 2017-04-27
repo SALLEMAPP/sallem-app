@@ -251,21 +251,21 @@ public class SettingsFragment extends Fragment {
             @Override
             protected Object doInBackground(Object[] params) {
                 try {
+                    MobileServiceClient client = MyHelper.getAzureClient(mContext);
+                    MobileServiceTable<User> userTable = client.getTable(User.class);
+                    User user =  userTable.where().field("id")
+                            .eq(id).execute().get().get(0);
+                    if(user != null){
+                        user.setStatus(status);
+                        if(imageAsString != null){
+                            user.setImageTitle(imageAsString);
+                        }
+                        userTable.update(user).get();
+                    }
                     UserDataSource userDS = new UserDataSource(mContext);
                     userDS.open();
                     userDS.update(id, status, avatar);
                     userDS.close();
-                    MobileServiceClient client = MyHelper.getAzureClient(mContext);
-                    MobileServiceTable<User> userTable = client.getTable(User.class);
-                    List<User> users =  userTable.where().field("id")
-                            .eq(id).execute().get();
-                    if(users != null){
-                        User user = users.get(0);
-                        user.setStatus(status);
-                        user.setImageTitle(imageAsString);
-                        userTable.update(user).get();
-                    }
-
                 }
                 catch (Exception e){
                     Log.e("Save Settings ", "doInBackground: " + e.getMessage() );
