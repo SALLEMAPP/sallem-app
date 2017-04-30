@@ -345,8 +345,8 @@ public class NearByFragment extends Fragment implements PopupMenu.OnMenuItemClic
             mNotifyBotton.setEnabled(true);
             mNotifyAllButton.setEnabled(true);
             mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-           // mUserInfo.setText(userOnMap.getUserName() + " is about " + userOnMap.getDistance() + " meters from you.");
-            mUserInfo.setText(userOnMap.getUserName() + " is neaer to you.");
+            mUserInfo.setText(userOnMap.getUserName() + " is about " + userOnMap.getDistance() + " meters from you.");
+            //mUserInfo.setText(userOnMap.getUserName() + " is neaer to you.");
             Bitmap scaledImage = Bitmap.createScaledBitmap(userOnMap.getAvatar(), 150, 150, false);
             mUserAvatar.setImageBitmap(scaledImage);
             mNotifyReceiverId = userOnMap.getUserId();
@@ -434,8 +434,8 @@ public class NearByFragment extends Fragment implements PopupMenu.OnMenuItemClic
                             for (UserLocation friendLocation : locations) {
                                 //Get current user's location
                                 Location userCurrentLocation = LocationService.LAST_LOCATION;
-                                double startLati = userCurrentLocation.getLatitude();
-                                double startLongi = userCurrentLocation.getLongitude();
+                                double startLati = round( userCurrentLocation.getLatitude(), 6);
+                                double startLongi = round( userCurrentLocation.getLongitude(),6);
                                 //Get friend's location
                                 double endLati = friendLocation.getLatitude();
                                 double endLongi = friendLocation.getLongitude();
@@ -491,6 +491,14 @@ public class NearByFragment extends Fragment implements PopupMenu.OnMenuItemClic
             if(result != null && result.size() > 0){
                 updateMap( result);
             }
+        }
+        public  double round(double value, int places) {
+            if (places < 0) throw new IllegalArgumentException();
+
+            long factor = (long) Math.pow(10, places);
+            value = value * factor;
+            long tmp = Math.round(value);
+            return (double) tmp / factor;
         }
     }
 }
