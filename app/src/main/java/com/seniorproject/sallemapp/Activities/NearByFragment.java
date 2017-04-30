@@ -48,6 +48,7 @@ import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 import com.microsoft.windowsazure.mobileservices.table.query.QueryOrder;
 import com.seniorproject.sallemapp.R;
+import com.seniorproject.sallemapp.SallemService;
 import com.seniorproject.sallemapp.entities.DomainUser;
 import com.seniorproject.sallemapp.entities.Friendship;
 import com.seniorproject.sallemapp.entities.Notify;
@@ -433,7 +434,7 @@ public class NearByFragment extends Fragment implements PopupMenu.OnMenuItemClic
 
                             for (UserLocation friendLocation : locations) {
                                 //Get current user's location
-                                Location userCurrentLocation = LocationService.LAST_LOCATION;
+                                Location userCurrentLocation = SallemService.CURRENT_LOCATION;
                                 double startLati = round( userCurrentLocation.getLatitude(), 6);
                                 double startLongi = round( userCurrentLocation.getLongitude(),6);
                                 //Get friend's location

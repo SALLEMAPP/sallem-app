@@ -57,6 +57,7 @@ public class SallemService extends Service implements LocationListener, Refreshe
     private NotificationManager notifier = null;
     public static final String SALLEM_SERVICE = "com.seniorproject.sallemapp.SallemService.SERVICE";
     public static boolean LISTEN_TO_DATABASE =true;
+    public static Location CURRENT_LOCATION = null;
     MyApplication mMyApp;
     public void onCreate(){
         super.onCreate();
@@ -177,6 +178,7 @@ public class SallemService extends Service implements LocationListener, Refreshe
     @Override
     public void onLocationChanged(Location location) {
         //sendNotification("Service", "Location Changed");
+        CURRENT_LOCATION = location;
         saveLocation(location);
     }
 
