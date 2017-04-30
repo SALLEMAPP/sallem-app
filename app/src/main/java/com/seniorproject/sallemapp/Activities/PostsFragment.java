@@ -218,16 +218,10 @@ public class PostsFragment extends Fragment implements ListAsyncResult<DomainPos
 //                        if(post.getImagePath() != null) {
 //                            image = MyHelper.readImageFromDisk(getActivity().getApplicationContext(), post.getImagePath());
 //                        }
-                        if(post.getImagePath() != null){
-                            image = MyHelper.decodeImage(post.getImagePath());
-                        }
-                        if(image != null){
-                            post.set_image(image);
-                        }
+
 
                         mMyApp.Posts_Cach.add(0, post);
                     }
-                    return;
                 }
             }
         }

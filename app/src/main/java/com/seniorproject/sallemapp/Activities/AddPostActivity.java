@@ -178,6 +178,10 @@ public class AddPostActivity extends AppCompatActivity {
         domainPost.set_user(DomainUser.CURRENT_USER);
         domainPost.set_subject(post.getSubject());
         domainPost.setImagePath(post.getPostImage());
+        if(domainPost.getImagePath() != null){
+           Bitmap image = MyHelper.decodeImage(domainPost.getImagePath());
+            domainPost.set_image(image);
+        }
         domainPost.set_activityId(post.getActivityId());
         domainPost.set_postedAt(post.getPostedAt());
         domainPost.set_comments(new ArrayList<DomainComment>());

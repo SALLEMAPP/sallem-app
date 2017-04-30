@@ -206,7 +206,7 @@ public class SallemService extends Service implements LocationListener, Refreshe
                                     refreshPosts();
                                     refreshNotifies();
                                     try {
-                                        Thread.sleep(30000);
+                                        Thread.sleep(60000);
                                     } catch (InterruptedException e) {
                                         e.printStackTrace();
                                     }
