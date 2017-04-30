@@ -134,7 +134,7 @@ public class NearByFragment extends Fragment implements PopupMenu.OnMenuItemClic
                         }
                         googleMap.setOnMarkerClickListener(NearByFragment.this);
 
-                        Location lastLocation = LocationService.getCurrentLocation(getContext());
+                        Location lastLocation = SallemService.CURRENT_LOCATION;
                         updateLocation(lastLocation);
                         mProgressBar.setVisibility(View.VISIBLE);
 //                        mGooglMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
