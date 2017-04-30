@@ -345,7 +345,8 @@ public class NearByFragment extends Fragment implements PopupMenu.OnMenuItemClic
             mNotifyBotton.setEnabled(true);
             mNotifyAllButton.setEnabled(true);
             mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-            mUserInfo.setText(userOnMap.getUserName() + " is about " + userOnMap.getDistance() + " meters from you.");
+           // mUserInfo.setText(userOnMap.getUserName() + " is about " + userOnMap.getDistance() + " meters from you.");
+            mUserInfo.setText(userOnMap.getUserName() + " is neaer to you.");
             Bitmap scaledImage = Bitmap.createScaledBitmap(userOnMap.getAvatar(), 150, 150, false);
             mUserAvatar.setImageBitmap(scaledImage);
             mNotifyReceiverId = userOnMap.getUserId();
@@ -445,7 +446,7 @@ public class NearByFragment extends Fragment implements PopupMenu.OnMenuItemClic
                                 );
                                 float distance = result[0];
                                 //If distance less than or eqaul to 300 meters; then show him on the map.
-                                if (distance <= 300) {
+                                if (distance <= 500) {
                                     //Get friend details
                                     User user = usersTable.where().field("id").eq(friend.getFriendId()).execute().get().get(0);
                                     if (user != null && user.getStatus() == MyHelper.USER_STATUS_ONLINE) {
