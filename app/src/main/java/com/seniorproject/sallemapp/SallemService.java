@@ -86,7 +86,7 @@ public class SallemService extends Service implements LocationListener, Refreshe
     private void doServiceStart(Intent intent, int startId){
         //Initiate location tracking
         Criteria criteria = new Criteria();
-        criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+        criteria.setAccuracy(Criteria.ACCURACY_FINE);
         criteria.setPowerRequirement(Criteria.POWER_LOW);
         //Get location service
         location = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
