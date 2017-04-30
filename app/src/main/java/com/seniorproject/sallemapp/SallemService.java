@@ -81,25 +81,32 @@ public class SallemService extends Service implements LocationListener, Refreshe
         doServiceStart(intent, startId);
         return Service.START_REDELIVER_INTENT;
     }
+
     private void doServiceStart(Intent intent, int startId){
+        //Initiate location tracking
         Criteria criteria = new Criteria();
         criteria.setAccuracy(Criteria.NO_REQUIREMENT);
         criteria.setPowerRequirement(Criteria.POWER_LOW);
+        //Get location service
         location = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        //Get best provider among the three, GPS, network and WIFI
         String best = location.getBestProvider(criteria, true);
         int permissionCheck = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION);
         if(permissionCheck == PackageManager.PERMISSION_GRANTED) {
             //Get location updated every minute and after 100 meters distance
             location.requestLocationUpdates(best, 60000, 100,  this);
         }
-        //sendNotification("Service", "Service started");
+        //Refresh local cach from database
         listenForDatabaseChanges();
 
 
     }
 
-
-
+    /**
+     * Build and send notification to Android notification  center
+     * @param title of the notification
+     * @param content of the notification
+     */
     private void sendNotification(String title, String content){
         Intent toLauch = new Intent(
                 getApplicationContext(),
@@ -190,6 +197,7 @@ public class SallemService extends Service implements LocationListener, Refreshe
 
     private void listenForDatabaseChanges() {
             try {
+                //Start in a backroind thread. Refersh content every 30 seconds
                 final Thread thread = new Thread(
                         new Runnable() {
                             @Override
@@ -212,52 +220,55 @@ public class SallemService extends Service implements LocationListener, Refreshe
                 e.printStackTrace();
                 Log.e("SALLEMAPP", "listenForDatabaseChanges:" + e.getCause().getMessage()  );
             }
+     }
 
-
-
-    }
+    /**
+     * Refresh posts of user and his friends
+     */
     private void refreshPosts(){
-
-
         String lastUpdate = "";
-        //Note if we assign the last update argument, local cach will go out of sync.
-//        if(mMyApp.Posts_Cach != null && mMyApp.Posts_Cach.size() > 0){
-//            DomainPost max = Collections.max(mMyApp.Posts_Cach, new Comparator<DomainPost>() {
-//                @Override
-//                public int compare(DomainPost o1, DomainPost o2) {
-//                    return o1.get_postedAt().compareTo(o2.get_postedAt());
-//                }
-//            });
-//            lastUpdate = max.get_postedAt();
-//        }
         LoadFriendsPostsAsync loadFriends = new LoadFriendsPostsAsync(getApplicationContext(),  this);
         loadFriends.LoadAsync(DomainUser.CURRENT_USER.getId(), lastUpdate);
 
     }
+
+    /**
+     * Check of there are new notifications for current user
+     */
     private void refreshNotifies(){
         LoadNotifiesAsync loadNotifies = new LoadNotifiesAsync(DomainUser.CURRENT_USER.getId(), getApplicationContext(), this);
         loadNotifies.execute();
 
     }
 
-
-
-
+    /**
+     * Result of refreshing posts
+     * @param result the new posts coming from database.
+     */
     @Override
     public void onGotResult(List<DomainPost> result) {
+            //update local cache
             mMyApp.Posts_Cach = result;
+            //notify subscribed views that a new result has come.
             Intent i = new Intent();
             i.setAction(CommonMethods.ACTION_NOTIFY_REFRESH);
             sendBroadcast(i);
         }
+
+    /**
+     * Result of refreshing notifications
+     * @param result the new notification from database.
+     */
     @Override
     public void processFinish(List<Notify> result) {
         if(result != null) {
             for (Notify n : result){
+                //Store them locally to be shown when user open notification fragment
                 NotifyDataSource notifyDataSource =new NotifyDataSource(getApplicationContext());
                 notifyDataSource.open();
                 notifyDataSource.insert(n);
                 notifyDataSource.close();
+                //Publish them to Android notification
                 String title = n.getTitle();
                 String content = n.getSubject();
                 sendNotification(title, content);

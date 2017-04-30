@@ -395,17 +395,23 @@ public class NearByFragment extends Fragment implements PopupMenu.OnMenuItemClic
         void onFragmentInteraction(Uri uri);
     }
 
-
+    /**
+     * Search for near by friends in background thread
+     */
     public class SearchNearFriendsAsycn extends AsyncTask<Void,Void,List<UserOnMap>> {
+       //User id to find his near friends
         private final String mUserId;
+
         public SearchNearFriendsAsycn(String userId){
             mUserId = userId;
         }
-
+        //Do the task in background
         @Override
         protected List<UserOnMap> doInBackground(Void... params) {
+            //Result of search
             List<UserOnMap> resultUsers = new ArrayList<>();
             try {
+                //Initiate Azure client library
                 MobileServiceClient client = MyHelper.getAzureClient(mContext);
                 MobileServiceTable<User> usersTable = client.getTable(User.class);
                 MobileServiceTable<Friendship> friendsTable = client.getTable(Friendship.class);
@@ -414,31 +420,33 @@ public class NearByFragment extends Fragment implements PopupMenu.OnMenuItemClic
                         .and().field("statusId").eq(2)
                         .execute().get();
                 if(friends.size() > 0){
+                    //Iterate over his friends
                     for(Friendship friend :friends) {
+                        //Get latest location of the user in database.
                         List<UserLocation> locations = locationTable.where().field("userId").eq(friend.getFriendId())
                                 .orderBy("seenAt", QueryOrder.Descending)
                                 .top(1)
                                 .execute().get();
-                        String tempUserId = null;
+                        //if he has a location
                         if (locations != null && locations.size() > 0) {
 
                             for (UserLocation friendLocation : locations) {
-                                //Check to take the user once, in case has has more than one location
-                               // if(friendLocation.getUserId().equals(tempUserId)){continue;}
-
-                                //tempUserId = friendLocation.getUserId();
+                                //Get current user's location
                                 Location userCurrentLocation = LocationService.LAST_LOCATION;
                                 double startLati = userCurrentLocation.getLatitude();
                                 double startLongi = userCurrentLocation.getLongitude();
-
+                                //Get friend's location
                                 double endLati = friendLocation.getLatitude();
                                 double endLongi = friendLocation.getLongitude();
                                 float[] result = new float[1];
+                                //Caclucate distance
                                 Location.distanceBetween(startLati, startLongi,
                                         endLati, endLongi, result
                                 );
                                 float distance = result[0];
+                                //If distance less than or eqaul to 300 meters; then show him on the map.
                                 if (distance <= 300) {
+                                    //Get friend details
                                     User user = usersTable.where().field("id").eq(friend.getFriendId()).execute().get().get(0);
                                     if (user != null && user.getStatus() == MyHelper.USER_STATUS_ONLINE) {
                                         Bitmap avatar = null;
@@ -475,7 +483,7 @@ public class NearByFragment extends Fragment implements PopupMenu.OnMenuItemClic
             }
             return resultUsers;
         }
-
+        //Publish result to the UI thread from the background
         @Override
         protected void onPostExecute(List<UserOnMap> result) {
             mProgressBar.setVisibility(View.GONE);
