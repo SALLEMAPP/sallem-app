@@ -128,31 +128,22 @@ public class NearByFragment extends Fragment implements PopupMenu.OnMenuItemClic
                     public void onMapReady(GoogleMap googleMap) {
 
                         mGooglMap = googleMap;
-                        int permissionCheck = ContextCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION);
-                        if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
-                            googleMap.setMyLocationEnabled(true);
+                        if(ContextCompat.checkSelfPermission(mContext.getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) ==
+                                PackageManager.PERMISSION_GRANTED ||
+                                ContextCompat.checkSelfPermission(mContext.getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) ==
+                                        PackageManager.PERMISSION_GRANTED) {
+                            mGooglMap.setMyLocationEnabled(true);
                         }
                         googleMap.setOnMarkerClickListener(NearByFragment.this);
 
                         Location lastLocation = SallemService.CURRENT_LOCATION;
                         updateLocation(lastLocation);
                         mProgressBar.setVisibility(View.VISIBLE);
-//                        mGooglMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-//                            @Override
-//                            public void onMapClick(LatLng latLng) {
-//                                PopupMenu popupMenu = new PopupMenu(getContext().getApplicationContext(), v);
-//                                //MenuInflater menuInflater = popupMenu.getMenuInflater();
-//                                //inflater.inflate(R.menu.map_popup_actions, popupMenu.getMenu());
-//                                popupMenu.setOnMenuItemClickListener(NearByFragment.this);
-//                                popupMenu.inflate(R.menu.map_popup_actions);
-//                                popupMenu.show();
-//                            }
-//                        });
+
                     }
                 }
         );
-        SearchNearFriendsAsycn nearFriendsAsycn = new SearchNearFriendsAsycn(DomainUser.CURRENT_USER.getId());
-        nearFriendsAsycn.execute();
+
             return  mCurrentView;
         }
         private void attachButtomNotify(){
@@ -279,12 +270,15 @@ public class NearByFragment extends Fragment implements PopupMenu.OnMenuItemClic
     }
 
     private void updateLocation(Location lastLocation) {
+        if(lastLocation == null){return;}
         LatLng point = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
         String userName = DomainUser.CURRENT_USER.getFirstName() + " " + DomainUser.CURRENT_USER.getLasttName();
         mGooglMap.addMarker(new MarkerOptions().position(point).title(userName)); //.snippet("Marker Description"));
         // For zooming automatically to the location of the marker
-        CameraPosition cameraPosition = new CameraPosition.Builder().target(point).zoom(19).build();
+        CameraPosition cameraPosition = new CameraPosition.Builder().target(point).zoom(17).build();
         mGooglMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        SearchNearFriendsAsycn nearFriendsAsycn = new SearchNearFriendsAsycn(DomainUser.CURRENT_USER.getId());
+        nearFriendsAsycn.execute();
     }
     private void updateMap(List<UserOnMap> result){
         for(UserOnMap user:result){
@@ -346,8 +340,8 @@ public class NearByFragment extends Fragment implements PopupMenu.OnMenuItemClic
             mNotifyBotton.setEnabled(true);
             mNotifyAllButton.setEnabled(true);
             mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-            mUserInfo.setText(userOnMap.getUserName() + " is about " + userOnMap.getDistance() + " meters from you.");
-            //mUserInfo.setText(userOnMap.getUserName() + " is neaer to you.");
+            //mUserInfo.setText(userOnMap.getUserName() + " is about " + userOnMap.getDistance() + " meters from you.");
+            mUserInfo.setText(userOnMap.getUserName() + " is neaer to you.");
             Bitmap scaledImage = Bitmap.createScaledBitmap(userOnMap.getAvatar(), 150, 150, false);
             mUserAvatar.setImageBitmap(scaledImage);
             mNotifyReceiverId = userOnMap.getUserId();
@@ -435,8 +429,8 @@ public class NearByFragment extends Fragment implements PopupMenu.OnMenuItemClic
                             for (UserLocation friendLocation : locations) {
                                 //Get current user's location
                                 Location userCurrentLocation = SallemService.CURRENT_LOCATION;
-                                double startLati = round( userCurrentLocation.getLatitude(), 6);
-                                double startLongi = round( userCurrentLocation.getLongitude(),6);
+                                double startLati = userCurrentLocation.getLatitude();
+                                double startLongi = userCurrentLocation.getLongitude();
                                 //Get friend's location
                                 double endLati = friendLocation.getLatitude();
                                 double endLongi = friendLocation.getLongitude();
@@ -493,13 +487,6 @@ public class NearByFragment extends Fragment implements PopupMenu.OnMenuItemClic
                 updateMap( result);
             }
         }
-        public  double round(double value, int places) {
-            if (places < 0) throw new IllegalArgumentException();
 
-            long factor = (long) Math.pow(10, places);
-            value = value * factor;
-            long tmp = Math.round(value);
-            return (double) tmp / factor;
-        }
     }
 }

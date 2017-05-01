@@ -164,8 +164,10 @@ public class LocationService implements LocationListener {
         criteria.setAccuracy(Criteria.NO_REQUIREMENT);
         criteria.setPowerRequirement(Criteria.POWER_LOW);
         String best = locationManager.getBestProvider(criteria, true);
-        int permissionCheck = ContextCompat.checkSelfPermission(context.getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION);
-        if(permissionCheck == PackageManager.PERMISSION_GRANTED) {
+        if(ContextCompat.checkSelfPermission(context.getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) ==
+                PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(context.getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) ==
+                        PackageManager.PERMISSION_GRANTED){
             //Get location updated every minute and after 100 distance
             currentLocation = locationManager.getLastKnownLocation(best);
         }

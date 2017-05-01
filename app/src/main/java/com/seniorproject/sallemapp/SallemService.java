@@ -25,6 +25,8 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 import com.seniorproject.sallemapp.Activities.HomeActivity;
@@ -37,6 +39,7 @@ import com.seniorproject.sallemapp.helpers.CommonMethods;
 import com.seniorproject.sallemapp.helpers.ListAsyncResult;
 import com.seniorproject.sallemapp.helpers.LoadFriendsPostsAsync;
 import com.seniorproject.sallemapp.helpers.LoadNotifiesAsync;
+import com.seniorproject.sallemapp.helpers.LocationService;
 import com.seniorproject.sallemapp.helpers.MyApplication;
 import com.seniorproject.sallemapp.helpers.MyHelper;
 import com.seniorproject.sallemapp.helpers.RefreshedPostsResult;
@@ -86,22 +89,32 @@ public class SallemService extends Service implements LocationListener, Refreshe
     private void doServiceStart(Intent intent, int startId){
         //Initiate location tracking
         Criteria criteria = new Criteria();
-        criteria.setAccuracy(Criteria.ACCURACY_FINE);
-        criteria.setPowerRequirement(Criteria.POWER_LOW);
+        criteria.setAccuracy(Criteria.NO_REQUIREMENT);
+        criteria.setPowerRequirement(Criteria.NO_REQUIREMENT);
         //Get location service
         location = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         //Get best provider among the three, GPS, network and WIFI
         String best = location.getBestProvider(criteria, true);
-        int permissionCheck = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION);
-        if(permissionCheck == PackageManager.PERMISSION_GRANTED) {
+        if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) ==
+                PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) ==
+                PackageManager.PERMISSION_GRANTED)
+        {
             //Get location updated every minute and after 100 meters distance
-            location.requestLocationUpdates(best, 60000, 100,  this);
+            //location.requestLocationUpdates(best, 60000, 100,  this);
+            location.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60000, 20, this);
+
+            Location lasKnownLocation  = LocationService.getCurrentLocation(getApplicationContext());
+           if(lasKnownLocation != null){
+               onLocationChanged(lasKnownLocation);
+            }
         }
         //Refresh local cach from database
         listenForDatabaseChanges();
 
 
     }
+
 
     /**
      * Build and send notification to Android notification  center
