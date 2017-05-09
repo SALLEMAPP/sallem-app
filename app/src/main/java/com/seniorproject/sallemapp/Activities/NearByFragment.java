@@ -440,7 +440,7 @@ public class NearByFragment extends Fragment implements PopupMenu.OnMenuItemClic
                                         endLati, endLongi, result
                                 );
                                 float distance = result[0];
-                                //If distance less than or eqaul to 300 meters; then show him on the map.
+                                //If distance less than or eqaul to 500 meters; then show him on the map.
                                 if (distance <= 500) {
                                     //Get friend details
                                     User user = usersTable.where().field("id").eq(friend.getFriendId()).execute().get().get(0);

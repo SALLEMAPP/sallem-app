@@ -102,8 +102,13 @@ public class SallemService extends Service implements LocationListener, Refreshe
         {
             //Get location updated every minute and after 100 meters distance
             //location.requestLocationUpdates(best, 60000, 100,  this);
+            //For more location accuracy, do not relay on the provider
+            // returend by Android criteria, instead supply GPS proivder
+            //explicitly
             location.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60000, 20, this);
-
+            //This to anticipate if GPS is not available on the device or not enabled
+            //In this case our location service will get the available location provder
+            //Bear in mind that accuracy will vary based on the returned provider.
             Location lasKnownLocation  = LocationService.getCurrentLocation(getApplicationContext());
            if(lasKnownLocation != null){
                onLocationChanged(lasKnownLocation);
