@@ -14,7 +14,6 @@ import com.microsoft.azure.storage.blob.CloudBlobContainer;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.http.OkHttpClientFactory;
 import com.seniorproject.sallemapp.R;
-import com.seniorproject.sallemapp.entities.DomainUser;
 import com.squareup.okhttp.OkHttpClient;
 
 import org.joda.time.DateTime;
@@ -22,14 +21,12 @@ import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -69,7 +66,7 @@ public class MyHelper {
     public static MobileServiceClient getAzureClient(Context context) throws MalformedURLException {
        MobileServiceClient client =
          new MobileServiceClient(
-                    "http://sallemapp.azurewebsites.net", context);
+                    "http://sallemapp2.azurewebsites.net", context);
             client.setAndroidHttpClientFactory(new OkHttpClientFactory() {
                 @Override
                 public OkHttpClient createOkHttpClient() {
