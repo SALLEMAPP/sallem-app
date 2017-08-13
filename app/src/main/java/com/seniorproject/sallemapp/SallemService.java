@@ -25,8 +25,6 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 import com.seniorproject.sallemapp.Activities.HomeActivity;
@@ -44,9 +42,6 @@ import com.seniorproject.sallemapp.helpers.MyApplication;
 import com.seniorproject.sallemapp.helpers.MyHelper;
 import com.seniorproject.sallemapp.helpers.RefreshedPostsResult;
 
-
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -105,7 +100,7 @@ public class SallemService extends Service implements LocationListener, Refreshe
             //For more location accuracy, do not relay on the provider
             // returend by Android criteria, instead supply GPS proivder
             //explicitly
-            location.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60000, 20, this);
+            location.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60000, 30000, this);
             //This to anticipate if GPS is not available on the device or not enabled
             //In this case our location service will get the available location provder
             //Bear in mind that accuracy will vary based on the returned provider.

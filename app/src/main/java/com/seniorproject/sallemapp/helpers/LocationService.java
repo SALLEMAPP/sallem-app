@@ -1,16 +1,13 @@
 package com.seniorproject.sallemapp.helpers;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
@@ -23,7 +20,7 @@ import com.google.android.gms.maps.model.LatLng;
 public class LocationService implements LocationListener {
 
     private static final long MIN_TIME = 400;
-    private static final float MIN_DISTANCE = 1000;
+    private static final float MIN_DISTANCE = 10000;
     public static Location LAST_LOCATION = null;
     //The minimum distance to change updates in meters
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 0; // 10 meters
