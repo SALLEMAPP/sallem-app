@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.seniorproject.sallemapp.Activities.NotificationFragment;
+import com.seniorproject.sallemapp.R;
 
 
 /**
@@ -12,6 +13,9 @@ import com.seniorproject.sallemapp.Activities.NotificationFragment;
  */
 
 public class NotificationPageAdapter extends FragmentStatePagerAdapter {
+
+    private String notifications_menu = String.valueOf(R.string.notifications_menu_label);
+
     public NotificationPageAdapter(FragmentManager fm) {
         super(fm);
     }
@@ -26,11 +30,11 @@ public class NotificationPageAdapter extends FragmentStatePagerAdapter {
 //        switch (position){
 //
 //            case 0:
-        return NotificationFragment.newInstance(0, "Notifications");
+        return NotificationFragment.newInstance(0, notifications_menu);
         // }
     }
     @Override
     public CharSequence getPageTitle(int position){
-        return "Notifications";
+        return notifications_menu;
     }
 }

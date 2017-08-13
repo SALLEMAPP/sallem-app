@@ -11,14 +11,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-import com.google.android.gms.ads.MobileAds;
+
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.NativeExpressAdView;
+import com.google.android.gms.ads.VideoController;
+import com.google.android.gms.ads.VideoOptions;
 import com.seniorproject.sallemapp.R;
 
 public class WelcomeActivity extends AppCompatActivity {
     private static final int REQUEST_SALLEM_PERMISSIONS = 123;
-    private AdView mAdView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,14 +30,32 @@ public class WelcomeActivity extends AppCompatActivity {
         attachSigninButton();
         attachRegisterButton();
         getPermissions();
+
         // Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713
         MobileAds.initialize(this, "ca-app-pub-7249219499142063~4926980836");
-        mAdView = (AdView) findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice("DFDC2A32E5ECB1E43EB3ADAEFB76B2FF")
-                .build();
-        boolean isTestDevice = adRequest.isTestDevice(this);
-        mAdView.loadAd(adRequest);
+        final NativeExpressAdView adView = (NativeExpressAdView)findViewById(R.id.adView);
+        adView.setVideoOptions(new VideoOptions.Builder()
+                .setStartMuted(true)
+                .build());
+        //TODO comment or uncomment test device in Google Ad.
+        final AdRequest request = new AdRequest.Builder().addTestDevice("DFDC2A32E5ECB1E43EB3ADAEFB76B2FF").build();
+        final boolean isTestDevice = request.isTestDevice(this);
+        if (isTestDevice) {
+        adView.loadAd(request);
+         }
+        VideoController vc = adView.getVideoController();
+        vc.setVideoLifecycleCallbacks(new VideoController.VideoLifecycleCallbacks() {
+            public void onVideoEnd() {
+                // Here apps can take action knowing video playback is finished
+                // It's always a good idea to wait for playback to complete before
+                // replacing or refreshing a native ad, for example.
+                if (isTestDevice) {
+                adView.loadAd(request);
+                 }
+                super.onVideoEnd();
+            }
+        });
+
     }
 
     private void attachRegisterButton() {
@@ -44,7 +65,7 @@ public class WelcomeActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent registerIntent = new Intent(getApplicationContext(), RegistrationActivity.class);
                 startActivity(registerIntent);
-                finish();
+                //finish();
             }
         });
     }
@@ -56,7 +77,7 @@ public class WelcomeActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent signinIntent = new Intent(getApplicationContext(), SignInActivity.class);
                 startActivity(signinIntent);
-                finish();
+               // finish();
             }
         });
     }
@@ -77,27 +98,38 @@ public class WelcomeActivity extends AppCompatActivity {
 
     @TargetApi(23)
     public void getPermissions() {
-        if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+        if(ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 ||
-                ContextCompat.checkSelfPermission( getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 ||
-                ContextCompat.checkSelfPermission( getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
                 )
         {
 
             shouldShowRequestPermissionRationale(
-                    Manifest.permission_group.LOCATION);
+                    Manifest.permission.ACCESS_FINE_LOCATION);    //Manifest.permission_group.LOCATION
             shouldShowRequestPermissionRationale(
-                    Manifest.permission_group.STORAGE);
+                    Manifest.permission.ACCESS_COARSE_LOCATION);
+            shouldShowRequestPermissionRationale(
+                    Manifest.permission.READ_EXTERNAL_STORAGE);            //Manifest.permission_group.STORAGE
             requestPermissions(
                     new String[]{
-                            Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.ACCESS_COARSE_LOCATION,
-                            Manifest.permission.READ_EXTERNAL_STORAGE
+                            android.Manifest.permission.ACCESS_FINE_LOCATION,
+                            android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                            android.Manifest.permission.READ_EXTERNAL_STORAGE
                     }, REQUEST_SALLEM_PERMISSIONS
             );
 
         }
+
+/*        else {
+
+            requestPermissions(new String[] {
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+            }, REQUEST_SALLEM_PERMISSIONS );
+        }*/
 
     }
 

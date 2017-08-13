@@ -3,7 +3,6 @@ package com.seniorproject.sallemapp.Activities;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,18 +11,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.NativeExpressAdView;
 import com.seniorproject.sallemapp.Activities.listsadpaters.FriendsListAdapter;
 import com.seniorproject.sallemapp.R;
-import com.seniorproject.sallemapp.entities.DomainPost;
 import com.seniorproject.sallemapp.entities.DomainUser;
-import com.seniorproject.sallemapp.entities.User;
 import com.seniorproject.sallemapp.helpers.ListAsyncResult;
 import com.seniorproject.sallemapp.helpers.LoadFriendsAsync;
 import com.seniorproject.sallemapp.helpers.MyApplication;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 
 public class FriendsFragment extends ListFragment implements ListAsyncResult<DomainUser> {
@@ -42,6 +41,8 @@ public class FriendsFragment extends ListFragment implements ListAsyncResult<Dom
     public FriendsFragment() {
         // Required empty public constructor
     }
+
+    private NativeExpressAdView adView;
 
     /**
      * Use this factory method to create a new instance of
@@ -78,6 +79,17 @@ public class FriendsFragment extends ListFragment implements ListAsyncResult<Dom
         mMyApplication = (MyApplication)getActivity().getApplication();
         attachSearchButton();
         loadFriends();
+
+        // Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713
+        MobileAds.initialize(getContext(), "ca-app-pub-7249219499142063~4926980836");
+        adView = (NativeExpressAdView)mCurrentView.findViewById(R.id.adView);
+        //TODO comment or uncomment test device in Google Ad.
+        AdRequest request = new AdRequest.Builder().addTestDevice("DFDC2A32E5ECB1E43EB3ADAEFB76B2FF").build();
+        boolean isTestDevice = request.isTestDevice(getContext());
+        if (isTestDevice) {
+            adView.loadAd(request);
+        }
+
         return mCurrentView;
 
     }

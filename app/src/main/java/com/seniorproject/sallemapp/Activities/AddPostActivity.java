@@ -6,11 +6,9 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -20,32 +18,22 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
 import com.seniorproject.sallemapp.R;
 import com.seniorproject.sallemapp.entities.DomainComment;
 import com.seniorproject.sallemapp.entities.DomainPost;
 import com.seniorproject.sallemapp.entities.DomainUser;
 import com.seniorproject.sallemapp.entities.Post;
-import com.seniorproject.sallemapp.entities.PostImage;
 import com.seniorproject.sallemapp.helpers.CommonMethods;
-import com.seniorproject.sallemapp.helpers.EntityAsyncResult;
 import com.seniorproject.sallemapp.helpers.MyHelper;
 import com.seniorproject.sallemapp.helpers.SavePostAsync;
-import com.squareup.okhttp.OkHttpClient;
 
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.security.InvalidKeyException;
 import java.util.ArrayList;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 public class AddPostActivity extends AppCompatActivity {
 
@@ -53,6 +41,9 @@ public class AddPostActivity extends AppCompatActivity {
     private static final int REQUEST_CODE = 121;
     ProgressBar progressBar;
     private String mPostId;
+
+    private InterstitialAd mInterstitialAd;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +52,34 @@ public class AddPostActivity extends AppCompatActivity {
         progressBar.setVisibility(View.GONE);
         attchPostButton();
         attachOpenGalaryButton();
+
+
+
+        //TODO comment or uncomment test device in Google Ad.
+        // Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713
+        MobileAds.initialize(this, "ca-app-pub-7249219499142063~4926980836");
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-7249219499142063/7589205202");
+        final AdRequest adRequest = new AdRequest.Builder().addTestDevice("DFDC2A32E5ECB1E43EB3ADAEFB76B2FF").build();
+        mInterstitialAd.loadAd(adRequest);
+        boolean isTestDevice = adRequest.isTestDevice(this);
+        if ((isTestDevice) && mInterstitialAd.isLoaded())  {
+            mInterstitialAd.show();
+        }
+        else {
+            Log.d("TAG", "The interstitial wasn't loaded yet.");
+        }
+
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                Log.i("Ads", "onAdFailedToLoad");
+                // Load the next interstitial.
+                mInterstitialAd.loadAd(adRequest);
+                mInterstitialAd.show();
+            }
+
+        });
 
 
     }
@@ -122,6 +141,7 @@ public class AddPostActivity extends AppCompatActivity {
             public void onClick(View v) {
                if(isValid()){
                    addPost();
+                   mInterstitialAd.show();
                }
             }
         });

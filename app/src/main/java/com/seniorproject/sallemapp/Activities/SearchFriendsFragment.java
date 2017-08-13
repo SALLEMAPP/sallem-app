@@ -11,11 +11,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.NativeExpressAdView;
+import com.google.android.gms.ads.VideoController;
+import com.google.android.gms.ads.VideoOptions;
 import com.seniorproject.sallemapp.Activities.listsadpaters.SearchUsersListAdapter;
 import com.seniorproject.sallemapp.R;
 import com.seniorproject.sallemapp.entities.DomainUser;
 import com.seniorproject.sallemapp.helpers.ListAsyncResult;
-import com.seniorproject.sallemapp.helpers.MyApplication;
 import com.seniorproject.sallemapp.helpers.SearchUsersAsync;
 
 import java.util.ArrayList;
@@ -40,6 +44,8 @@ public class SearchFriendsFragment extends Fragment implements ListAsyncResult<D
     public SearchFriendsFragment() {
         // Required empty public constructor
     }
+
+    private NativeExpressAdView adView;
 
     /**
      * Use this factory method to create a new instance of
@@ -79,6 +85,31 @@ public class SearchFriendsFragment extends Fragment implements ListAsyncResult<D
         mSearchButton =  (Button)mCurrentView.findViewById(R.id.searchFriends_btnSearch);
         wireResultList(new ArrayList<DomainUser>());
         wireSearchButton();
+
+        // Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713
+        MobileAds.initialize(getContext(), "ca-app-pub-7249219499142063~4926980836");
+        adView = (NativeExpressAdView) mCurrentView.findViewById(R.id.adView);
+        adView.setVideoOptions(new VideoOptions.Builder()
+                .setStartMuted(true)
+                .build());
+        //TODO comment or uncomment test device in Google Ad.
+        final AdRequest request = new AdRequest.Builder().addTestDevice("DFDC2A32E5ECB1E43EB3ADAEFB76B2FF").build();
+        final boolean isTestDevice = request.isTestDevice(getContext());
+        if (isTestDevice) {
+            adView.loadAd(request);
+        }
+        VideoController vc = adView.getVideoController();
+        vc.setVideoLifecycleCallbacks(new VideoController.VideoLifecycleCallbacks() {
+            public void onVideoEnd() {
+                // Here apps can take action knowing video playback is finished
+                // It's always a good idea to wait for playback to complete before
+                // replacing or refreshing a native ad, for example.
+                if (isTestDevice) {
+                    adView.loadAd(request);
+                }
+                super.onVideoEnd();
+            }
+        });
 
         return mCurrentView;
     }

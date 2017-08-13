@@ -4,9 +4,9 @@ android {
     buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "com.seniorproject.sallemapp"
-        minSdkVersion 21
-        targetSdkVersion 25
-        versionCode 1
+        minSdkVersion 17
+        targetSdkVersion 26
+        versionCode 3
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -30,6 +30,8 @@ android {
     compileOptions {
 //        targetCompatibility 1.8
 //        sourceCompatibility 1.8
+    }
+    productFlavors {
     }
 }
 

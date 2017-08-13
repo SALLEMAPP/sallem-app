@@ -15,27 +15,25 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog;
-import android.view.View;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.support.design.widget.TabLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.seniorproject.sallemapp.Activities.pagesadapters.ActivitiesPageAdapter;
 import com.seniorproject.sallemapp.Activities.pagesadapters.FriendsPageAdapter;
 import com.seniorproject.sallemapp.Activities.pagesadapters.HomePageAdater;
 import com.seniorproject.sallemapp.Activities.pagesadapters.NearbyPageAdapter;
@@ -187,7 +185,7 @@ public class HomeActivity extends AppCompatActivity
             adapterViewPager = new HomePageAdater(getSupportFragmentManager());
             myViewPager.setAdapter(adapterViewPager);
             _currnetMenu = CurrentMenu.HOME;
-            this.setTitle("Posts");
+            this.setTitle(R.string.addPost_btn);
             fab.setVisibility(View.VISIBLE);
 
 
@@ -196,7 +194,7 @@ public class HomeActivity extends AppCompatActivity
             adapterViewPager = new FriendsPageAdapter(getSupportFragmentManager());
             myViewPager.setAdapter(adapterViewPager);
             _currnetMenu = CurrentMenu.FIRENDS;
-            this.setTitle("Friends");
+            this.setTitle(R.string.friends_menu_label);
             fab.setVisibility(View.GONE);
 
 
@@ -204,7 +202,7 @@ public class HomeActivity extends AppCompatActivity
         } else if (id == R.id.nav_near_friends) {
             adapterViewPager = new NearbyPageAdapter(getSupportFragmentManager());
             myViewPager.setAdapter(adapterViewPager);
-            this.setTitle("Near Friends");
+            this.setTitle(R.string.nearFriends_label);
             fab.setVisibility(View.GONE);
 
 
@@ -225,21 +223,21 @@ public class HomeActivity extends AppCompatActivity
 
             adapterViewPager = new NotificationPageAdapter(getSupportFragmentManager());
             myViewPager.setAdapter(adapterViewPager);
-            this.setTitle("Notifications");
+            this.setTitle(R.string.notifications_menu_label);
             fab.setVisibility(View.GONE);
 
         } else if (id == R.id.nav_settings) {
 
             adapterViewPager = new SettingsPageAdapter(getSupportFragmentManager());
             myViewPager.setAdapter(adapterViewPager);
-            this.setTitle("Settings");
+            this.setTitle(R.string.settings_menu_label);
             fab.setVisibility(View.GONE);
 
         }
            else if(id == R.id.nav_logout){
             new AlertDialog.Builder(this)
-                    .setTitle("SALLEM")
-                    .setMessage("Are you sure to logout?")
+                    .setTitle(R.string.app_name)
+                    .setMessage(R.string.logout_msg)
                     .setIcon(R.drawable.ic_warning_black_24dp)
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {

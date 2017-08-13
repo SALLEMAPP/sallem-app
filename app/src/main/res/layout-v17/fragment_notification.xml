@@ -25,7 +25,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_gravity="right"
+                android:layout_gravity="end"
                 android:text="@string/notify_markAllRead_btn"
                 android:textAllCaps="true"
                 android:textColor="@color/sallemWhite"

@@ -24,28 +24,29 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="8dp"
         app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintVertical_bias="0.092"
-        android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp" />
 
     <TextView
         android:id="@+id/lbl_poster_user_name"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/sign_in_txt_user_name"
-        android:layout_alignBottom="@+id/sign_in_txt_user_name"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
         android:text="@string/user_name_label"
         android:textColor="@android:color/background_dark"
         android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="@+id/sign_in_txt_user_name"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_alignBaseline="@+id/sign_in_txt_user_name"
+        android:layout_alignBottom="@+id/sign_in_txt_user_name"
+        android:layout_alignParentStart="true"
         app:layout_constraintTop_toTopOf="@+id/sign_in_txt_user_name"
-        app:layout_constraintVertical_bias="1.0" />
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/sign_in_txt_user_name"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintVertical_bias="0.01"
+        android:layout_marginStart="8dp" />
 
     <TextView
         android:text="@string/password_label"
@@ -79,7 +80,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.098"
+        app:layout_constraintVertical_bias="0.088"
         app:layout_constraintStart_toEndOf="@+id/lbl_password"
         app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
@@ -131,8 +132,6 @@
         android:layout_alignTop="@+id/Btn_Sign_in"
         android:layout_alignEnd="@+id/lbl_poster_user_name"
         android:id="@+id/singin_progress_bar"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="8dp"
@@ -140,6 +139,8 @@
         android:layout_marginTop="8dp"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintVertical_bias="0.516"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toStartOf="@+id/Btn_Sign_in" />
 
     <!-- <Button

@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.seniorproject.sallemapp.Activities.SearchFriendsFragment">
+    tools:context="com.seniorproject.sallemapp.Activities.SearchFriendsFragment"
+    xmlns:ads="http://schemas.android.com/apk/res-auto" >
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -59,7 +60,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="0dp"
                 android:backgroundTint="@color/sallemBlue"
-                android:text="Search"
+                android:text="@string/searchFriend_btn"
                 android:textColor="@color/sallemWhite"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintHorizontal_bias="0.836"
@@ -88,6 +89,20 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout"
             app:layout_constraintVertical_bias="0.045" />
+
+        <com.google.android.gms.ads.NativeExpressAdView
+            android:id="@+id/adView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="1dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginStart="1dp"
+            android:layout_marginEnd="1dp"
+            app:layout_constraintTop_toBottomOf="@+id/searchFriends_listUsers"
+            ads:adSize="358x399"
+            ads:adUnitId="ca-app-pub-7249219499142063/2269537717">
+
+        </com.google.android.gms.ads.NativeExpressAdView>
 
     </android.support.constraint.ConstraintLayout>
 

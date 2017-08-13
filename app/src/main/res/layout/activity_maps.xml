@@ -11,7 +11,7 @@
         android:id="@+id/map_selectButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Add selected location"
+        android:text="@string/map_select_btn"
         />
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"

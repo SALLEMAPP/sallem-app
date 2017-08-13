@@ -12,12 +12,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.NativeExpressAdView;
 import com.seniorproject.sallemapp.Activities.listsadpaters.NotifiesListAdapter;
 import com.seniorproject.sallemapp.Activities.localdb.NotifyDataSource;
 import com.seniorproject.sallemapp.R;
 import com.seniorproject.sallemapp.entities.DomainUser;
 import com.seniorproject.sallemapp.entities.Notify;
-import com.seniorproject.sallemapp.helpers.LoadNotifiesAsync;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +50,8 @@ public class NotificationFragment extends ListFragment {
     public NotificationFragment() {
         // Required empty public constructor
     }
+
+    private NativeExpressAdView adView;
 
     @Override
     public void onResume() {
@@ -90,6 +94,16 @@ public class NotificationFragment extends ListFragment {
         mContext = getContext();
         attachNotifiesList(v);
         attachMarkAllButton(v);
+
+        // Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713
+        MobileAds.initialize(getContext(), "ca-app-pub-7249219499142063~4926980836");
+        adView = (NativeExpressAdView) v.findViewById(R.id.adView);
+        //TODO comment or uncomment test device in Google Ad.
+        AdRequest request = new AdRequest.Builder().addTestDevice("DFDC2A32E5ECB1E43EB3ADAEFB76B2FF").build();
+        boolean isTestDevice = request.isTestDevice(getContext());
+        if (isTestDevice) {
+            adView.loadAd(request);
+        }
 
         return v;
     }

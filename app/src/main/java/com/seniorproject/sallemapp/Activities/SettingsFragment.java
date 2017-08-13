@@ -22,6 +22,9 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 import com.seniorproject.sallemapp.Activities.localdb.UserDataSource;
@@ -31,7 +34,6 @@ import com.seniorproject.sallemapp.entities.User;
 import com.seniorproject.sallemapp.helpers.MyHelper;
 
 import java.io.IOException;
-import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -63,6 +65,8 @@ public class SettingsFragment extends Fragment {
     public SettingsFragment() {
         // Required empty public constructor
     }
+
+    private AdView mAdView;
 
     /**
      * Use this factory method to create a new instance of
@@ -109,6 +113,18 @@ public class SettingsFragment extends Fragment {
         initSaveSettings();
         attachOpenAvatar();
         attachSwitchButton();
+
+        // Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713
+        MobileAds.initialize(getContext(), "ca-app-pub-7249219499142063~4926980836");
+        mAdView = (AdView) mCurrentView.findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder()
+               .addTestDevice("DFDC2A32E5ECB1E43EB3ADAEFB76B2FF")      //TODO comment or uncomment test device in Google Ad.
+                .build();
+        boolean isTestDevice = adRequest.isTestDevice(getContext());
+        if (isTestDevice) {
+            mAdView.loadAd(adRequest);
+        }
+
         return view;
 
     }

@@ -8,7 +8,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +21,6 @@ import com.seniorproject.sallemapp.entities.DomainPost;
 import com.seniorproject.sallemapp.helpers.CommonMethods;
 import com.seniorproject.sallemapp.helpers.ListAsyncResult;
 import com.seniorproject.sallemapp.helpers.MyApplication;
-import com.seniorproject.sallemapp.helpers.MyHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +58,8 @@ public class PostsFragment extends Fragment implements ListAsyncResult<DomainPos
         // Required empty public constructor
     }
 
+
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -85,7 +85,6 @@ public class PostsFragment extends Fragment implements ListAsyncResult<DomainPos
             _page = getArguments().getInt(ARG_PARAM1);
             _title = getArguments().getString(ARG_PARAM2);
         }
-
 
     }
 
@@ -118,6 +117,7 @@ public class PostsFragment extends Fragment implements ListAsyncResult<DomainPos
         getActivity().registerReceiver(mEventsReciever, mIntentFilter);
         getActivity().registerReceiver(mAddNewPostReceiver, mAddNewPostFiler);
         mMyApp =(MyApplication) getActivity().getApplication();
+
 
         return _currentView;
 

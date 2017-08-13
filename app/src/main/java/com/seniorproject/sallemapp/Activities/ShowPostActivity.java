@@ -1,11 +1,9 @@
 package com.seniorproject.sallemapp.Activities;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
@@ -15,14 +13,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.google.common.base.Predicate;
-import com.microsoft.azure.storage.CloudStorageAccount;
-import com.microsoft.azure.storage.StorageException;
-import com.microsoft.azure.storage.blob.CloudBlobClient;
-import com.microsoft.azure.storage.blob.CloudBlobContainer;
-import com.microsoft.azure.storage.blob.CloudBlockBlob;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
-import com.microsoft.windowsazure.mobileservices.http.OkHttpClientFactory;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 import com.seniorproject.sallemapp.Activities.listsadpaters.CommentsListAdapter;
 import com.seniorproject.sallemapp.R;
@@ -30,30 +21,16 @@ import com.seniorproject.sallemapp.entities.Comment;
 import com.seniorproject.sallemapp.entities.DomainComment;
 import com.seniorproject.sallemapp.entities.DomainPost;
 import com.seniorproject.sallemapp.entities.DomainUser;
-import com.seniorproject.sallemapp.entities.Post;
-import com.seniorproject.sallemapp.entities.User;
 import com.seniorproject.sallemapp.helpers.CommonMethods;
-import com.seniorproject.sallemapp.helpers.AzureBlob;
 import com.seniorproject.sallemapp.helpers.EntityAsyncResult;
 import com.seniorproject.sallemapp.helpers.EntityAsyncResultTwo;
 import com.seniorproject.sallemapp.helpers.MyApplication;
 import com.seniorproject.sallemapp.helpers.MyHelper;
-import com.squareup.okhttp.OkHttpClient;
 
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.security.InvalidKeyException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 public class ShowPostActivity extends AppCompatActivity implements EntityAsyncResult<DomainPost>, EntityAsyncResultTwo<DomainComment> {
 
@@ -69,6 +46,8 @@ public class ShowPostActivity extends AppCompatActivity implements EntityAsyncRe
    private DomainPost mCurrentPost;
    private MyApplication myApp;
    private DomainPost mShownPost;
+
+
 
 
     @Override
@@ -99,6 +78,7 @@ public class ShowPostActivity extends AppCompatActivity implements EntityAsyncRe
         Bundle b = getIntent().getExtras();
         String postId = b.getString("postId");
         loadPost(postId);
+
     }
 
     private void attachSendCommentButton() {

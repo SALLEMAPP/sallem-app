@@ -4,13 +4,14 @@
     <string name="loading_msg">LOADING…</string>
     <string name="signin_label">Sign in</string>
     <string name="register_label">Register</string>
-    <string name="user_name_label">Email </string>
+    <string name="email_user_name_label">Email </string>
+    <string name="user_name_label">User Name</string>
     <string name="password_label">Password </string>
     <string name="confirm_password_label">Confirm Password </string>
 
     <!-- Adding link to "Forgot Password Label" -->
 
-    <string name="forgot_password_label">
+    <string name="forgot_password_label" translatable="false">
     <a href="r">Forgot your Password ?</a>
     </string>
 
@@ -19,6 +20,36 @@
     <string name="first_name_label">First Name  </string>
     <string name="last_name_label">Last Name  </string>
     <string name="i_agree">I Agree to terms of use</string>
+    <string name="ReEnter_Password_label">Re-enter Password</string>
+    <string name="ChoosePhoto_label">Choose Your Photo</string>
+
+    <string name="createActivity_label">Create Activity</string>
+    <string name="addEvent_btn">Add</string>
+    <string name="whenEvent_label">When</string>
+    <string name="whereEvent_label">Where</string>
+    <string name="eventDate_hint">March 1, 2030</string>
+    <string name="eventTime_hint">15:00</string>
+    <string name="eventAddress_label">Address</string>
+    <string name="eventParticipants_label">Participants</string>
+
+    <string name="Post_toSALLEM_label">Post to SALLEM</string>
+    <string name="addPost_btn">Post</string>
+
+    <string name="map_select_btn">Add selected location</string>
+
+
+    <string name="home_menu_label">Home</string>
+    <string name="friends_menu_label">Friends</string>
+    <string name="meetFriends_menu_label">Meet Friends</string>
+    <string name="notifications_menu_label">Notifications</string>
+    <string name="settings_menu_label">Settings</string>
+    <string name="logout_menu_label">Log out</string>
+
+    <string name="searchFriend_btn">Search</string>
+
+    <string name="nearFriends_label">Near Friends</string>
+
+    <string name="notify_markAllRead_btn">Mark All As Read</string>
 
 
     <string name="title_activity_home">HomeActivity</string>
@@ -29,16 +60,18 @@
     <string name="action_settings">Settings</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
     <string name="allow_location_setting_label">Allow Location Discovery</string>
+    <string name="save_settings_btn">Save</string>
     <string name="serach_distance_settings_label">Search distance by KM</string>
+
     <string name="terms_of_use">Your access to or use SALLEM APP (including the licenses, public domain tools, and choosers) signifies that you have read, understood, and agreed to be bound by the terms. By accessing or using any services you also represent that you have the legal authority to accept the terms on behalf of yourself and any party you represent in connection with your use of any services. If you do not agree to the terms, you are not authorized to use any services.</string>
 
     <!-- Strings related to Settings -->
 
     <!-- Example General settings -->
 
-    <string-array name="pref_search_distance">
+    <string-array name="pref_search_distance" translatable="false">
         <item>1</item>
         <item>2</item>
         <item>3</item>
@@ -51,14 +84,32 @@
         <item>10</item>
     </string-array>
 
-    <string-array name="pref_status">
+    <string-array name="pref_status" translatable="false">
         <item>Online</item>
         <item>Busy</item>
         <item>Offline</item>
     </string-array>
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_select_participants">SelectParticipantsActivity</string>
+
     <string name="notify_all">Notify All</string>
+    <string name="Notify">Notify</string>
+    <string name="yourFriend">Your friend</string>
+
+    <string name="friendRequests_Accept_btn">Accept</string>
+    <string name="friendRequests_Decline_btn">Decline</string>
+
+    <string name="send_Friendship_Request_label">Send Request</string>
+
+    <string name="send_Notify_label">Send</string>
+
+    <string name="comments_label">Comments</string>
+
+    <string name="logout_msg">Are you sure to logout?</string>
+
+    <string name="friends_requests_menu">Requests</string>
+
+    <string name="page_position">Page</string>
 
     <!-- Example settings for Data & Sync -->
 

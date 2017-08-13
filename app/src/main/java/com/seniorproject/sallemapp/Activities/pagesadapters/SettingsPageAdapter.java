@@ -2,21 +2,24 @@ package com.seniorproject.sallemapp.Activities.pagesadapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.view.View;
-import android.view.ViewGroup;
 
-import com.seniorproject.sallemapp.Activities.PostsFragment;
 import com.seniorproject.sallemapp.Activities.SettingsFragment;
+import com.seniorproject.sallemapp.R;
 
-import static android.support.v4.view.PagerAdapter.POSITION_NONE;
 
 /**
  * Created by abdul on 18-Feb-2017.
  */
 
 public class SettingsPageAdapter extends FragmentStatePagerAdapter {
+
+    private String settings_menu = String.valueOf(R.string.settings_menu_label);
+
+
+
+
+
     public SettingsPageAdapter(FragmentManager fm) {
         super(fm);
     }
@@ -30,12 +33,12 @@ public class SettingsPageAdapter extends FragmentStatePagerAdapter {
 //        switch (position){
 //
 //            case 0:
-                return SettingsFragment.newInstance(0, "Settings");
+                return SettingsFragment.newInstance(0, settings_menu.toString());
        // }
     }
     @Override
     public CharSequence getPageTitle(int position){
-        return "Settings";
+        return settings_menu.toString();
     }
 
 

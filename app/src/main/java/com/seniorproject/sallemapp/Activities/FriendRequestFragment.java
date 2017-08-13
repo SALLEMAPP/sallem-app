@@ -14,7 +14,9 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
-import com.microsoft.azure.storage.StorageException;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 import com.seniorproject.sallemapp.Activities.listsadpaters.FriendRequestsListAdapter;
@@ -23,7 +25,6 @@ import com.seniorproject.sallemapp.entities.DomainFriendship;
 import com.seniorproject.sallemapp.entities.DomainUser;
 import com.seniorproject.sallemapp.entities.Friendship;
 import com.seniorproject.sallemapp.entities.User;
-import com.seniorproject.sallemapp.helpers.AzureBlob;
 import com.seniorproject.sallemapp.helpers.MyHelper;
 import com.seniorproject.sallemapp.helpers.UpdateFriendRequestAsync;
 
@@ -55,6 +56,8 @@ public class FriendRequestFragment extends ListFragment {
     public FriendRequestFragment() {
         // Required empty public constructor
     }
+
+    private AdView mAdView;
 
     /**
      * Use this factory method to create a new instance of
@@ -90,6 +93,18 @@ public class FriendRequestFragment extends ListFragment {
         mProgress = (ProgressBar) mCurrentView.findViewById(R.id.requesFrag_prog);
         mContext = getContext();
         loadFriendRequest();
+
+        // Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713
+        MobileAds.initialize(getContext(), "ca-app-pub-7249219499142063~4926980836");
+        mAdView = (AdView) mCurrentView.findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice("DFDC2A32E5ECB1E43EB3ADAEFB76B2FF")    //TODO comment or uncomment test device in Google Ad.
+                .build();
+        boolean isTestDevice = adRequest.isTestDevice(getContext());
+        if (isTestDevice) {
+            mAdView.loadAd(adRequest);
+        }
+
         return mCurrentView;
     }
 

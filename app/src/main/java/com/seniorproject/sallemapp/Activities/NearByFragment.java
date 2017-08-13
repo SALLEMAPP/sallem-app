@@ -1,7 +1,6 @@
 package com.seniorproject.sallemapp.Activities;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -30,7 +29,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -43,7 +41,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.microsoft.azure.storage.StorageException;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 import com.microsoft.windowsazure.mobileservices.table.query.QueryOrder;
@@ -55,16 +52,12 @@ import com.seniorproject.sallemapp.entities.Notify;
 import com.seniorproject.sallemapp.entities.User;
 import com.seniorproject.sallemapp.entities.UserLocation;
 import com.seniorproject.sallemapp.entities.UserOnMap;
-import com.seniorproject.sallemapp.helpers.AzureBlob;
 import com.seniorproject.sallemapp.helpers.LocationService;
 import com.seniorproject.sallemapp.helpers.MyHelper;
 import com.seniorproject.sallemapp.helpers.SendNotifyAsync;
 
-
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -92,6 +85,7 @@ public class NearByFragment extends Fragment implements PopupMenu.OnMenuItemClic
     private Button mNotifyAllButton;
     private String mNotifyReceiverId;
 
+
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState){
         mCurrentView =  inflater.inflate( R.layout.fragment_near_by, container, false);
@@ -105,6 +99,8 @@ public class NearByFragment extends Fragment implements PopupMenu.OnMenuItemClic
             String msg = "Enable location service in your device";
             String title = "SALLEM";
             MyHelper.createAndShowDialog(getContext(), msg, title);
+
+
             return mCurrentView;
         }
 

@@ -5,41 +5,39 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.microsoft.azure.storage.StorageException;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
 import com.seniorproject.sallemapp.Activities.localdb.UserDataSource;
+import com.seniorproject.sallemapp.R;
 import com.seniorproject.sallemapp.entities.DomainUser;
 import com.seniorproject.sallemapp.entities.User;
 import com.seniorproject.sallemapp.helpers.CommonMethods;
-import com.seniorproject.sallemapp.helpers.AzureBlob;
 import com.seniorproject.sallemapp.helpers.EncryptionHelper;
 import com.seniorproject.sallemapp.helpers.EntityAsyncResult;
 import com.seniorproject.sallemapp.helpers.MyHelper;
 
-
-import com.seniorproject.sallemapp.R;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.security.InvalidKeyException;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class SignInActivity extends AppCompatActivity implements EntityAsyncResult<DomainUser> {
 
     ProgressBar _savingProgressBar;
+    private AdView mAdView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +45,17 @@ public class SignInActivity extends AppCompatActivity implements EntityAsyncResu
         _savingProgressBar = (ProgressBar)findViewById(R.id.singin_progress_bar);
         _savingProgressBar.setVisibility(ProgressBar.GONE);
         attachSigninButton();
+
+        // Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713
+        MobileAds.initialize(this, "ca-app-pub-7249219499142063~4926980836");
+        mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice("DFDC2A32E5ECB1E43EB3ADAEFB76B2FF")         //TODO comment or uncomment test device in Google Ad.
+                .build();
+        boolean isTestDevice = adRequest.isTestDevice(this);
+        if (isTestDevice) {
+            mAdView.loadAd(adRequest);
+        }
     }
 
     private void attachSigninButton() {
