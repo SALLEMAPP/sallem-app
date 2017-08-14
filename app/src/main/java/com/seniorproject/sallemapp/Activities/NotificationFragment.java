@@ -99,11 +99,11 @@ public class NotificationFragment extends ListFragment {
         MobileAds.initialize(getContext(), "ca-app-pub-7249219499142063~4926980836");
         adView = (NativeExpressAdView) v.findViewById(R.id.adView);
         //TODO comment or uncomment test device in Google Ad.
-        AdRequest request = new AdRequest.Builder().addTestDevice("DFDC2A32E5ECB1E43EB3ADAEFB76B2FF").build();
-        boolean isTestDevice = request.isTestDevice(getContext());
-        if (isTestDevice) {
+        AdRequest request = new AdRequest.Builder()/*.addTestDevice("DFDC2A32E5ECB1E43EB3ADAEFB76B2FF")*/.build();
+       // boolean isTestDevice = request.isTestDevice(getContext());
+        //if (isTestDevice) {
             adView.loadAd(request);
-        }
+        //}
 
         return v;
     }

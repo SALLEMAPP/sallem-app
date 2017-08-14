@@ -60,10 +60,10 @@ public class AddPostActivity extends AppCompatActivity {
         MobileAds.initialize(this, "ca-app-pub-7249219499142063~4926980836");
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId("ca-app-pub-7249219499142063/7589205202");
-        final AdRequest adRequest = new AdRequest.Builder().addTestDevice("DFDC2A32E5ECB1E43EB3ADAEFB76B2FF").build();
+        final AdRequest adRequest = new AdRequest.Builder()/*.addTestDevice("DFDC2A32E5ECB1E43EB3ADAEFB76B2FF")*/.build();
         mInterstitialAd.loadAd(adRequest);
-        boolean isTestDevice = adRequest.isTestDevice(this);
-        if ((isTestDevice) && mInterstitialAd.isLoaded())  {
+       // boolean isTestDevice = adRequest.isTestDevice(this);
+        if (/*(isTestDevice) &&*/ mInterstitialAd.isLoaded())  {
             mInterstitialAd.show();
         }
         else {
