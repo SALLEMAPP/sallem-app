@@ -93,20 +93,20 @@ public class SearchFriendsFragment extends Fragment implements ListAsyncResult<D
                 .setStartMuted(true)
                 .build());
         //TODO comment or uncomment test device in Google Ad.
-        final AdRequest request = new AdRequest.Builder()/*.addTestDevice("DFDC2A32E5ECB1E43EB3ADAEFB76B2FF")*/.build();
-        //final boolean isTestDevice = request.isTestDevice(getContext());
-        //if (isTestDevice) {
+        final AdRequest request = new AdRequest.Builder().addTestDevice("DFDC2A32E5ECB1E43EB3ADAEFB76B2FF").build();
+        final boolean isTestDevice = request.isTestDevice(getContext());
+        if (isTestDevice) {
             adView.loadAd(request);
-        //}
+        }
         VideoController vc = adView.getVideoController();
         vc.setVideoLifecycleCallbacks(new VideoController.VideoLifecycleCallbacks() {
             public void onVideoEnd() {
                 // Here apps can take action knowing video playback is finished
                 // It's always a good idea to wait for playback to complete before
                 // replacing or refreshing a native ad, for example.
-               // if (isTestDevice) {
+                if (isTestDevice) {
                     adView.loadAd(request);
-              //  }
+                }
                 super.onVideoEnd();
             }
         });

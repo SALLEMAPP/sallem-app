@@ -50,12 +50,12 @@ public class SignInActivity extends AppCompatActivity implements EntityAsyncResu
         MobileAds.initialize(this, "ca-app-pub-7249219499142063~4926980836");
         mAdView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder()
-              //  .addTestDevice("DFDC2A32E5ECB1E43EB3ADAEFB76B2FF")         //TODO comment or uncomment test device in Google Ad.
+                .addTestDevice("DFDC2A32E5ECB1E43EB3ADAEFB76B2FF")         //TODO comment or uncomment test device in Google Ad.
                 .build();
-      /*  boolean isTestDevice = adRequest.isTestDevice(this);
-        if (isTestDevice) {*/
+        boolean isTestDevice = adRequest.isTestDevice(this);
+        if (isTestDevice) {
             mAdView.loadAd(adRequest);
-        //}
+        }
     }
 
     private void attachSigninButton() {

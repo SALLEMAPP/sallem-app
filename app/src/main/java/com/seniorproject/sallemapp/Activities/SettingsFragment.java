@@ -118,12 +118,12 @@ public class SettingsFragment extends Fragment {
         MobileAds.initialize(getContext(), "ca-app-pub-7249219499142063~4926980836");
         mAdView = (AdView) mCurrentView.findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder()
-              // .addTestDevice("DFDC2A32E5ECB1E43EB3ADAEFB76B2FF")      //TODO comment or uncomment test device in Google Ad.
+               .addTestDevice("DFDC2A32E5ECB1E43EB3ADAEFB76B2FF")      //TODO comment or uncomment test device in Google Ad.
                 .build();
-      /*  boolean isTestDevice = adRequest.isTestDevice(getContext());
-        if (isTestDevice) {*/
+        boolean isTestDevice = adRequest.isTestDevice(getContext());
+        if (isTestDevice) {
             mAdView.loadAd(adRequest);
-        //}
+        }
 
         return view;
 

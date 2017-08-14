@@ -4,10 +4,10 @@ android {
     buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "com.seniorproject.sallemapp"
-        minSdkVersion 17
+        minSdkVersion 21
         targetSdkVersion 25
-        versionCode 4
-        versionName "1.0"
+        versionCode 5
+        versionName "2.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
@@ -45,6 +45,7 @@ dependencies {
     compile 'com.microsoft.azure:azure-notifications-handler:1.0.1@jar'
     compile 'com.android.support:appcompat-v7:25.2.0'
     compile 'com.android.support:design:25.2.0'
+ //   compile 'com.android.support:multidex:1.0.1'
     compile 'joda-time:joda-time:2.9.7'
     compile 'com.microsoft.azure:azure-mobile-android:3.1.0'
     compile 'com.microsoft.azure.android:azure-storage-android:1.0.0@aar'
@@ -53,6 +54,11 @@ dependencies {
     compile 'com.google.android.gms:play-services-ads:10.2.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
+
+   /* configurations {
+        all*.exclude  module: 'windowsazure'
+    }*/
+
 }
 
 
