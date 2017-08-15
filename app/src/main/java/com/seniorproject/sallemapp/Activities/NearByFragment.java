@@ -84,6 +84,7 @@ public class NearByFragment extends Fragment implements PopupMenu.OnMenuItemClic
     private Button mNotifyBotton;
     private Button mNotifyAllButton;
     private String mNotifyReceiverId;
+    private int mNearbyMsg;
 
 
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
@@ -107,6 +108,7 @@ public class NearByFragment extends Fragment implements PopupMenu.OnMenuItemClic
         mUsersOnMarkers = new ArrayList<>();
         mUserInfo = (TextView) mCurrentView.findViewById(R.id.bottom_lblInfo);
         mUserAvatar =(ImageView) mCurrentView.findViewById(R.id.bottom_imgAvatar);
+        mNearbyMsg = (R.string.nearbyFriend_msg);
         attachButtomNotify();
         attachButtomNotifyAll();
         mMapView.onCreate(savedInstanceState);
@@ -154,9 +156,11 @@ public class NearByFragment extends Fragment implements PopupMenu.OnMenuItemClic
                         Notify notify = createNotify(mNotifyReceiverId);
                         notifies.add(notify);
                         sendNotify(notifies);
+                        Toast.makeText(mContext, R.string.NotifySent_msg , Toast.LENGTH_LONG).show();
                     }
                 }
             });
+
         }
         private void sendNotify(List<Notify> notifies){
             SendNotifyAsync sendNotify = new SendNotifyAsync(notifies, mContext);
@@ -176,6 +180,7 @@ public class NearByFragment extends Fragment implements PopupMenu.OnMenuItemClic
                         notifies.add(notify);
                     }
                 sendNotify(notifies);
+                    Toast.makeText(mContext, R.string.NotifyAllSent_msg , Toast.LENGTH_LONG).show();
                 }
 
             }
@@ -189,7 +194,7 @@ public class NearByFragment extends Fragment implements PopupMenu.OnMenuItemClic
             notify.setSourceUser(currentUserId);
             notify.setDestUser(recieverId);
             notify.setTitle(DomainUser.CURRENT_USER.getFirstName() + " " + DomainUser.CURRENT_USER.getLasttName());
-            notify.setSubject("Invited you for a meeting");
+            notify.setSubject(getString(R.string.InvitationNotify_msg));
             notify.setDelivered(false);
             notify.setPublishedAt(MyHelper.getCurrentDateTime());
             return notify;
@@ -269,9 +274,9 @@ public class NearByFragment extends Fragment implements PopupMenu.OnMenuItemClic
         if(lastLocation == null){return;}
         LatLng point = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
         String userName = DomainUser.CURRENT_USER.getFirstName() + " " + DomainUser.CURRENT_USER.getLasttName();
-        mGooglMap.addMarker(new MarkerOptions().position(point).title(userName)); //.snippet("Marker Description"));
+        mGooglMap.addMarker(new MarkerOptions().position(point).title(userName).snippet(userName)); //.snippet("Marker Description"));
         // For zooming automatically to the location of the marker
-        CameraPosition cameraPosition = new CameraPosition.Builder().target(point).zoom(17).build();
+        CameraPosition cameraPosition = new CameraPosition.Builder().target(point).zoom(12).build(); //zoom 17
         mGooglMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         SearchNearFriendsAsycn nearFriendsAsycn = new SearchNearFriendsAsycn(DomainUser.CURRENT_USER.getId());
         nearFriendsAsycn.execute();
@@ -336,8 +341,8 @@ public class NearByFragment extends Fragment implements PopupMenu.OnMenuItemClic
             mNotifyBotton.setEnabled(true);
             mNotifyAllButton.setEnabled(true);
             mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-            //mUserInfo.setText(userOnMap.getUserName() + " is about " + userOnMap.getDistance() + " meters from you.");
-            mUserInfo.setText(userOnMap.getUserName() + " is neaer to you.");
+            mUserInfo.setText(getText(mNearbyMsg) + " " + userOnMap.getUserName() + ". ");
+            mUserInfo.append(getText(R.string.nearbyFriend_msg2) + " " + (userOnMap.getDistance()/1000) + " " + getText(R.string.nearbyFriend_msgKM) + " " + userOnMap.getDistance() + " " + getText(R.string.nearbyFriend_msg3));
             Bitmap scaledImage = Bitmap.createScaledBitmap(userOnMap.getAvatar(), 150, 150, false);
             mUserAvatar.setImageBitmap(scaledImage);
             mNotifyReceiverId = userOnMap.getUserId();
@@ -437,7 +442,7 @@ public class NearByFragment extends Fragment implements PopupMenu.OnMenuItemClic
                                 );
                                 float distance = result[0];
                                 //If distance less than or eqaul to 500 meters; then show him on the map.
-                                if (distance <= 500) {
+                                if (distance <= 12756000) { //500
                                     //Get friend details
                                     User user = usersTable.where().field("id").eq(friend.getFriendId()).execute().get().get(0);
                                     if (user != null && user.getStatus() == MyHelper.USER_STATUS_ONLINE) {

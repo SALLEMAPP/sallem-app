@@ -20,7 +20,7 @@ import com.google.android.gms.maps.model.LatLng;
 public class LocationService implements LocationListener {
 
     private static final long MIN_TIME = 400;
-    private static final float MIN_DISTANCE = 10000;
+    private static final float MIN_DISTANCE = 12756000;  //10000
     public static Location LAST_LOCATION = null;
     //The minimum distance to change updates in meters
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 0; // 10 meters

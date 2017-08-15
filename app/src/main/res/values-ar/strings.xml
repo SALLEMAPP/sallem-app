@@ -12,7 +12,7 @@
     <string name="loading_msg">جار التحميل…</string>
     <string name="navigation_drawer_close">إغلاق شريط التنقل</string>
     <string name="navigation_drawer_open">فتح شريط التنقل</string>
-    <string name="notify_all">إخطار الكل</string>
+    <string name="notify_all">إشعار الكل</string>
     <string name="password_label">كلمة المرور</string>
     <string name="register_label">تسجيل</string>
     <string name="reset_label">إعادة تعيين</string>
@@ -28,7 +28,7 @@
     <string name="Post_toSALLEM_label">منشور إلى سلِّم</string>
     <string name="ReEnter_Password_label">إعادة كلمة المرور</string>
     <string name="addEvent_btn">إضافة</string>
-    <string name="addPost_btn">ضع منشور</string>
+    <string name="addPost_btn">نشر</string>
     <string name="comments_label">تعليقات</string>
     <string name="createActivity_label">إنشاء نشاط</string>
     <string name="email_user_name_label">إيميل</string>
@@ -57,4 +57,14 @@
     <string name="logout_msg">هل ترغب في تسجيل الخروج وإغلاق التطبيق؟</string>
     <string name="friends_requests_menu">طلبات صداقة</string>
     <string name="page_position">الصفحة</string>
+    <string name="nearbyFriend_msg">موقع</string>
+    <string name="nearbyFriend_msg2">على بعد</string>
+    <string name="nearbyFriend_msg3">متر.</string>
+    <string name="nearbyFriend_msgKM">كيلومتر أو</string>
+    <string name="InvitationNotify_msg">يدعوك إلى لقاءه</string>
+    <string name="NotifySent_msg">لقد تم إرسال الإشعار</string>
+    <string name="NotifyAllSent_msg">لقد تم إرسال الإشعارات للكل</string>
+    <string name="FriendshipRequest_msgReceived">لقد أرسل لك طلب صداقة</string>
+    <string name="FriendshipRequestSent_msg">لقد تم إرسال طلبك</string>
+    <string name="FriendshipRequestAlreadySent_msg">لقد أرسلت طلبك له قبل قليل</string>
 </resources>

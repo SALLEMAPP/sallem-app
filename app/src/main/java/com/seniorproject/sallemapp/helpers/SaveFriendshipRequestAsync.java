@@ -1,13 +1,12 @@
 package com.seniorproject.sallemapp.helpers;
 
-import android.app.Application;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
 import com.microsoft.windowsazure.mobileservices.table.MobileServiceTable;
+import com.seniorproject.sallemapp.R;
 import com.seniorproject.sallemapp.entities.DomainUser;
 import com.seniorproject.sallemapp.entities.Friendship;
 import com.seniorproject.sallemapp.entities.Notify;
@@ -56,11 +55,11 @@ public class SaveFriendshipRequestAsync extends AsyncTask<Void, Void, Background
             List<Notify> notifies = new ArrayList<>();
             notifies.add(notify);
             sendNotify(notifies);
-            String msg = "Your request has sent";
+            String msg = String.valueOf(R.string.FriendshipRequestSent_msg);   //TODO check it in Friendship request simulation
             MyHelper.showToast(mContext, msg);
         }
         else {
-            String msg = "You already sent him a request";
+            String msg = mContext.getResources().getString(R.string.FriendshipRequestAlreadySent_msg);    //TODO check it in Friendship request simulation
             MyHelper.showToast(mContext, msg);
 
         }
@@ -78,7 +77,7 @@ public class SaveFriendshipRequestAsync extends AsyncTask<Void, Void, Background
         notify.setSourceUser(mUserId);
         notify.setDestUser(mFriendId);
         notify.setTitle(DomainUser.CURRENT_USER.getFirstName() + " " + DomainUser.CURRENT_USER.getLasttName());
-        notify.setSubject("Sent you friendship request");
+        notify.setSubject(mContext.getString(R.string.FriendshipRequest_msgReceived));
         notify.setDelivered(false);
         notify.setPublishedAt(MyHelper.getCurrentDateTime());
         return notify;

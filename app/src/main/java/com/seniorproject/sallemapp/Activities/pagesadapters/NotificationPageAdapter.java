@@ -5,7 +5,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.seniorproject.sallemapp.Activities.NotificationFragment;
-import com.seniorproject.sallemapp.R;
 
 
 /**
@@ -14,7 +13,7 @@ import com.seniorproject.sallemapp.R;
 
 public class NotificationPageAdapter extends FragmentStatePagerAdapter {
 
-    private String notifications_menu = String.valueOf(R.string.notifications_menu_label);
+    private String notifications_menu = "Notifications إشعارات";
 
     public NotificationPageAdapter(FragmentManager fm) {
         super(fm);

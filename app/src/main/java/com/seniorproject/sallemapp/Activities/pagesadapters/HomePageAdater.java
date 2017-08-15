@@ -5,7 +5,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.seniorproject.sallemapp.Activities.PostsFragment;
-import com.seniorproject.sallemapp.R;
 
 /**
  * Created by abdul on 18-Feb-2017.
@@ -13,8 +12,8 @@ import com.seniorproject.sallemapp.R;
 
 public  class HomePageAdater extends FragmentStatePagerAdapter {
 
-    private String friend_menu = String.valueOf(R.string.friends_menu_label);
-    private String posts_menu = String.valueOf(R.string.addPost_btn);
+    private String friend_menu = "Friends الأصدقاء";
+    private String posts_menu = "Post نشر";
 
     public HomePageAdater(FragmentManager fm) {
         super(fm);

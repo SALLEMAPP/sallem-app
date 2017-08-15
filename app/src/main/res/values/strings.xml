@@ -48,6 +48,10 @@
     <string name="searchFriend_btn">Search</string>
 
     <string name="nearFriends_label">Near Friends</string>
+    <string name="nearbyFriend_msg">Location for</string>
+    <string name="nearbyFriend_msg2">and is about</string>
+    <string name="nearbyFriend_msgKM">KiloMeter or</string>
+    <string name="nearbyFriend_msg3">meters from you.</string>
 
     <string name="notify_markAllRead_btn">Mark All As Read</string>
 
@@ -95,11 +99,18 @@
     <string name="notify_all">Notify All</string>
     <string name="Notify">Notify</string>
     <string name="yourFriend">Your friend</string>
+    <string name="InvitationNotify_msg">Invited you for a meeting</string>
+    <string name="NotifySent_msg">The notify has been sent</string>
+    <string name="NotifyAllSent_msg">The notifications has been sent to all</string>
 
     <string name="friendRequests_Accept_btn">Accept</string>
     <string name="friendRequests_Decline_btn">Decline</string>
 
     <string name="send_Friendship_Request_label">Send Request</string>
+    <string name="FriendshipRequestSent_msg">Your request has sent</string>
+    <string name="FriendshipRequestAlreadySent_msg">You already sent him a request</string>
+    <string name="FriendshipRequest_msgReceived">Sent you friendship request</string>
+
 
     <string name="send_Notify_label">Send</string>
 

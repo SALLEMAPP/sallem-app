@@ -5,7 +5,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.seniorproject.sallemapp.Activities.NearByFragment;
-import com.seniorproject.sallemapp.R;
 
 /**
  * Created by abdul on 18-Feb-2017.
@@ -13,7 +12,7 @@ import com.seniorproject.sallemapp.R;
 
 public class NearbyPageAdapter extends FragmentStatePagerAdapter {
 
-    private String nearby_menu = String.valueOf(R.string.nearFriends_label);
+    private String nearby_menu = "Near friends أصدقاء قريبون";
 
 
     public NearbyPageAdapter(FragmentManager fm) {

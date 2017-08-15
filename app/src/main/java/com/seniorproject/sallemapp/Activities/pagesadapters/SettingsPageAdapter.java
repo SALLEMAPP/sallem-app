@@ -5,7 +5,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.seniorproject.sallemapp.Activities.SettingsFragment;
-import com.seniorproject.sallemapp.R;
 
 
 /**
@@ -14,7 +13,7 @@ import com.seniorproject.sallemapp.R;
 
 public class SettingsPageAdapter extends FragmentStatePagerAdapter {
 
-    private String settings_menu = String.valueOf(R.string.settings_menu_label);
+    private String settings_menu = "Settings إعدادات";
 
 
 
